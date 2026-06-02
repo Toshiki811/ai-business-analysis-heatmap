@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+
+# Claude Code ローカル設定（個人の操作履歴・絶対パスを含む）
+.claude/settings.local.json
+
+# 生成物
+output/analysis_*.json
+output/analysis_*.html
+output/flows/*.drawio
+
+# 正規化済み中間ファイル
+input/normalized/*.md
+input/normalized/*.txt
+
+# gitkeep は追跡する
+!output/.gitkeep
+!output/flows/.gitkeep
+!input/normalized/.gitkeep

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI業務分析ヒートマップ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://viewer.diagrams.net/js/viewer.min.js"></script>
+  <style>
+    :root {
+      --bg-base: #0f172a;
+      --bg-card: #1e293b;
+      --bg-surface: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --accent: #3b82f6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ヒートマップ */
+    .heatmap-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    }
+
+    .heatmap-table {
+      border-collapse: collapse;
+      font-size: 12px;
+      background: #fff;
+      width: 100%;
+      min-width: 960px;
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      border: 1px solid #e2e8f0;
+    }
+
+    /* 大分類ヘッダー行 */
+    .th-group {
+      background: #334155;
+      color: #e2e8f0;
+      text-align: center;
+      font-weight: 700;
+      padding: 10px 14px;
+      font-size: 12px;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+
+    /* 左上カテゴリーラベル用 */
+    .th-corner {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 10px 14px;
+      text-align: left;
+      min-width: 120px;
+    }
+
+    /* 業務ステップヘッダー */
+    .th-step {
+      background: #f8fafc;
+      color: #64748b;
+      text-align: center;
+      font-weight: 600;
+      padding: 7px 8px;
+      white-space: nowrap;
+      font-size: 11px;
+      border-top: none;
+      position: sticky;
+      top: 0;
+    }
+
+    /* カテゴリー列 */
+    .td-category {
+      background: #f8fafc;
+      font-weight: 700;
+      padding: 0 14px;
+      white-space: nowrap;
+      color: #334155;
+      font-size: 12px;
+      min-width: 120px;
+      height: 48px;
+      border-right: 2px solid #e2e8f0;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* セル基本スタイル */
+    .heatmap-cell {
+      min-width: 80px;
+      height: 48px;
+      text-align: center;
+      vertical-align: middle;
+      cursor: default;
+      position: relative;
+      transition: filter 0.12s;
+      padding: 0;
+    }
+
+    .heatmap-cell.has-data { cursor: pointer; }
+    .heatmap-cell.has-data:hover { filter: brightness(0.88); }
+
+    /* 赤系グラデーション（白→薄ピンク→ピンク→赤） */
+    .effect-none   { background-color: #f8fafc; }
+    .effect-low    { background-color: #fce4e4; color: #991b1b; }
+    .effect-medium { background-color: #f87171; color: #7f1d1d; }
+    .effect-high   { background-color: #dc2626; color: #fff; }
+
+    /* TOP3 青枠強調 */
+    .heatmap-cell.top3-cell {
+      outline: 2.5px solid #3b82f6;
+      outline-offset: -2px;
+      cursor: pointer;
+    }
+
+    .top3-badge {
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #3b82f6;
+    }
+
+    /* ツールチップ */
+    .tooltip {
+      display: none;
+      position: absolute;
+      z-index: 200;
+      background: #1e293b;
+      color: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      line-height: 1.5;
+      width: 220px;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      pointer-events: none;
+      white-space: normal;
+      text-align: left;
+    }
+
+    .tooltip::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-bottom-color: #1e293b;
+    }
+
+    .heatmap-cell:hover .tooltip { display: block; }
+
+    /* モーダル */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-content {
+      background: #1e293b;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 740px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      border: 1px solid #334155;
+    }
+
+    .modal-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #334155;
+      position: sticky;
+      top: 0;
+      background: #1e293b;
+      z-index: 1;
+    }
+
+    .modal-body { padding: 20px 24px; }
+
+    .tab-btn {
+      padding: 7px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* フロー */
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .flow-step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .flow-step-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 40px;
+    }
+
+    .actor-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .actor-human        { background: #1d4ed8; color: #fff; }
+    .actor-ai           { background: #15803d; color: #fff; }
+    .actor-human-review { background: #7e22ce; color: #fff; }
+    .actor-system       { background: #475569; color: #fff; }
+
+    .flow-arrow {
+      width: 2px;
+      height: 24px;
+      background: #475569;
+      margin: 0 auto;
+    }
+
+    .flow-step-content {
+      flex: 1;
+      padding: 8px 0;
+    }
+
+    .flow-step-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .flow-step-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .actor-label {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .label-human        { background: #1d4ed8; color: #fff; }
+    .label-ai           { background: #15803d; color: #fff; }
+    .label-human-review { background: #7e22ce; color: #fff; }
+    .label-system       { background: #475569; color: #fff; }
+
+    .score-bar-bg {
+      background: #334155;
+      border-radius: 4px;
+      height: 7px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #60a5fa, #3b82f6);
+    }
+
+    /* TOP3テーブル */
+    .top3-table { width: 100%; border-collapse: collapse; }
+    .top3-table th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      border-bottom: 1px solid #334155;
+      white-space: nowrap;
+    }
+    .top3-table td {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #e2e8f0;
+      border-bottom: 1px solid #1e2e42;
+      vertical-align: middle;
+    }
+    .top3-table tr:last-child td { border-bottom: none; }
+    .top3-table tbody tr {
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .top3-table tbody tr:hover { background: #1a3248; }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    /* 示唆カード */
+    .insight-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-left: 3px solid #3b82f6;
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    /* 凡例 */
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .modal-content { max-height: 95vh; }
+      .modal-header, .modal-body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="border-b border-slate-700 bg-slate-900">
+    <div class="max-w-screen-xl mx-auto px-5 py-5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <h1 class="text-xl font-bold text-white" id="page-title">AI業務分析ヒートマップ</h1>
+          <p class="text-sm text-slate-400 mt-1" id="page-subtitle"></p>
+        </div>
+        <div class="text-xs text-slate-500" id="page-date"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-screen-xl mx-auto px-5 py-8 space-y-10">
+
+    <!-- ① 分析結果の示唆 -->
+    <section>
+      <h2 class="text-base font-bold text-white mb-1">分析結果の示唆</h2>
+      <p class="text-xs text-slate-400 mb-4">業務実態から読み取れるAI導入のポイント</p>
+      <div class="space-y-3" id="insights-list"></div>
+    </section>
+
+    <!-- ② ヒートマップ -->
+    <section>
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-base font-bold text-white">AI導入効果ヒートマップ</h2>
+          <p class="text-xs text-slate-400 mt-1">業務カテゴリー × 業務フローでAI導入効果を可視化</p>
+        </div>
+        <!-- 凡例（右上） -->
+        <div class="flex items-center gap-4 flex-wrap text-xs text-slate-400 mt-1">
+          <div class="flex items-center gap-1.5">
+            <div class="legend-dot" style="background:#fce4e4;border:1px solid #fca5a5;"></div>
+            <span>低</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="legend-dot" style="background:#f87171;"></div>
+            <span>中</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="legend-dot" style="background:#dc2626;"></div>
+            <span>高</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-black" style="color:#3b82f6;">★</span>
+            <span>TOP3（クリックで詳細）</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="heatmap-wrapper">
+        <table class="heatmap-table" id="heatmap-table"></table>
+      </div>
+
+      <!-- 凡例説明（ヒートマップ下） -->
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="flex items-start gap-2.5">
+          <div class="legend-dot mt-0.5" style="background:#fce4e4;border:1px solid #fca5a5;"></div>
+          <div>
+            <span class="text-xs font-semibold text-slate-300">低：AI化余地はあるが限定的</span>
+            <p class="text-xs text-slate-500 mt-0.5">削減時間が小さい、または実装負荷が高く優先度は低い。</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-2.5">
+          <div class="legend-dot mt-0.5" style="background:#f87171;"></div>
+          <div>
+            <span class="text-xs font-semibold text-slate-300">中：一定の効果が見込める</span>
+            <p class="text-xs text-slate-500 mt-0.5">既存データ・ルールを活用しやすく、部分的なAI支援で時間削減できる。</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-2.5">
+          <div class="legend-dot mt-0.5" style="background:#dc2626;"></div>
+          <div>
+            <span class="text-xs font-semibold text-slate-300">高：優先的に検討すべき領域</span>
+            <p class="text-xs text-slate-500 mt-0.5">手作業負担が大きく、自動化・支援による時間削減・品質平準化の効果が大きい。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ TOP3テーブル -->
+    <section>
+      <h2 class="text-base font-bold text-white mb-1">AI導入効果 TOP3</h2>
+      <p class="text-xs text-slate-400 mb-4">優先的に着手すべき業務領域</p>
+      <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="top3-table" id="top3-table">
+            <thead>
+              <tr>
+                <th style="width:52px;">順位</th>
+                <th style="min-width:160px;">対象業務</th>
+                <th style="min-width:200px;">現状の想定課題</th>
+                <th style="width:130px;">ヒートマップ上の導入効果</th>
+                <th style="width:72px;"></th>
+              </tr>
+            </thead>
+            <tbody id="top3-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- モーダル -->
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-bold text-blue-400" id="modal-rank"></span>
+              <span class="text-xs text-slate-400" id="modal-meta"></span>
+            </div>
+            <h2 class="text-lg font-bold text-white" id="modal-title"></h2>
+          </div>
+          <button onclick="document.getElementById('modal').classList.remove('active')"
+                  class="text-slate-400 hover:text-white text-2xl leading-none flex-shrink-0 mt-1">×</button>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button class="tab-btn active" id="tab-tobe"   onclick="switchTab('tobe')">To-Be フロー</button>
+          <button class="tab-btn"        id="tab-asis"   onclick="switchTab('asis')">As-Is フロー</button>
+          <button class="tab-btn"        id="tab-detail" onclick="switchTab('detail')">詳細情報</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- To-Be -->
+        <div id="panel-tobe">
+          <p class="text-xs text-slate-400 mb-3" id="modal-solution"></p>
+          <div id="tobe-diagram-container" class="rounded-lg overflow-hidden border border-slate-600" style="height:480px;background:#fff;"></div>
+          <div class="mt-4 p-3 bg-slate-700 rounded-lg">
+            <p class="text-xs text-slate-300"><span class="text-yellow-400 font-bold">リスク・注意点：</span><span id="modal-risks"></span></p>
+          </div>
+          <div class="mt-3 flex gap-3" id="tobe-drawio-link-area"></div>
+        </div>
+
+        <!-- As-Is -->
+        <div id="panel-asis" class="hidden">
+          <p class="text-xs text-slate-400 mb-3" id="modal-issue"></p>
+          <div id="asis-diagram-container" class="rounded-lg overflow-hidden border border-slate-600" style="height:480px;background:#fff;"></div>
+          <div class="mt-3 flex gap-3" id="asis-drawio-link-area"></div>
+        </div>
+
+        <!-- 詳細情報 -->
+        <div id="panel-detail" class="hidden">
+          <div class="space-y-5">
+            <div>
+              <p class="text-xs text-slate-400 mb-1.5">期待される効果</p>
+              <p class="text-sm text-white whitespace-pre-line" id="detail-effect"></p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-400 mb-3">評価スコア</p>
+              <div class="mb-3 flex items-baseline gap-2">
+                <span class="text-xs text-slate-400">総合スコア</span>
+                <span class="text-3xl font-black text-white" id="detail-total-score"></span>
+                <span class="text-sm text-slate-400">/ 100</span>
+              </div>
+              <div class="space-y-3" id="detail-scores"></div>
+            </div>
+            <div>
+              <p class="text-xs text-slate-400 mb-1.5">開発規模</p>
+              <span id="detail-scale" class="inline-block px-3 py-1 rounded text-sm font-bold"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 担当凡例 -->
+        <div class="flex flex-wrap gap-3 mt-6 pt-4 border-t border-slate-700">
+          <div class="flex items-center gap-1.5 text-xs text-slate-300">
+            <div class="actor-badge actor-human" style="width:20px;height:20px;font-size:8px;">人</div>
+            <span>Human（担当者）</span>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs text-slate-300">
+            <div class="actor-badge actor-ai" style="width:20px;height:20px;font-size:8px;">AI</div>
+            <span>AI（自動処理）</span>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs text-slate-300">
+            <div class="actor-badge actor-human-review" style="width:20px;height:20px;font-size:8px;">確認</div>
+            <span>Human Review（確認・承認）</span>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs text-slate-300">
+            <div class="actor-badge actor-system" style="width:20px;height:20px;font-size:8px;">Sys</div>
+            <span>System（自動連携）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- データ注入ポイント -->
+  <script>
+const ANALYSIS_DATA = /* ANALYSIS_DATA_PLACEHOLDER */;
+  </script>
+  <script>
+const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
+  </script>
+
+  <!-- アプリロジック -->
+  <script>
+    function getActorClass(actor) {
+      return ({ 'Human': 'actor-human', 'AI': 'actor-ai', 'Human Review': 'actor-human-review', 'System': 'actor-system' })[actor] || 'actor-system';
+    }
+    function getLabelClass(actor) {
+      return ({ 'Human': 'label-human', 'AI': 'label-ai', 'Human Review': 'label-human-review', 'System': 'label-system' })[actor] || 'label-system';
+    }
+    function getActorShort(actor) {
+      return ({ 'Human': '人', 'AI': 'AI', 'Human Review': '確認', 'System': 'Sys' })[actor] || actor;
+    }
+    function effectClass(level) {
+      return ({ 'high': 'effect-high', 'medium': 'effect-medium', 'low': 'effect-low' })[level] || 'effect-none';
+    }
+    function effectLabel(level) {
+      return ({ 'high': '高', 'medium': '中', 'low': '低' })[level] || '';
+    }
+    function effectBadgeStyle(level) {
+      return ({
+        'high':   'background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;',
+        'medium': 'background:#f87171;color:#7f1d1d;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;',
+        'low':    'background:#fce4e4;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid #fca5a5;'
+      })[level] || '';
+    }
+    function scaleColor(scale) {
+      return ({ '小': 'background:#d1fae5;color:#065f46;', '中': 'background:#fef3c7;color:#92400e;', '大': 'background:#fee2e2;color:#991b1b;' })[scale] || '';
+    }
+    function rankStyle(rank) {
+      return (['background:#facc15;color:#78350f;', 'background:#cbd5e1;color:#1e293b;', 'background:#d97706;color:#fff;'])[rank - 1] || 'background:#475569;color:#fff;';
+    }
+
+    function init() {
+      if (!ANALYSIS_DATA || typeof ANALYSIS_DATA !== 'object') {
+        document.querySelector('main').innerHTML =
+          '<div class="text-center py-20 text-slate-400">データが読み込まれていません。</div>';
+        return;
+      }
+      const d = ANALYSIS_DATA;
+
+      document.getElementById('page-title').textContent = d.metadata.title || 'AI業務分析ヒートマップ';
+      document.getElementById('page-subtitle').textContent = '分析対象: ' + (d.metadata.source_documents || []).join(', ');
+      document.getElementById('page-date').textContent = '分析日: ' + (d.metadata.created_at || '');
+
+      // 示唆
+      const insights = (d.summary || {}).insights || [];
+      document.getElementById('insights-list').innerHTML = insights.map((txt, i) =>
+        `<div class="insight-card">
+           <div class="flex items-start gap-3">
+             <span class="text-blue-400 font-black text-lg leading-none mt-0.5 flex-shrink-0">${i + 1}</span>
+             <p class="text-sm text-slate-200 leading-relaxed">${txt}</p>
+           </div>
+         </div>`
+      ).join('');
+
+      buildHeatmap(d);
+      buildTop3Table(d);
+    }
+
+    function buildHeatmap(data) {
+      const table = document.getElementById('heatmap-table');
+      const { flow_columns, categories, heatmap_cells } = data;
+
+      const cellIndex = {};
+      (heatmap_cells || []).forEach(c => {
+        cellIndex[`${c.category}|||${c.flow_step}`] = c;
+      });
+
+      const allSteps = flow_columns.flatMap(g => g.steps);
+      let html = '<thead>';
+
+      // 1行目：大分類（左上の corner セルは rowspan=2）
+      html += '<tr>';
+      html += `<th class="th-corner" rowspan="2">業務カテゴリー</th>`;
+      flow_columns.forEach(g => {
+        html += `<th class="th-group" colspan="${g.steps.length}">${g.group}</th>`;
+      });
+      html += '</tr>';
+
+      // 2行目：業務ステップ
+      html += '<tr>';
+      allSteps.forEach(step => { html += `<th class="th-step">${step}</th>`; });
+      html += '</tr></thead><tbody>';
+
+      categories.forEach(cat => {
+        html += '<tr>';
+        html += `<td class="td-category">${cat}</td>`;
+        allSteps.forEach(step => {
+          const cell = cellIndex[`${cat}|||${step}`];
+          if (cell) {
+            const cls = effectClass(cell.effect_level);
+            const lbl = effectLabel(cell.effect_level);
+            const isTop3 = cell.is_top3;
+            const rank = cell.top3_rank;
+            html += `<td class="heatmap-cell has-data ${cls} ${isTop3 ? 'top3-cell' : ''}"
+                        ${isTop3 ? `onclick="openModal(${rank - 1})"` : 'onclick="void(0)"'}>`;
+            html += `<span style="font-size:11px;font-weight:700;">${lbl}</span>`;
+            if (isTop3) html += `<span class="top3-badge">★${rank}</span>`;
+            html += `<div class="tooltip">
+              <strong style="display:block;margin-bottom:4px;">${cat} × ${step}</strong>
+              <span style="color:#94a3b8;">${cell.ai_use_case || ''}</span>
+            </div>`;
+            html += '</td>';
+          } else {
+            html += `<td class="heatmap-cell effect-none"></td>`;
+          }
+        });
+        html += '</tr>';
+      });
+
+      html += '</tbody>';
+      table.innerHTML = html;
+    }
+
+    function buildTop3Table(data) {
+      const tbody = document.getElementById('top3-tbody');
+      tbody.innerHTML = (data.top3 || []).map((item, i) => {
+        const level = (() => {
+          const cell = (data.heatmap_cells || []).find(
+            c => c.category === item.target_category && c.flow_step === item.target_flow_step
+          );
+          return cell ? cell.effect_level : null;
+        })();
+        return `
+        <tr onclick="openModal(${i})">
+          <td>
+            <span class="rank-badge" style="${rankStyle(item.rank)}">${item.rank}</span>
+          </td>
+          <td>
+            <div class="font-semibold text-white">${item.target_business || item.title}</div>
+            <div class="text-xs text-slate-400 mt-0.5">${item.target_category} × ${item.target_flow_step}</div>
+          </td>
+          <td>
+            <span class="text-sm text-slate-300">${item.current_issue_short || item.current_issue || ''}</span>
+          </td>
+          <td>
+            ${level ? `<span style="${effectBadgeStyle(level)}">${effectLabel(level)}</span>` : ''}
+          </td>
+          <td>
+            <span class="text-xs text-blue-400 font-semibold whitespace-nowrap">詳細を見る →</span>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function openModal(index) {
+      const item = (ANALYSIS_DATA.top3 || [])[index];
+      if (!item) return;
+
+      document.getElementById('modal-rank').textContent = `TOP${item.rank}`;
+      document.getElementById('modal-meta').textContent = `${item.target_category} × ${item.target_flow_step}`;
+      document.getElementById('modal-title').textContent = item.title;
+      document.getElementById('modal-solution').textContent = item.ai_solution || '';
+      document.getElementById('modal-issue').textContent = item.current_issue || '';
+      document.getElementById('modal-risks').textContent = item.risks || '';
+      document.getElementById('detail-effect').textContent = item.expected_effect || '';
+
+      const scores = item.scores || {};
+      document.getElementById('detail-total-score').textContent = scores.total || '-';
+
+      const scaleEl = document.getElementById('detail-scale');
+      scaleEl.textContent = item.development_scale || '';
+      scaleEl.setAttribute('style', scaleColor(item.development_scale));
+
+      const axes = [
+        { key: 'time_reduction',      label: '作業時間削減インパクト', weight: '45%', reasonKey: 'time_reduction_reason' },
+        { key: 'frequency',           label: '作業頻度・件数',         weight: '25%', reasonKey: 'frequency_reason' },
+        { key: 'implementation_ease', label: '実装容易性',             weight: '20%', reasonKey: 'implementation_ease_reason' },
+        { key: 'quality_impact',      label: '品質改善・ミス削減効果', weight: '10%', reasonKey: 'quality_impact_reason' },
+      ];
+
+      document.getElementById('detail-scores').innerHTML = axes.map(a => `
+        <div class="bg-slate-700 rounded-lg p-3">
+          <div class="flex justify-between items-center mb-1.5">
+            <span class="text-xs text-slate-300 font-semibold">${a.label} <span class="text-slate-500">(${a.weight})</span></span>
+            <span class="text-sm font-black text-white">${scores[a.key] || '-'}<span class="text-slate-400 font-normal text-xs"> / 5</span></span>
+          </div>
+          <div class="score-bar-bg mb-1.5">
+            <div class="score-bar-fill" style="width:${(scores[a.key] || 0) / 5 * 100}%"></div>
+          </div>
+          ${scores[a.reasonKey] ? `<p class="text-xs text-slate-400">${scores[a.reasonKey]}</p>` : ''}
+        </div>
+      `).join('');
+
+      const rank = item.rank;
+      renderDrawio('tobe-diagram-container', (DRAWIO_XML_MAP || {})[`top${rank}_to_be`]);
+      renderDrawio('asis-diagram-container', (DRAWIO_XML_MAP || {})[`top${rank}_as_is`]);
+
+      // draw.io ファイルリンク
+      const ff = item.flow_files || {};
+      const drawioLinkHtml = (path, label) => path ? `
+        <a href="${path}" download
+           class="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 border border-blue-700 hover:border-blue-500 rounded-lg px-3 py-2 transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          ${label}（.drawio）
+        </a>` : '';
+      document.getElementById('tobe-drawio-link-area').innerHTML = drawioLinkHtml(ff.to_be_drawio, 'To-Be業務フローを開く');
+      document.getElementById('asis-drawio-link-area').innerHTML = drawioLinkHtml(ff.as_is_drawio, 'As-Is業務フローを開く');
+
+      switchTab('tobe');
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function renderDrawio(containerId, xml) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = '';
+      if (!xml) {
+        el.innerHTML = '<p style="padding:16px;color:#94a3b8;font-size:13px;">フロー図データなし</p>';
+        return;
+      }
+      const graphDiv = document.createElement('div');
+      graphDiv.className = 'mxgraph';
+      graphDiv.style.cssText = 'width:100%;height:100%;';
+      graphDiv.dataset.mxgraph = JSON.stringify({
+        highlight: '#0000ff',
+        nav: true,
+        resize: true,
+        toolbar: 'zoom layers',
+        xml: xml
+      });
+      el.appendChild(graphDiv);
+      if (window.GraphViewer) {
+        GraphViewer.processElements();
+      }
+    }
+
+    function renderFlow(containerId, steps) {
+      const el = document.getElementById(containerId);
+      if (!steps.length) { el.innerHTML = '<p class="text-slate-400 text-sm">データなし</p>'; return; }
+      el.innerHTML = steps.map((step, i) => `
+        <div class="flow-step-item">
+          <div class="flow-step-connector">
+            <div class="actor-badge ${getActorClass(step.actor)}">${getActorShort(step.actor)}</div>
+            ${i < steps.length - 1 ? '<div class="flow-arrow"></div>' : ''}
+          </div>
+          <div class="flow-step-content">
+            <span class="actor-label ${getLabelClass(step.actor)}">${step.actor}</span>
+            <div class="flow-step-name">${step.step}</div>
+            <div class="flow-step-desc">${step.description || ''}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function switchTab(tab) {
+      ['tobe', 'asis', 'detail'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+        document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
+      });
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modal'))
+        document.getElementById('modal').classList.remove('active');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') document.getElementById('modal').classList.remove('active');
+    });
+
+    init();
+  </script>
+</body>
+</html>

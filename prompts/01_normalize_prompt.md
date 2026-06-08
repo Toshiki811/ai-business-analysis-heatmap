@@ -3,7 +3,7 @@
 ## 目的
 
 `input/source/` に配置された業務ドキュメント（.txt / .md / .pdf / .docx）を読み込み、
-後続の分析（02_analysis_prompt.md）が扱いやすい構造化テキストに整形して
+後続の分析（02_flow_axes_prompt.md 以降）が扱いやすい構造化テキストに整形して
 `input/normalized/` に保存する。
 
 ## 入力

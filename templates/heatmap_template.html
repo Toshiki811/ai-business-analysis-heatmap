@@ -38,14 +38,14 @@
     .heatmap-table {
       border-collapse: collapse;
       font-size: 12px;
-      background: #fff;
+      background: #1e293b;
       width: 100%;
       min-width: 960px;
     }
 
     .heatmap-table th,
     .heatmap-table td {
-      border: 1px solid #e2e8f0;
+      border: 1px solid #293548;
     }
 
     /* 大分類ヘッダー行 */
@@ -101,6 +101,18 @@
       z-index: 1;
     }
 
+    .td-business-type {
+      background: #eef2f7;
+      font-weight: 700;
+      padding: 0 14px;
+      white-space: nowrap;
+      color: #475569;
+      font-size: 12px;
+      min-width: 120px;
+      height: 48px;
+      border-right: 2px solid #e2e8f0;
+    }
+
     /* セル基本スタイル */
     .heatmap-cell {
       min-width: 80px;
@@ -116,11 +128,11 @@
     .heatmap-cell.has-data { cursor: pointer; }
     .heatmap-cell.has-data:hover { filter: brightness(0.88); }
 
-    /* 赤系グラデーション（白→薄ピンク→ピンク→赤） */
-    .effect-none   { background-color: #f8fafc; }
-    .effect-low    { background-color: #fce4e4; color: #991b1b; }
-    .effect-medium { background-color: #f87171; color: #7f1d1d; }
-    .effect-high   { background-color: #dc2626; color: #fff; }
+    /* 赤系グラデーション（ダーク背景） */
+    .effect-none   { background-color: #0f172a; }
+    .effect-low    { background-color: rgba(220,38,38,0.18); color: #fca5a5; }
+    .effect-medium { background-color: rgba(220,38,38,0.45); color: #fecaca; }
+    .effect-high   { background-color: rgba(220,38,38,0.85); color: #fff; }
 
     /* TOP3 青枠強調 */
     .heatmap-cell.top3-cell {
@@ -372,6 +384,321 @@
       .modal-content { max-height: 95vh; }
       .modal-header, .modal-body { padding: 16px; }
     }
+
+    /* ===== フィードバック（インライン統合） ===== */
+    .fb-dot { width: 8px; height: 8px; border-radius: 50%; background: #334155; }
+    .fb-dot.answered { background: #22c55e; }
+    .fb-dot.skipped  { background: #64748b; }
+
+    .fb-q-card { background: #1e293b; border: 1.5px solid #334155; border-radius: 10px; padding: 12px 14px; transition: border-color 0.15s; }
+    .fb-q-card.answered { border-color: #16a34a; }
+    .fb-q-card.skipped  { border-color: #475569; opacity: 0.65; }
+    .fb-q-card.focused  { border-color: #3b82f6; }
+    .fb-q-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+    .fb-q-num { font-size: 16px; font-weight: 900; color: #60a5fa; line-height: 1; flex-shrink: 0; }
+    .fb-q-meta { font-size: 10px; color: #64748b; flex: 1; line-height: 1.4; }
+    .fb-q-badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
+    .fb-q-badge.answered { background: #166534; color: #86efac; }
+    .fb-q-badge.skipped  { background: #334155; color: #94a3b8; }
+    .fb-q-issue { font-size: 10px; color: #64748b; margin-bottom: 5px; line-height: 1.4; }
+    .fb-q-question { font-size: 12px; color: #cbd5e1; margin-bottom: 8px; line-height: 1.55; background: #0f172a; border-radius: 6px; padding: 7px 9px; }
+    .fb-q-textarea { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #f1f5f9; font-size: 12px; padding: 7px 9px; resize: vertical; min-height: 64px; font-family: inherit; line-height: 1.5; transition: border-color 0.12s; }
+    .fb-q-textarea:focus { outline: none; border-color: #3b82f6; }
+    .fb-q-skip-row { display: flex; align-items: center; gap: 6px; margin-top: 7px; }
+    .fb-q-skip-row label { font-size: 11px; color: #64748b; cursor: pointer; }
+    .fb-detail-toggle { font-size: 10px; color: #3b82f6; cursor: pointer; margin-top: 6px; display: inline-block; user-select: none; }
+    .fb-detail-toggle:hover { text-decoration: underline; }
+    .fb-detail-fields { margin-top: 8px; padding-top: 8px; border-top: 1px solid #334155; display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .fb-field-group label { display: block; font-size: 9px; color: #64748b; margin-bottom: 3px; }
+    .fb-field-group input, .fb-field-group select { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 5px; color: #f1f5f9; font-size: 11px; padding: 4px 7px; font-family: inherit; }
+    .fb-field-group select option { background: #1e293b; }
+
+    /* 業務分類ヘッダー行（進捗ドット付き） */
+    .tl-group-row-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tl-group-dots { display: flex; gap: 3px; flex-wrap: wrap; margin-left: auto; }
+
+    /* 展開ペイン */
+    .cat-expand-row td {
+      padding: 0 !important;
+      background: #0d1829;
+      border-top: 2px solid #3b82f6;
+      border-bottom: 2px solid #1e293b;
+    }
+    .cat-expand-pane {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto min(400px, 50vh) auto;
+    }
+    .cat-expand-toolbar {
+      background: #0a1120;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px;
+      overflow-x: auto;
+    }
+    .cat-flow-tab {
+      border: 1px solid #334155;
+      background: #111827;
+      color: #cbd5e1;
+      border-radius: 7px;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 10px;
+    }
+    .cat-flow-tab.active {
+      background: #1e3a5f;
+      border-color: #3b82f6;
+      color: #93c5fd;
+    }
+    .cat-expand-diagram { background: #fff; overflow: hidden; height: min(400px, 50vh); }
+    .cat-expand-qa {
+      background: #0f172a;
+      border-top: 2px solid #334155;
+      overflow-y: auto;
+      max-height: 480px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cat-expand-actions {
+      padding: 8px 14px;
+      background: #0a1120;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 全体進捗サマリー */
+    #matrix-fb-progress { font-size: 11px; color: #64748b; white-space: nowrap; }
+
+    /* エクスポートセクション */
+    #feedback-export-section {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    #fb-progress-bar-wrap { flex: 1; min-width: 120px; height: 5px; background: #334155; border-radius: 3px; overflow: hidden; }
+    #fb-progress-bar-fill { height: 100%; background: linear-gradient(90deg, #16a34a, #22c55e); border-radius: 3px; transition: width 0.3s; }
+    #fb-export-btn { padding: 8px 18px; border-radius: 8px; font-size: 12px; font-weight: 700; background: #3b82f6; color: #fff; border: none; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+    #fb-export-btn:hover { background: #2563eb; }
+    #fb-autosave-indicator { font-size: 10px; color: #475569; white-space: nowrap; }
+
+    /* 業務整理マトリクス */
+    .matrix-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    }
+
+    .matrix-table {
+      border-collapse: collapse;
+      font-size: 12px;
+      width: 100%;
+      min-width: 1200px;
+      background: #1e293b;
+    }
+
+    .matrix-table th {
+      background: #334155;
+      color: #e2e8f0;
+      font-weight: 700;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      white-space: nowrap;
+      border-bottom: 2px solid #475569;
+    }
+
+    .matrix-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #1e2e42;
+      font-size: 12px;
+      color: #e2e8f0;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .matrix-table tbody tr:hover { background: #263548; }
+
+    .matrix-col-category {
+      font-weight: 700;
+      color: #e2e8f0;
+      background: #1e293b;
+      white-space: nowrap;
+      min-width: 90px;
+    }
+
+    .matrix-col-type {
+      color: #e2e8f0;
+      background: #334155;
+      white-space: nowrap;
+      min-width: 90px;
+    }
+
+    .burden-high   { display:inline-block;background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
+    .burden-medium { display:inline-block;background:#f59e0b;color:#78350f;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
+    .burden-low    { display:inline-block;background:#22c55e;color:#052e16;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
+
+    .ai-high   { display:inline-block;background:#3b82f6;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
+    .ai-medium { display:inline-block;background:#6366f1;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
+    .ai-low    { display:inline-block;background:#475569;color:#e2e8f0;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
+
+    .kubun-badge { display:inline-block;background:#334155;color:#94a3b8;border:1px solid #475569;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap; }
+
+    .matrix-filter-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      color: #94a3b8;
+    }
+    .matrix-filter-btn.active {
+      background: #3b82f6;
+      color: #fff;
+      border-color: #3b82f6;
+    }
+
+    /* タイムラインセル */
+    .tl-cell {
+      min-width: 160px;
+      max-width: 220px;
+      padding: 10px 12px;
+      vertical-align: top;
+      border-left: 3px solid transparent;
+      border-bottom: 1px solid #1e2e42;
+      position: relative;
+      cursor: default;
+    }
+    .tl-cell.burden-high-cell  { background:rgba(220,38,38,0.12); border-left-color:#dc2626; }
+    .tl-cell.burden-mid-cell   { background:rgba(245,158,11,0.10); border-left-color:#f59e0b; }
+    .tl-cell.burden-low-cell   { background:rgba(34,197,94,0.07);  border-left-color:#22c55e; }
+    .tl-cell-name {
+      font-weight: 600;
+      font-size: 12px;
+      color: #f1f5f9;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .tl-cell-stack { display:flex; flex-direction:column; gap:8px; }
+    .tl-cell-item + .tl-cell-item {
+      padding-top:8px;
+      border-top:1px solid rgba(148,163,184,0.18);
+    }
+    .tl-cell-badges { display:flex; gap:4px; flex-wrap:wrap; align-items:center; }
+    .tl-cell-time   { font-size:10px; color:#64748b; }
+
+    /* CSSツールチップ */
+    .tl-cell[data-tooltip] { cursor: help; }
+    .tl-cell[data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 0;
+      width: 280px;
+      background: #0f172a;
+      color: #cbd5e1;
+      font-size: 11px;
+      line-height: 1.6;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      white-space: pre-wrap;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    .tl-cell[data-tooltip]:hover::after { opacity: 1; }
+
+    /* 業務分類グループ行 */
+    .tl-group-row td {
+      background: #0f172a;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 10px;
+      padding: 4px 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-top: 2px solid #1e293b;
+      border-bottom: 1px solid #334155;
+      cursor: pointer;
+    }
+    .tl-group-row:hover td {
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+
+    /* 業務種別・業務分類の固定列 */
+    .tl-col-cat {
+      font-weight: 700;
+      color: #93c5fd;
+      background: #1e293b;
+      white-space: nowrap;
+      min-width: 80px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #334155;
+      vertical-align: middle;
+    }
+    .tl-col-type {
+      color: #e2e8f0;
+      background: #334155;
+      font-size: 12px;
+      white-space: nowrap;
+      min-width: 110px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #475569;
+      vertical-align: middle;
+    }
+
+    /* ステップ番号ヘッダー */
+    .tl-step-header {
+      text-align: center;
+      min-width: 160px;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 10px 14px;
+    }
+
+    /* ヒートマップStepヘッダー */
+    .type-header {
+      text-align: center;
+      min-width: 80px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 8px 6px;
+      color: #e2e8f0;
+      background: #334155;
+      border-bottom: 2px solid #475569;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -398,7 +725,29 @@
       <div class="space-y-3" id="insights-list"></div>
     </section>
 
-    <!-- ② ヒートマップ -->
+    <!-- ② 業務整理マトリクス -->
+    <section>
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-base font-bold text-white">業務整理マトリクス</h2>
+          <p class="text-xs text-slate-400 mt-1">
+            ヒアリング前の仮案。横軸はヒートマップと同じ共通ステップ。セルの左ボーダー色は人手の負担（<span class="text-red-400 font-semibold">赤=高</span> / <span class="text-amber-400 font-semibold">黄=中</span> / <span class="text-green-400 font-semibold">緑=低</span>）。セルにカーソルを当てると詳細が表示されます。
+          </p>
+        </div>
+        <div class="flex items-center gap-4 flex-wrap">
+          <div class="flex flex-wrap gap-1.5" id="matrix-filter-area"></div>
+          <div id="matrix-fb-progress"></div>
+        </div>
+      </div>
+      <div class="matrix-wrapper">
+        <table class="matrix-table" id="matrix-table"></table>
+      </div>
+      <p class="text-xs text-slate-600 mt-2 text-right">
+        全 <span id="matrix-count">0</span> タスク（仮案 — ヒアリング後に更新）
+      </p>
+    </section>
+
+    <!-- ③ ヒートマップ -->
     <section>
       <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
         <div>
@@ -476,6 +825,19 @@
           </table>
         </div>
       </div>
+    </section>
+
+    <!-- フィードバックエクスポート -->
+    <section id="feedback-export-section">
+      <div>
+        <div class="text-sm font-bold text-white mb-1">フィードバック回答のエクスポート</div>
+        <div id="fb-overall-progress" class="text-xs text-slate-400">進捗: 0 / 0件回答済み</div>
+      </div>
+      <div id="fb-progress-bar-wrap">
+        <div id="fb-progress-bar-fill" style="width:0%;"></div>
+      </div>
+      <span id="fb-autosave-indicator"></span>
+      <button id="fb-export-btn" onclick="FeedbackManager.exportCsv()">CSVをダウンロード（Excel互換）</button>
     </section>
 
   </main>
@@ -613,6 +975,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         return;
       }
       const d = ANALYSIS_DATA;
+      normalizeMatrixTasks(d);
 
       document.getElementById('page-title').textContent = d.metadata.title || 'AI業務分析ヒートマップ';
       document.getElementById('page-subtitle').textContent = '分析対象: ' + (d.metadata.source_documents || []).join(', ');
@@ -631,57 +994,164 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
 
       buildHeatmap(d);
       buildTop3Table(d);
+      buildMatrix(d);
+    }
+
+    function normalizeMatrixTasks(data) {
+      const aliasMap = [
+        ['業務分類', 'category'],
+        ['業務種別', 'business_type'],
+        ['タスク順', 'task_order'],
+        ['共通ステップ', 'common_step'],
+        ['タスク名', 'task_name'],
+        ['業務内容詳細', 'detail'],
+        ['1件あたり所要時間_分', 'estimated_minutes'],
+        ['所要時間_分', 'estimated_minutes'],
+        ['人手の負担', 'burden'],
+        ['現状課題', 'issue'],
+        ['AI導入余地', 'ai_potential'],
+        ['確認事項', 'question'],
+        ['クライアント回答', 'client_answer'],
+        ['区分', 'status']
+      ];
+      (data.matrix_tasks || []).forEach(task => {
+        aliasMap.forEach(([ja, en]) => {
+          if ((task[ja] === undefined || task[ja] === null || task[ja] === '') && task[en] !== undefined) {
+            task[ja] = task[en];
+          }
+        });
+        if (task['タスク順'] !== undefined) task['タスク順'] = Number(task['タスク順']);
+        if (!task['クライアント回答']) task['クライアント回答'] = '';
+        if (!task['区分']) task['区分'] = '仮案';
+      });
+    }
+
+    function flatFlowColumns(data) {
+      const cols = [];
+      (data.flow_columns || []).forEach(group => {
+        (group.steps || []).forEach(step => {
+          cols.push({
+            key: String(step),
+            label: String(step),
+            sub: group.group || ''
+          });
+        });
+      });
+      return cols;
+    }
+
+    function buildMatrixColumns(data, tasks) {
+      const flowSteps = flatFlowColumns(data);
+      const columns = [];
+      const seen = new Set();
+      flowSteps.forEach(col => {
+        if (!col.key || seen.has(col.key)) return;
+        columns.push(col);
+        seen.add(col.key);
+      });
+      (tasks || []).forEach(task => {
+        const step = String(task['共通ステップ'] || '').trim();
+        if (!step || seen.has(step)) return;
+        columns.push({ key: step, label: step, sub: '' });
+        seen.add(step);
+      });
+      return columns.length ? columns : matrixFallbackColumns(tasks || []);
+    }
+
+    function buildMatrixRowMap(tasks, columns) {
+      const columnKeys = new Set(columns.map(c => c.key));
+      const catMap = new Map();
+      (tasks || []).forEach(t => {
+        const cat = t['業務分類'];
+        const type = t['業務種別'];
+        const step = String(t['共通ステップ'] || '').trim();
+        if (!cat || !type || !step || !columnKeys.has(step)) return;
+        if (!catMap.has(cat)) catMap.set(cat, new Map());
+        const typeMap = catMap.get(cat);
+        if (!typeMap.has(type)) typeMap.set(type, new Map());
+        const stepMap = typeMap.get(type);
+        if (!stepMap.has(step)) stepMap.set(step, []);
+        stepMap.get(step).push(t);
+      });
+      return catMap;
+    }
+
+    function top3BusinessType(item) {
+      return item.target_business_type || item.target_business || item.business_type || '';
+    }
+
+    function cellBusinessType(cell) {
+      return cell.business_type || cell.target_business_type || '';
+    }
+
+    function targetLabel(category, businessType, flowStep) {
+      return [category, businessType, flowStep].filter(Boolean).join(' × ');
+    }
+
+    function findHeatmapCell(cells, category, businessType, flowStep) {
+      return cells.find(c =>
+        c.category === category &&
+        cellBusinessType(c) === businessType &&
+        c.flow_step === flowStep
+      );
+    }
+
+    function findTop3Index(top3, category, businessType, flowStep) {
+      return top3.findIndex(item =>
+        item.target_category === category &&
+        top3BusinessType(item) === businessType &&
+        item.target_flow_step === flowStep
+      );
     }
 
     function buildHeatmap(data) {
       const table = document.getElementById('heatmap-table');
-      const { flow_columns, categories, heatmap_cells } = data;
+      const tasks = data.matrix_tasks || [];
+      const columns = buildMatrixColumns(data, tasks);
+      const catMap = buildMatrixRowMap(tasks, columns);
+      const cells = data.heatmap_cells || [];
+      const top3 = data.top3 || [];
 
-      const cellIndex = {};
-      (heatmap_cells || []).forEach(c => {
-        cellIndex[`${c.category}|||${c.flow_step}`] = c;
+      let html = '<thead><tr>';
+      html += `<th class="th-corner">業務分類</th>`;
+      html += `<th class="th-corner">業務種別</th>`;
+      columns.forEach(col => {
+        html += `<th class="th-step">${col.label}</th>`;
       });
-
-      const allSteps = flow_columns.flatMap(g => g.steps);
-      let html = '<thead>';
-
-      // 1行目：大分類（左上の corner セルは rowspan=2）
-      html += '<tr>';
-      html += `<th class="th-corner" rowspan="2">業務カテゴリー</th>`;
-      flow_columns.forEach(g => {
-        html += `<th class="th-group" colspan="${g.steps.length}">${g.group}</th>`;
-      });
-      html += '</tr>';
-
-      // 2行目：業務ステップ
-      html += '<tr>';
-      allSteps.forEach(step => { html += `<th class="th-step">${step}</th>`; });
       html += '</tr></thead><tbody>';
 
-      categories.forEach(cat => {
-        html += '<tr>';
-        html += `<td class="td-category">${cat}</td>`;
-        allSteps.forEach(step => {
-          const cell = cellIndex[`${cat}|||${step}`];
-          if (cell) {
+      catMap.forEach((typeMap, category) => {
+        const rowSpan = typeMap.size;
+        let rowIndex = 0;
+        typeMap.forEach((stepMap, businessType) => {
+          html += '<tr>';
+          if (rowIndex === 0) html += `<td class="td-category" rowspan="${rowSpan}">${category}</td>`;
+          html += `<td class="td-business-type">${businessType}</td>`;
+          columns.forEach(col => {
+            const cell = findHeatmapCell(cells, category, businessType, col.key);
+            if (!cell || !(stepMap.get(col.key) || []).length) {
+              html += `<td class="heatmap-cell effect-none"></td>`;
+              return;
+            }
             const cls = effectClass(cell.effect_level);
             const lbl = effectLabel(cell.effect_level);
-            const isTop3 = cell.is_top3;
-            const rank = cell.top3_rank;
-            html += `<td class="heatmap-cell has-data ${cls} ${isTop3 ? 'top3-cell' : ''}"
-                        ${isTop3 ? `onclick="openModal(${rank - 1})"` : 'onclick="void(0)"'}>`;
-            html += `<span style="font-size:11px;font-weight:700;">${lbl}</span>`;
-            if (isTop3) html += `<span class="top3-badge">★${rank}</span>`;
+            const top3Index = findTop3Index(top3, category, businessType, col.key);
+            const rank = top3Index + 1;
+            const isTop3 = top3Index >= 0 || cell.is_top3;
+            html += `<td class="heatmap-cell has-data ${cls} ${isTop3?'top3-cell':''}"
+                        ${top3Index >= 0 ? `onclick="openModal(${top3Index})"` : ''}>`;
+            html += `<span style="font-size:11px;font-weight:700;color:inherit;">${lbl}</span>`;
+            if (isTop3 && rank > 0) html += `<span class="top3-badge">★${rank}</span>`;
             html += `<div class="tooltip">
-              <strong style="display:block;margin-bottom:4px;">${cat} × ${step}</strong>
-              <span style="color:#94a3b8;">${cell.ai_use_case || ''}</span>
+              <strong style="display:block;margin-bottom:4px;">${targetLabel(category, businessType, col.key)}</strong>
+              <div style="margin-bottom:4px;font-size:11px;">${cell.ai_use_case || ''}</div>
+              <span style="color:#94a3b8;">${cell.reason || ''}</span>
             </div>`;
             html += '</td>';
-          } else {
-            html += `<td class="heatmap-cell effect-none"></td>`;
-          }
+          });
+          html += '</tr>';
+          rowIndex += 1;
         });
-        html += '</tr>';
       });
 
       html += '</tbody>';
@@ -691,10 +1161,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     function buildTop3Table(data) {
       const tbody = document.getElementById('top3-tbody');
       tbody.innerHTML = (data.top3 || []).map((item, i) => {
+        const businessType = top3BusinessType(item);
         const level = (() => {
-          const cell = (data.heatmap_cells || []).find(
-            c => c.category === item.target_category && c.flow_step === item.target_flow_step
-          );
+          const cell = findHeatmapCell(data.heatmap_cells || [], item.target_category, businessType, item.target_flow_step);
           return cell ? cell.effect_level : null;
         })();
         return `
@@ -704,7 +1173,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           </td>
           <td>
             <div class="font-semibold text-white">${item.target_business || item.title}</div>
-            <div class="text-xs text-slate-400 mt-0.5">${item.target_category} × ${item.target_flow_step}</div>
+            <div class="text-xs text-slate-400 mt-0.5">${targetLabel(item.target_category, businessType, item.target_flow_step)}</div>
           </td>
           <td>
             <span class="text-sm text-slate-300">${item.current_issue_short || item.current_issue || ''}</span>
@@ -724,7 +1193,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       if (!item) return;
 
       document.getElementById('modal-rank').textContent = `TOP${item.rank}`;
-      document.getElementById('modal-meta').textContent = `${item.target_category} × ${item.target_flow_step}`;
+      document.getElementById('modal-meta').textContent = targetLabel(item.target_category, top3BusinessType(item), item.target_flow_step);
       document.getElementById('modal-title').textContent = item.title;
       document.getElementById('modal-solution').textContent = item.ai_solution || '';
       document.getElementById('modal-issue').textContent = item.current_issue || '';
@@ -833,10 +1302,631 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') document.getElementById('modal').classList.remove('active');
+      if (e.key === 'Escape') {
+        document.getElementById('modal').classList.remove('active');
+      }
     });
 
+    function getCategoryFlowIndex(category) {
+      const idx = (ANALYSIS_DATA.category_flow_index || {})[category];
+      if (idx) return idx;
+      const categoryFlow = (ANALYSIS_DATA.category_flows || []).find(f => f.category === category);
+      return categoryFlow ? {
+        category_flow_key: categoryFlow.flow_key,
+        business_type_flow_keys: categoryFlow.business_type_flow_keys || []
+      } : null;
+    }
+
+    function resolveMatrixFlowKey(category, businessType) {
+      if (!DRAWIO_XML_MAP) return null;
+      if (businessType) {
+        const flow = (ANALYSIS_DATA.business_type_flows || []).find(f =>
+          f.category === category && f.business_type === businessType
+        );
+        if (flow && DRAWIO_XML_MAP[flow.flow_key]) return flow.flow_key;
+      }
+      const idx = getCategoryFlowIndex(category);
+      if (idx && DRAWIO_XML_MAP[idx.category_flow_key]) return idx.category_flow_key;
+      const keys = Object.keys(DRAWIO_XML_MAP);
+      return keys.find(k => k.startsWith('asis_') && k.endsWith('_' + ((ANALYSIS_DATA.metadata || {}).created_at || '').replace(/-/g, ''))) || null;
+    }
+
+    function businessTypesForCategory(category) {
+      return (ANALYSIS_DATA.business_type_flows || [])
+        .filter(f => f.category === category)
+        .map(f => f.business_type);
+    }
+
+    function switchCategoryFlow(category, catId, businessType) {
+      const key = resolveMatrixFlowKey(category, businessType || null);
+      const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
+      const processNodes = parseProcessNodes(xml);
+      const numMap = buildNumMap(processNodes);
+      renderDrawio('expand-diagram-' + catId, addNumbersToDrawioXml(xml, numMap));
+      FeedbackManager.renderQAPanelInto(
+        document.getElementById('expand-qa-' + catId),
+        category,
+        processNodes,
+        numMap,
+        businessType || null
+      );
+      document.querySelectorAll('#expand-toolbar-' + catId + ' .cat-flow-tab').forEach(btn => {
+        btn.classList.toggle('active', (btn.dataset.businessType || '') === (businessType || ''));
+      });
+    }
+
+    function toCatId(cat) {
+      return 'cat' + btoa(encodeURIComponent(cat)).replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function toggleCatExpand(category, totalCols) {
+      const catId = toCatId(category);
+      const expandRow = document.getElementById('expand-' + catId);
+      const arrow = document.getElementById('arrow-' + catId);
+      if (!expandRow) return;
+      const isOpen = expandRow.style.display !== 'none';
+      expandRow.style.display = isOpen ? 'none' : 'table-row';
+      if (arrow) arrow.textContent = isOpen ? '▸' : '▾';
+      if (!isOpen && !expandRow.dataset.rendered) {
+        expandRow.dataset.rendered = '1';
+        FeedbackManager.renderExpandPane(category, catId);
+      }
+    }
+
+    function parseProcessNodes(xml) {
+      if (!xml) return {};
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      const result = {};
+      doc.querySelectorAll('mxCell[id^="process-"]').forEach(cell => {
+        const id = cell.getAttribute('id');
+        const raw = cell.getAttribute('value') || '';
+        const val = raw.split('&#xa;')[0].split('\n')[0].trim();
+        if (id && val) result[id] = val;
+      });
+      return result;
+    }
+
+    function matchProcessId(taskName, processNodes) {
+      for (const [id, nodeName] of Object.entries(processNodes)) {
+        if (taskName === nodeName || taskName.includes(nodeName) || nodeName.includes(taskName)) {
+          return id;
+        }
+      }
+      return null;
+    }
+
+    function buildNumMap(processNodes) {
+      const sorted = Object.keys(processNodes)
+        .map(id => parseInt(id.replace('process-', ''), 10))
+        .sort((a, b) => a - b);
+      const map = {};
+      sorted.forEach((n, i) => { map[n] = i + 1; });
+      return map;
+    }
+
+    function addNumbersToDrawioXml(xml, numMap) {
+      if (!xml) return xml;
+      return xml.replace(
+        /(<mxCell\s[^>]*id="process-(\d+)"[^>]*value=")([^"]*?)(")/g,
+        (_, prefix, numStr, val, suffix) => {
+          const displayNum = numMap[parseInt(numStr, 10)];
+          if (!displayNum) return _;
+          const circle = displayNum <= 20
+            ? String.fromCodePoint(0x245F + displayNum)
+            : `[${displayNum}]`;
+          return `${prefix}${circle} ${val}${suffix}`;
+        }
+      );
+    }
+
+    function buildMatrix(data) {
+      const allTasks = data.matrix_tasks || [];
+      if (!allTasks.length) return;
+      const columns = buildMatrixColumns(data, allTasks);
+
+      const categories = [...new Set(allTasks.map(t => t['業務分類']))];
+      const filterArea = document.getElementById('matrix-filter-area');
+
+      function makeBtn(label, active) {
+        const btn = document.createElement('button');
+        btn.className = 'matrix-filter-btn' + (active ? ' active' : '');
+        btn.textContent = label;
+        return btn;
+      }
+
+      const allBtn = makeBtn('すべて', true);
+      allBtn.onclick = () => {
+        filterArea.querySelectorAll('.matrix-filter-btn').forEach(b => b.classList.remove('active'));
+        allBtn.classList.add('active');
+        renderMatrix(allTasks, columns);
+      };
+      filterArea.appendChild(allBtn);
+
+      categories.forEach(cat => {
+        const btn = makeBtn(cat, false);
+        btn.onclick = () => {
+          filterArea.querySelectorAll('.matrix-filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderMatrix(allTasks.filter(t => t['業務分類'] === cat), columns);
+        };
+        filterArea.appendChild(btn);
+      });
+
+      renderMatrix(allTasks, columns);
+    }
+
+    function burdenClass(v) {
+      return ({高: 'high', 中: 'medium', 低: 'low'})[v] || 'medium';
+    }
+    function aiClass(v) {
+      return ({高: 'high', 中: 'medium', 低: 'low'})[v] || 'low';
+    }
+
+    function matrixFallbackColumns(tasks) {
+      const maxStep = Math.max(...tasks.map(t => Number(t['タスク順']) || 0));
+      const stepLabels = ['申請・受付','内容確認','情報収集・照合','書類・帳票作成','システム入力','承認申請','実行・送付','記録・保管','報告・共有','完了確認'];
+      const stepSubs   = ['Request','Verify','Collect','Create','Input','Approve','Execute','Record','Report','Close'];
+      return Array.from({length: maxStep}, (_, i) => ({
+        key: String(i + 1),
+        label: stepLabels[i] || `Step ${i + 1}`,
+        sub: stepSubs[i] || ''
+      }));
+    }
+
+    function matrixCellKey(task, columns, useCommonStep) {
+      if (useCommonStep && task['共通ステップ']) return String(task['共通ステップ']);
+      const order = Number(task['タスク順']);
+      if (!Number.isFinite(order) || order < 1) return '';
+      return useCommonStep ? (columns[order - 1] || {}).key || '' : String(order);
+    }
+
+    function highestBurdenClass(tasks) {
+      const rank = {高: 3, 中: 2, 低: 1};
+      const burden = tasks.reduce((best, task) =>
+        (rank[task['人手の負担']] || 0) > (rank[best] || 0) ? task['人手の負担'] : best, ''
+      );
+      return {高:'burden-high-cell',中:'burden-mid-cell',低:'burden-low-cell'}[burden] || '';
+    }
+
+    function matrixTaskTooltip(task) {
+      return [
+        task['タスク名'],
+        '',
+        '【業務内容】',
+        task['業務内容詳細'] || '—',
+        '',
+        '【現状課題】',
+        task['現状課題'] || '—',
+      ].join('\n');
+    }
+
+    function renderMatrixCell(tasksInCell) {
+      if (!tasksInCell.length) return '<td class="tl-cell"></td>';
+      const burdCls = highestBurdenClass(tasksInCell);
+      const tip = tasksInCell.map(matrixTaskTooltip).join('\n\n---\n\n').replace(/"/g, '&quot;');
+      let html = `<td class="tl-cell ${burdCls}" data-tooltip="${tip}">`;
+      html += '<div class="tl-cell-stack">';
+      tasksInCell.forEach(t => {
+        html += '<div class="tl-cell-item">';
+        html += `<div class="tl-cell-name">${t['タスク名']}</div>`;
+        html += `<div class="tl-cell-badges">`;
+        html += `<span class="tl-cell-time">${t['所要時間_分'] || t['1件あたり所要時間_分'] || '—'}</span>`;
+        html += `<span class="burden-${burdenClass(t['人手の負担'])}" style="margin-left:4px;">${t['人手の負担'] || '—'}</span>`;
+        html += `</div></div>`;
+      });
+      html += '</div></td>';
+      return html;
+    }
+
+    function renderMatrix(tasks, columns) {
+      document.getElementById('matrix-count').textContent = tasks.length;
+      if (!tasks.length) { document.getElementById('matrix-table').innerHTML = ''; return; }
+
+      const catMap = buildMatrixRowMap(tasks, columns);
+
+      const totalCols = 2 + columns.length;
+
+      let html = '<thead><tr>';
+      html += `<th class="tl-col-cat" style="background:#334155;border-bottom:2px solid #475569;">業務分類</th>`;
+      html += `<th class="tl-col-type" style="background:#334155;border-bottom:2px solid #475569;">業務種別</th>`;
+      columns.forEach(col => {
+        html += `<th class="tl-step-header" style="background:#334155;border-bottom:2px solid #475569;">` +
+          `<div style="color:#94a3b8;font-size:12px;font-weight:700;">${col.label}</div>` +
+          `<div style="color:#475569;font-size:10px;font-weight:400;margin-top:2px;">${col.sub || ''}</div>` +
+          `</th>`;
+      });
+      html += '</tr></thead><tbody>';
+
+      catMap.forEach((typeMap, cat) => {
+        const catId = toCatId(cat);
+        html += `<tr class="tl-group-row" onclick="toggleCatExpand('${cat.replace(/'/g, "\\'")}', ${totalCols})">` +
+          `<td colspan="${totalCols}">` +
+          `<div class="tl-group-row-inner">` +
+          `<span id="arrow-${catId}">▸</span>` +
+          `<span>${cat}</span>` +
+          `<div class="tl-group-dots" id="tl-dots-${catId}"></div>` +
+          `</div></td></tr>`;
+        html += `<tr class="cat-expand-row" id="expand-${catId}" style="display:none;">` +
+          `<td colspan="${totalCols}">` +
+          `<div class="cat-expand-pane">` +
+          `<div class="cat-expand-toolbar" id="expand-toolbar-${catId}"></div>` +
+          `<div class="cat-expand-diagram" id="expand-diagram-${catId}"></div>` +
+          `<div class="cat-expand-qa" id="expand-qa-${catId}"></div>` +
+          `</div>` +
+          `<div class="cat-expand-actions">` +
+          `<span id="expand-qa-count-${catId}" style="font-size:11px;color:#64748b;"></span>` +
+          `<button onclick="FeedbackManager.markCategoryComplete('${cat.replace(/'/g, "\\'")}','${catId}')" ` +
+          `style="padding:6px 14px;background:#1e3a5f;color:#60a5fa;border:1px solid #3b82f6;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">` +
+          `このカテゴリの回答を完了にする</button>` +
+          `</div></td></tr>`;
+        typeMap.forEach((stepMap, type) => {
+          html += '<tr>';
+          html += `<td class="tl-col-cat"></td>`;
+          html += `<td class="tl-col-type">${type}</td>`;
+          columns.forEach(col => { html += renderMatrixCell(stepMap.get(col.key) || []); });
+          html += '</tr>';
+        });
+      });
+
+      html += '</tbody>';
+      document.getElementById('matrix-table').innerHTML = html;
+    }
+
     init();
+
+    /* ===== フィードバックモード ===== */
+
+    const FeedbackManager = (function() {
+      const storageKey = 'ai_feedback_' + ((ANALYSIS_DATA.metadata || {}).created_at || 'unknown').replace(/-/g, '');
+      let state = { version: '1.0', answers: {} };
+      let _saveTimer = null;
+      let _autosaveTimer = null;
+      let _currentCategory = null;
+
+      function load() {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (raw) { const parsed = JSON.parse(raw); if (parsed.answers) state = parsed; }
+        } catch(e) {}
+      }
+
+      function save() {
+        clearTimeout(_saveTimer);
+        _saveTimer = setTimeout(() => {
+          state.updated_at = new Date().toISOString();
+          localStorage.setItem(storageKey, JSON.stringify(state));
+          updateAutosaveIndicator();
+        }, 500);
+      }
+
+      function taskKey(task) {
+        return task['業務分類'] + '___' + task['業務種別'] + '___' + (task['共通ステップ'] || task['タスク順'] || '') + '___' + task['タスク名'];
+      }
+
+      function hasResolvedServerAnswer(task) {
+        const answer = String(task['クライアント回答'] || '').trim();
+        return answer.length > 0;
+      }
+
+      function isOpenQuestion(task) {
+        return Boolean(task['確認事項']) && !hasResolvedServerAnswer(task);
+      }
+
+      function setAnswer(key, fields) {
+        if (!state.answers[key]) state.answers[key] = {};
+        Object.assign(state.answers[key], fields);
+        save();
+        updateFooterProgress();
+        updateGroupRowDots(_currentCategory);
+        updateMatrixFbProgress();
+      }
+
+      function getProgress(category) {
+        const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
+          (!category || t['業務分類'] === category) && isOpenQuestion(t)
+        );
+        const total = tasks.length;
+        const answered = tasks.filter(t => {
+          const a = state.answers[taskKey(t)];
+          return a && ((a.answer && a.answer.length >= 5) || a.skipped);
+        }).length;
+        const skipped = tasks.filter(t => {
+          const a = state.answers[taskKey(t)];
+          return a && a.skipped;
+        }).length;
+        return { total, answered, skipped };
+      }
+
+      function updateFooterProgress() {
+        const { total, answered, skipped } = getProgress(null);
+        const pct = total > 0 ? Math.round(answered / total * 100) : 0;
+        const el = document.getElementById('fb-overall-progress');
+        if (el) el.textContent = '進捗: ' + answered + ' / ' + total + '件回答済み（' + skipped + '件スキップ）';
+        const bar = document.getElementById('fb-progress-bar-fill');
+        if (bar) bar.style.width = pct + '%';
+      }
+
+      function updateAutosaveIndicator() {
+        const el = document.getElementById('fb-autosave-indicator');
+        if (el) el.textContent = '自動保存済み';
+        clearTimeout(_autosaveTimer);
+        _autosaveTimer = setTimeout(() => { if (el) el.textContent = ''; }, 3000);
+      }
+
+      function updateGroupRowDots(category) {
+        if (!category) return;
+        const catId = toCatId(category);
+        const dotsEl = document.getElementById('tl-dots-' + catId);
+        if (!dotsEl) return;
+        const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
+          t['業務分類'] === category && isOpenQuestion(t)
+        );
+        dotsEl.innerHTML = tasks.map(t => {
+          const a = state.answers[taskKey(t)];
+          const isAnswered = a && ((a.answer && a.answer.length >= 5) || a.skipped);
+          const isSkipped = a && a.skipped;
+          return '<div class="fb-dot' + (isSkipped ? ' skipped' : isAnswered ? ' answered' : '') + '"></div>';
+        }).join('');
+      }
+
+      function updateAllGroupDots() {
+        (ANALYSIS_DATA.categories || []).forEach(cat => updateGroupRowDots(cat));
+      }
+
+      function updateMatrixFbProgress() {
+        const categories = ANALYSIS_DATA.categories || [];
+        const completedCats = categories.filter(cat => {
+          const { total, answered } = getProgress(cat);
+          return total > 0 && answered >= total;
+        }).length;
+        const el = document.getElementById('matrix-fb-progress');
+        if (el) el.textContent = completedCats + ' / ' + categories.length + ' 業務分類回答済み';
+      }
+
+      function renderExpandPane(category, catIdArg) {
+        _currentCategory = category;
+        const catId = catIdArg || toCatId(category);
+        const diagramEl = document.getElementById('expand-diagram-' + catId);
+        const qaEl = document.getElementById('expand-qa-' + catId);
+        const toolbarEl = document.getElementById('expand-toolbar-' + catId);
+        if (!diagramEl || !qaEl) return;
+        if (toolbarEl) {
+          toolbarEl.innerHTML = '';
+          const allBtn = document.createElement('button');
+          allBtn.className = 'cat-flow-tab active';
+          allBtn.textContent = '全体像';
+          allBtn.dataset.businessType = '';
+          allBtn.onclick = () => switchCategoryFlow(category, catId, null);
+          toolbarEl.appendChild(allBtn);
+          businessTypesForCategory(category).forEach(type => {
+            const btn = document.createElement('button');
+            btn.className = 'cat-flow-tab';
+            btn.textContent = type;
+            btn.dataset.businessType = type;
+            btn.onclick = () => switchCategoryFlow(category, catId, type);
+            toolbarEl.appendChild(btn);
+          });
+        }
+        switchCategoryFlow(category, catId, null);
+      }
+
+      function renderQAPanelInto(listEl, category, processNodes, numMap, businessType) {
+        if (!listEl) return;
+        const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
+          t['業務分類'] === category && (!businessType || t['業務種別'] === businessType) && isOpenQuestion(t)
+        );
+        const countEl = document.getElementById('expand-qa-count-' + toCatId(category));
+        if (countEl) {
+          countEl.textContent = (businessType ? businessType + ' / ' : '') + '確認事項: ' + tasks.length + '件';
+        }
+        if (tasks.length === 0) {
+          listEl.innerHTML = '<p style="font-size:13px;color:#475569;padding:16px;">このカテゴリに確認事項はありません。</p>';
+          return;
+        }
+
+        let displayNum = 1;
+        listEl.innerHTML = tasks.map((t, taskIdx) => {
+          const pid = t.as_is_node_id && processNodes[t.as_is_node_id] ? t.as_is_node_id : matchProcessId(t['タスク名'], processNodes);
+          const n = pid ? (numMap[parseInt(pid.replace('process-', ''), 10)] || displayNum) : displayNum;
+          displayNum++;
+          const circle = n <= 20 ? String.fromCodePoint(0x245F + n) : '[' + n + ']';
+          const key = taskKey(t);
+          const saved = state.answers[key] || {};
+          const isAnswered = (saved.answer && saved.answer.length >= 5) || saved.skipped;
+          const isSkipped = saved.skipped;
+          const answerVal = saved.answer || '';
+          const timeVal = saved.time_after || '';
+          const burdenVal = saved.burden_after || '';
+          const freqVal = saved.frequency || '';
+          const volumeVal = saved.volume || '';
+          const aiVal = saved.ai_after || '';
+
+          return '<div class="fb-q-card' + (isSkipped ? ' skipped' : isAnswered ? ' answered' : '') + '" data-fbkey="' + escAttr(key) + '">' +
+            '<div class="fb-q-header">' +
+            '<span class="fb-q-num">' + circle + '</span>' +
+            '<div class="fb-q-meta"><strong style="color:#cbd5e1;">' + escHtml(t['業務種別']) + '</strong><br>' + escHtml(t.as_is_position_label || t['タスク名']) + '</div>' +
+            (isSkipped ? '<span class="fb-q-badge skipped">確認不要</span>' : isAnswered ? '<span class="fb-q-badge answered">✓ 回答済み</span>' : '') +
+            '</div>' +
+            (t['現状課題'] ? '<div class="fb-q-issue">課題: ' + escHtml(t['現状課題']) + '</div>' : '') +
+            '<div class="fb-q-question">' + escHtml(t['確認事項']) + '</div>' +
+            '<textarea class="fb-q-textarea" rows="3" placeholder="回答を入力してください…"' +
+            ' onchange="FeedbackManager.handleAnswer(\'' + escAttr(key) + '\', this.value)"' +
+            ' oninput="FeedbackManager.handleAnswerInput(\'' + escAttr(key) + '\', this)">' + escHtml(answerVal) + '</textarea>' +
+            '<div class="fb-q-skip-row">' +
+            '<input type="checkbox" id="fb-skip-' + taskIdx + '" ' + (isSkipped ? 'checked' : '') +
+            ' onchange="FeedbackManager.handleSkip(\'' + escAttr(key) + '\', this.checked)">' +
+            '<label for="fb-skip-' + taskIdx + '">この質問は確認不要（スキップ）</label>' +
+            '</div>' +
+            '<span class="fb-detail-toggle" onclick="toggleDetailFields(this)">▶ 詳細情報を追加（所要時間・月間件数・負担度）</span>' +
+            '<div class="fb-detail-fields" style="display:none;">' +
+            '<div class="fb-field-group"><label>所要時間_分_ヒアリング後</label>' +
+            '<input type="number" min="0" placeholder="例: 15" value="' + escHtml(timeVal) + '"' +
+            ' onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'time_after\', this.value)"></div>' +
+            '<div class="fb-field-group"><label>人手の負担_ヒアリング後</label>' +
+            '<select onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'burden_after\', this.value)">' +
+            '<option value="">選択</option>' +
+            ['低','中','高'].map(v => '<option' + (burdenVal===v?' selected':'') + '>' + v + '</option>').join('') +
+            '</select></div>' +
+            '<div class="fb-field-group"><label>月間件数</label>' +
+            '<input type="number" min="0" placeholder="例: 50" value="' + escHtml(volumeVal) + '"' +
+            ' onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'volume\', this.value)"></div>' +
+            '<div class="fb-field-group"><label>発生頻度</label>' +
+            '<select onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'frequency\', this.value)">' +
+            '<option value="">選択</option>' +
+            ['毎日','週次','月次','不定期'].map(v => '<option' + (freqVal===v?' selected':'') + '>' + v + '</option>').join('') +
+            '</select></div>' +
+            '<div class="fb-field-group"><label>AI導入余地_ヒアリング後</label>' +
+            '<select onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'ai_after\', this.value)">' +
+            '<option value="">選択</option>' +
+            ['低','中','高'].map(v => '<option' + (aiVal===v?' selected':'') + '>' + v + '</option>').join('') +
+            '</select></div>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+      }
+
+      function handleAnswer(key, value) {
+        setAnswer(key, { answer: value });
+        refreshCardState(key);
+      }
+
+      function handleAnswerInput(key, textarea) {
+        const card = textarea.closest('.fb-q-card');
+        if (card) { card.classList.add('focused'); card.classList.remove('answered','skipped'); }
+        setAnswer(key, { answer: textarea.value });
+        refreshCardState(key);
+      }
+
+      function handleSkip(key, checked) {
+        setAnswer(key, { skipped: checked });
+        refreshCardState(key);
+      }
+
+      function handleDetail(key, field, value) {
+        setAnswer(key, { [field]: value });
+      }
+
+      function refreshCardState(key) {
+        const card = document.querySelector('.fb-q-card[data-fbkey="' + key.replace(/"/g, '&quot;') + '"]');
+        if (!card) return;
+        const a = state.answers[key] || {};
+        const isAnswered = (a.answer && a.answer.length >= 5) || a.skipped;
+        const isSkipped = a.skipped;
+        card.classList.toggle('answered', isAnswered && !isSkipped);
+        card.classList.toggle('skipped', isSkipped);
+        card.classList.remove('focused');
+        const badge = card.querySelector('.fb-q-badge');
+        if (badge) {
+          badge.className = 'fb-q-badge' + (isSkipped ? ' skipped' : isAnswered ? ' answered' : '');
+          badge.textContent = isSkipped ? '確認不要' : isAnswered ? '✓ 回答済み' : '';
+          badge.style.display = (isAnswered || isSkipped) ? '' : 'none';
+        }
+        updateGroupRowDots(_currentCategory);
+        updateFooterProgress();
+        updateMatrixFbProgress();
+      }
+
+      function markCategoryComplete(category, catId) {
+        if (!category) return;
+        const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
+          t['業務分類'] === category && isOpenQuestion(t)
+        );
+        tasks.forEach(t => {
+          const k = taskKey(t);
+          if (!state.answers[k] || (!state.answers[k].answer && !state.answers[k].skipped)) {
+            setAnswer(k, { skipped: true });
+          }
+        });
+        if (catId) {
+          const expandRow = document.getElementById('expand-' + catId);
+          if (expandRow && expandRow.dataset.rendered) {
+            const qaEl = document.getElementById('expand-qa-' + catId);
+            const key = resolveMatrixFlowKey(category);
+            const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
+            const processNodes = parseProcessNodes(xml);
+            const numMap = buildNumMap(processNodes);
+            if (qaEl) renderQAPanelInto(qaEl, category, processNodes, numMap);
+          }
+        }
+      }
+
+      function exportCsv() {
+        const allTasks = ANALYSIS_DATA.matrix_tasks || [];
+        const headers = [
+          '業務分類','業務種別','タスク順','共通ステップ','タスク名','業務内容詳細',
+          '1件あたり所要時間_分_仮案','1件あたり所要時間_分_ヒアリング後',
+          '人手の負担_仮案','人手の負担_ヒアリング後',
+          '月間件数','発生頻度',
+          '現状課題','確認したいこと','クライアント回答',
+          'AI導入余地_仮案','AI導入余地_ヒアリング後','備考'
+        ];
+        const rows = allTasks.map(t => {
+          const k = taskKey(t);
+          const a = state.answers[k] || {};
+          const serverResolved = hasResolvedServerAnswer(t);
+          const question = serverResolved ? '' : (t['確認事項'] || '');
+          const answer = serverResolved ? '' : (a.answer || (a.skipped ? '（確認不要）' : ''));
+          return [
+            t['業務分類'] || '',
+            t['業務種別'] || '',
+            t['タスク順'] || '',
+            t['共通ステップ'] || '',
+            t['タスク名'] || '',
+            t['業務内容詳細'] || '',
+            t['1件あたり所要時間_分'] || t['所要時間_分'] || '',
+            a.time_after || '',
+            t['人手の負担'] || '',
+            a.burden_after || '',
+            a.volume || '',
+            a.frequency || '',
+            t['現状課題'] || '',
+            question,
+            answer,
+            t['AI導入余地'] || '',
+            a.ai_after || '',
+            ''
+          ].map(v => '"' + String(v).replace(/"/g, '""') + '"');
+        });
+        const csv = '﻿' + [headers.map(h => '"' + h + '"')].concat(rows).map(r => r.join(',')).join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const date = ((ANALYSIS_DATA.metadata || {}).created_at || '').replace(/-/g, '');
+        const a = document.createElement('a');
+        a.href = url; a.download = 'client_input_filled_' + date + '.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      return {
+        load, updateFooterProgress, updateAllGroupDots, updateMatrixFbProgress,
+        renderExpandPane, renderQAPanelInto, getProgress,
+        handleAnswer, handleAnswerInput, handleSkip, handleDetail,
+        markCategoryComplete, exportCsv,
+        get currentCategory() { return _currentCategory; }
+      };
+    })();
+
+    FeedbackManager.load();
+    FeedbackManager.updateFooterProgress();
+    FeedbackManager.updateAllGroupDots();
+    FeedbackManager.updateMatrixFbProgress();
+
+    function escHtml(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function escAttr(str) {
+      return String(str || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    }
+
+    function toggleDetailFields(toggle) {
+      const fields = toggle.nextElementSibling;
+      if (!fields) return;
+      const open = fields.style.display !== 'none';
+      fields.style.display = open ? 'none' : 'grid';
+      toggle.textContent = (open ? '▶' : '▼') + ' 詳細情報を追加（所要時間・月間件数・負担度）';
+    }
+
+
   </script>
 </body>
 </html>

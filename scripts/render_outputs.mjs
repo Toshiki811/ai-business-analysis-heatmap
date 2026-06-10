@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 import path from 'node:path';
 import {
-  dateKeyToIso,
-  findLatestAnalysis,
   parseArgs,
   readJson,
-  resolveDateKey,
+  resolveAnalysisDate,
+  resolveAnalysisPath,
   writeJson
 } from './lib/fs_utils.mjs';
 import {
@@ -37,21 +36,14 @@ if (args.help || args.h) {
   process.exit(0);
 }
 
-const analysisPath = args.analysis
-  ? path.resolve(root, args.analysis)
-  : (args.date
-    ? path.join(root, 'output', `analysis_${resolveDateKey(args.date)}.json`)
-    : findLatestAnalysis(root));
+const analysisPath = resolveAnalysisPath(root, args);
 
 if (!analysisPath) {
   throw new Error(`No analysis JSON found.\n${usage()}`);
 }
 
 const analysis = readJson(analysisPath);
-const dateKey = args.date
-  ? resolveDateKey(args.date)
-  : resolveDateKey(analysis.metadata?.created_at || path.basename(analysisPath).match(/analysis_(\d{8})\.json$/)?.[1]);
-const createdAt = args.date ? dateKeyToIso(dateKey) : (analysis.metadata?.created_at || dateKeyToIso(dateKey));
+const { dateKey, createdAt } = resolveAnalysisDate(analysisPath, args, analysis);
 analysis.metadata = { ...(analysis.metadata || {}), created_at: createdAt };
 
 const templatePath = path.join(root, 'templates', 'heatmap_template.html');

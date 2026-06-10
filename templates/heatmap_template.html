@@ -13,8 +13,12 @@
       --bg-surface: #334155;
       --text-primary: #f1f5f9;
       --text-secondary: #94a3b8;
+      --text-muted: #64748b;
       --border: #334155;
+      --border-strong: #475569;
       --accent: #3b82f6;
+      --accent-soft: rgba(59,130,246,0.14);
+      --success: #22c55e;
     }
 
     * { box-sizing: border-box; }
@@ -360,28 +364,36 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 30px;
-      height: 30px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       font-weight: 900;
-      font-size: 14px;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .rank-badge[data-rank="1"] { box-shadow: 0 0 0 2px #facc15, 0 2px 8px rgba(250,204,21,0.3); }
+    .rank-badge[data-rank="2"] { box-shadow: 0 0 0 2px #94a3b8, 0 2px 8px rgba(148,163,184,0.25); }
+    .rank-badge[data-rank="3"] { box-shadow: 0 0 0 2px #d97706, 0 2px 8px rgba(217,119,6,0.3); }
+    .top3-table tbody tr[data-rank="1"] td:first-child { border-left: 3px solid #facc15; }
+    .top3-table tbody tr[data-rank="2"] td:first-child { border-left: 3px solid #94a3b8; }
+    .top3-table tbody tr[data-rank="3"] td:first-child { border-left: 3px solid #d97706; }
+    .top3-table-container {
+      background: #1e293b;
+      border-radius: 16px;
+      border: 1px solid #334155;
+      border-top: 3px solid #3b82f6;
+      overflow: hidden;
     }
 
-    /* 示唆カード */
-    .insight-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-left: 3px solid #3b82f6;
-      border-radius: 8px;
-      padding: 16px 20px;
-    }
+    /* 示唆カード: .insight-card は末尾の新規CSSブロックで定義 */
 
     /* 凡例 */
     .legend-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
       flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.35);
     }
 
     @media (max-width: 640px) {
@@ -529,6 +541,38 @@
       border: 1px solid #1e293b;
       line-height: 1.55;
       word-break: break-word;
+    }
+    .asis-detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+    .asis-detail-chip {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      padding: 3px 8px;
+      border: 1px solid #334155;
+      border-radius: 999px;
+      background: #0f172a;
+      color: #cbd5e1;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+    .asis-detail-group {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(51,65,85,0.78);
+    }
+    .asis-detail-group-title {
+      margin-bottom: 7px;
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.35;
     }
     .axis-task-table-wrap {
       width: 100%;
@@ -1089,15 +1133,21 @@
       grid-column: 1 / -1;
     }
     .bt-expand-btn {
-      width: 26px;
-      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: auto;
+      min-width: 86px;
+      height: 28px;
+      padding: 0 9px;
       border-radius: 7px;
       border: 1px solid #334155;
       background: #111827;
       color: #93c5fd;
       cursor: pointer;
-      font-size: 13px;
-      font-weight: 900;
+      font-size: 11px;
+      font-weight: 800;
       line-height: 1;
       flex-shrink: 0;
     }
@@ -1105,11 +1155,36 @@
       background: #1e3a5f;
       border-color: #3b82f6;
     }
+    .bt-expand-btn.is-open {
+      background: #1e3a5f;
+      border-color: #60a5fa;
+      color: #dbeafe;
+    }
     .bt-type-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
       min-width: 0;
+    }
+    .bt-type-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .bt-type-name {
+      color: #f8fafc;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+      white-space: normal;
+    }
+    .bt-type-sub {
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.45;
+      white-space: normal;
     }
     .bt-question-badge {
       display: inline-flex;
@@ -1254,7 +1329,7 @@
     .tl-cell.burden-mid-cell   { background:rgba(245,158,11,0.10); border-left-color:#f59e0b; }
     .tl-cell.burden-low-cell   { background:rgba(34,197,94,0.07);  border-left-color:#22c55e; }
     .tl-cell-name {
-      font-weight: 600;
+      font-weight: 800;
       font-size: 12px;
       color: #f1f5f9;
       display: -webkit-box;
@@ -1263,7 +1338,21 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
       line-height: 1.4;
+      margin-bottom: 3px;
+    }
+    .tl-cell-step {
+      color: #93c5fd;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.4;
       margin-bottom: 6px;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+    .tl-cell-title-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
     }
     .tl-cell-stack { display:flex; flex-direction:column; gap:8px; }
     .tl-cell-item + .tl-cell-item {
@@ -1298,26 +1387,95 @@
       font-weight: 700;
       line-height: 1.4;
     }
+    .tl-cell-ai-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: rgba(15,23,42,0.56);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .tl-cell-ai-label.ai-high { color: #bfdbfe; border: 1px solid rgba(59,130,246,0.35); }
+    .tl-cell-ai-label.ai-medium { color: #c4b5fd; border: 1px solid rgba(99,102,241,0.35); }
+    .tl-cell-ai-label.ai-low { color: #cbd5e1; border: 1px solid rgba(100,116,139,0.35); }
 
     /* 業務分類グループ行 */
     .tl-group-row td {
-      background: #0f172a;
-      color: #94a3b8;
+      background: #08111f;
+      color: #cbd5e1;
       font-weight: 600;
-      font-size: 10px;
-      padding: 4px 14px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-top: 2px solid #1e293b;
-      border-bottom: 1px solid #334155;
+      font-size: 12px;
+      padding: 12px 16px;
+      letter-spacing: 0;
+      text-transform: none;
+      border-top: 2px solid #1d4ed8;
+      border-bottom: 1px solid #1e3a5f;
     }
     .tl-group-row:hover td {
-      background: #1e293b;
+      background: #0f1f33;
+      color: #e2e8f0;
+    }
+    .tl-group-row-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+    }
+    .tl-group-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      min-width: 0;
+    }
+    .tl-group-title {
+      color: #dbeafe;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+      white-space: normal;
+    }
+    .tl-group-kicker {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tl-group-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .matrix-stat-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #111827;
+      border: 1px solid #334155;
       color: #cbd5e1;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+    .matrix-stat-pill.warn {
+      background: rgba(245,158,11,0.14);
+      border-color: rgba(245,158,11,0.38);
+      color: #fcd34d;
     }
 
     .matrix-axis-row th {
-      background: #172033;
+      background: #111827;
       border-top: 1px solid #334155;
       border-bottom: 1px solid #475569;
     }
@@ -1328,11 +1486,11 @@
       padding: 10px 14px;
       vertical-align: middle;
       border-right: 1px solid #334155;
+      background: #0f172a !important;
     }
-
     .matrix-section-cat {
-      color: #e2e8f0;
-      font-size: 12px;
+      color: #bfdbfe;
+      font-size: 11px;
       font-weight: 800;
       line-height: 1.4;
       white-space: nowrap;
@@ -1364,13 +1522,93 @@
     }
     .tl-col-type {
       color: #e2e8f0;
-      background: #334155;
+      background: #0b1220;
       font-size: 12px;
-      white-space: nowrap;
-      min-width: 110px;
-      padding: 10px 14px;
-      border-bottom: 1px solid #475569;
+      white-space: normal;
+      min-width: 220px;
+      width: 220px;
+      padding: 12px 14px;
+      border-right: 1px solid #334155;
+      border-bottom: 1px solid #1e293b;
       vertical-align: middle;
+    }
+    .matrix-business-row td {
+      background: #0b1220;
+      border-bottom: 1px solid #263548;
+      padding: 0;
+    }
+    .matrix-business-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px 12px 34px;
+      background: linear-gradient(90deg, #101a2b 0%, #0f172a 72%);
+      border-left: 4px solid #3b82f6;
+      border-bottom: 1px solid #1e293b;
+    }
+    .matrix-business-summary::before {
+      content: '';
+      width: 18px;
+      height: 1px;
+      background: #3b82f6;
+      margin-left: -22px;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+    .matrix-business-title-block {
+      min-width: 0;
+    }
+    .matrix-business-breadcrumb {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.4;
+      margin-bottom: 2px;
+    }
+    .matrix-business-title {
+      color: #f8fafc;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .matrix-business-sub {
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-top: 2px;
+    }
+    .matrix-business-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+    .matrix-task-lane-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+    }
+    .matrix-task-lane-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .matrix-task-lane-kicker {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+    .matrix-task-lane-name {
+      color: #dbeafe;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-top: 1px;
     }
 
     /* ステップ番号ヘッダー */
@@ -1382,6 +1620,7 @@
       font-weight: 700;
       letter-spacing: 0.04em;
       padding: 10px 14px;
+      background: #101a2b !important;
     }
 
     /* ヒートマップStepヘッダー */
@@ -1395,6 +1634,866 @@
       background: #334155;
       border-bottom: 2px solid #475569;
       white-space: nowrap;
+    }
+
+    /* ===== ページヘッダー強化 ===== */
+    .page-header {
+      background: linear-gradient(135deg, #0f172a 0%, #0f1f3d 60%, #0f172a 100%);
+      border-bottom: 1px solid #1e3a5f;
+      box-shadow: 0 1px 20px rgba(59,130,246,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #1d4ed8, #3b82f6, #60a5fa, #3b82f6, #1d4ed8);
+    }
+    .page-header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    @media (min-width: 640px) {
+      .page-header-inner { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+    .page-header-title { font-size: 22px; font-weight: 900; color: #f1f5f9; letter-spacing: -0.02em; line-height: 1.2; }
+    .page-header-subtitle { font-size: 13px; color: #64748b; margin-top: 3px; }
+    .page-header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .page-header-date { font-size: 11px; color: #475569; font-weight: 600; }
+    .page-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(37,99,235,0.15);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: #93c5fd;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== スティッキーセクションナビ ===== */
+    .section-nav {
+      position: sticky;
+      top: 0;
+      z-index: 800;
+      background: rgba(15,23,42,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #1e293b;
+      box-shadow: 0 1px 0 rgba(59,130,246,0.12);
+    }
+    .section-nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .section-nav-inner::-webkit-scrollbar { display: none; }
+    .section-nav-link {
+      display: inline-block;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .section-nav-link:hover { color: #cbd5e1; border-bottom-color: #334155; }
+    .section-nav-link.active { color: #60a5fa; border-bottom-color: #3b82f6; }
+
+    /* ===== セクション見出し ===== */
+    .section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+    .section-num-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: #1e3a8a;
+      border: 1px solid #2563eb;
+      color: #93c5fd;
+      font-size: 13px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .section-title-text { font-size: 20px; font-weight: 800; color: #f1f5f9; letter-spacing: -0.01em; line-height: 1.3; }
+    .section-subtitle-text { font-size: 13px; color: #64748b; margin-top: 3px; }
+
+    /* ===== セクションカード ===== */
+    .section-card { background: #1a2535; border: 1px solid #1e3a5f; border-radius: 16px; padding: 28px 32px; }
+    @media (max-width: 640px) { .section-card { padding: 18px 16px; border-radius: 12px; } }
+
+    /* ===== 示唆カード グリッド ===== */
+    .insights-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 768px) { .insights-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1280px) { .insights-grid { grid-template-columns: repeat(3, 1fr); } }
+    .insight-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-top: 2px solid #3b82f6;
+      border-left: none;
+      border-radius: 10px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .insight-card:hover { border-top-color: #60a5fa; box-shadow: 0 4px 16px rgba(59,130,246,0.12); }
+    .insight-point-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(37,99,235,0.18);
+      border: 1px solid rgba(59,130,246,0.35);
+      font-size: 11px;
+      font-weight: 900;
+      color: #60a5fa;
+      flex-shrink: 0;
+    }
+
+    /* ===== フィードバックエクスポート強化 ===== */
+    #feedback-export-section {
+      background: linear-gradient(135deg, #0f2040 0%, #1e293b 100%);
+      border: 1px solid #1e3a5f;
+      border-radius: 16px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+    #feedback-export-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #16a34a, #22c55e, #86efac);
+    }
+    .fb-export-label { font-size: 15px; font-weight: 800; color: #f1f5f9; margin-bottom: 3px; }
+    .fb-progress-wrap { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 6px; }
+    #fb-progress-bar-wrap { flex: 1; min-width: 180px; height: 8px; background: #1e293b; border: 1px solid #334155; border-radius: 4px; overflow: hidden; }
+    #fb-progress-bar-fill { height: 100%; background: linear-gradient(90deg, #15803d, #22c55e, #4ade80); border-radius: 4px; transition: width 0.4s ease; box-shadow: 0 0 8px rgba(34,197,94,0.4); }
+    #fb-export-btn {
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.08s;
+      box-shadow: 0 2px 12px rgba(59,130,246,0.3);
+    }
+    #fb-export-btn:hover { background: linear-gradient(135deg, #1d4ed8, #2563eb); box-shadow: 0 4px 16px rgba(59,130,246,0.45); transform: translateY(-1px); }
+    #fb-export-btn:active { transform: translateY(0); }
+    #fb-export-btn.success { background: linear-gradient(135deg, #15803d, #16a34a); box-shadow: 0 2px 12px rgba(22,163,74,0.35); }
+    #fb-autosave-indicator { font-size: 11px; color: #22c55e; white-space: nowrap; font-weight: 600; }
+
+    /* ===== Dark report refresh ===== */
+    body,
+    body * {
+      letter-spacing: 0 !important;
+    }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+    }
+
+    .report-main {
+      max-width: 1440px !important;
+      padding-top: 22px !important;
+      padding-bottom: 36px !important;
+    }
+
+    .page-header {
+      background: #0b1220;
+      border-bottom: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .page-header::before {
+      background: linear-gradient(90deg, var(--accent), #38bdf8, var(--success));
+      height: 1px;
+    }
+    .page-header-inner {
+      max-width: 1440px;
+      padding: 16px 20px 14px;
+    }
+    .page-header-title {
+      color: var(--text-primary);
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+    .page-header-subtitle {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+    .page-header-badge {
+      border-radius: 6px;
+      background: var(--accent-soft);
+      border-color: rgba(59,130,246,0.32);
+      color: #bfdbfe;
+    }
+    .page-header-date {
+      color: var(--text-muted);
+    }
+
+    .section-nav {
+      background: rgba(10,15,28,0.94);
+      border-bottom: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .section-nav-inner {
+      max-width: 1440px;
+      gap: 2px;
+    }
+    .section-nav-link {
+      color: var(--text-secondary);
+      padding: 11px 14px;
+      border-bottom-width: 2px;
+    }
+    .section-nav-link:hover {
+      color: var(--text-primary);
+      border-bottom-color: var(--border-strong);
+    }
+    .section-nav-link.active {
+      color: #93c5fd;
+      border-bottom-color: var(--accent);
+    }
+
+    .report-section {
+      scroll-margin-top: 58px;
+    }
+    .section-card {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+    }
+    .section-heading {
+      gap: 10px;
+      margin-bottom: 2px;
+    }
+    .section-num-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(59,130,246,0.16);
+      border-color: rgba(59,130,246,0.38);
+      color: #bfdbfe;
+      font-size: 11px;
+    }
+    .section-title-text {
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+    .section-subtitle-text {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .summary-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0d1626;
+      overflow: hidden;
+    }
+    .summary-hero-main {
+      padding: 22px 24px;
+      min-width: 0;
+    }
+    .summary-kicker {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(59,130,246,0.32);
+      background: rgba(59,130,246,0.12);
+      color: #bfdbfe;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .summary-title {
+      margin-top: 12px;
+      color: var(--text-primary);
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .summary-lead {
+      margin-top: 8px;
+      max-width: 880px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+    .summary-top3-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .summary-top3-item {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(15,23,42,0.72);
+      padding: 10px 12px;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+      appearance: none;
+    }
+    .summary-top3-item:hover {
+      border-color: rgba(59,130,246,0.58);
+      background: rgba(30,58,138,0.22);
+    }
+    .summary-top3-rank {
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .summary-top3-title {
+      margin-top: 4px;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+    .summary-top3-meta {
+      margin-top: 3px;
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .summary-hero-side {
+      border-left: 1px solid var(--border);
+      background: rgba(17,28,46,0.72);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+    .summary-meta-row {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(148,163,184,0.12);
+    }
+    .summary-meta-row:last-child { border-bottom: none; }
+    .summary-meta-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .summary-meta-value {
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.5;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+    .summary-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .summary-kpi-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      padding: 14px 14px 13px;
+      min-height: 92px;
+    }
+    .summary-kpi-label {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .summary-kpi-value {
+      margin-top: 6px;
+      color: var(--text-primary);
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .summary-kpi-note {
+      margin-top: 8px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .summary-content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      gap: 16px;
+    }
+    .summary-panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      padding: 16px;
+      min-width: 0;
+    }
+    .summary-panel-title {
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .insights-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .insight-card {
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      border-top: none;
+      background: rgba(15,23,42,0.72);
+      padding: 12px 14px;
+      gap: 8px;
+      box-shadow: none;
+    }
+    .insight-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: none;
+    }
+    .insight-point-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+    }
+    .effect-distribution-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .effect-distribution-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 42px;
+      gap: 9px;
+      align-items: center;
+    }
+    .effect-distribution-label {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .effect-distribution-track {
+      height: 9px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #0b1220;
+      border: 1px solid var(--border);
+    }
+    .effect-distribution-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+    .effect-distribution-fill.high { background: #dc2626; }
+    .effect-distribution-fill.medium { background: #f87171; }
+    .effect-distribution-fill.low { background: #fca5a5; }
+    .effect-distribution-count {
+      text-align: right;
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .top3-table-container,
+    .heatmap-wrapper,
+    .matrix-wrapper {
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: none;
+      background: var(--bg-card);
+    }
+    .top3-table-container {
+      border-top: 2px solid var(--accent);
+    }
+    .top3-table th,
+    .matrix-table th {
+      color: var(--text-secondary);
+      background: #111c2e;
+      border-color: var(--border);
+    }
+    .top3-table td,
+    .matrix-table td {
+      border-color: rgba(148,163,184,0.14);
+    }
+    .top3-table tbody tr:hover {
+      background: rgba(59,130,246,0.10);
+    }
+    .rank-badge {
+      border-radius: 8px;
+    }
+    .matrix-filter-btn,
+    .cat-flow-tab,
+    .axis-action-btn,
+    .tab-btn,
+    .bt-expand-btn,
+    #fb-export-btn {
+      border-radius: 7px;
+    }
+    .matrix-filter-btn {
+      background: #0f172a;
+      border-color: var(--border);
+      color: var(--text-secondary);
+    }
+    .matrix-filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .heatmap-cell.top3-cell {
+      outline-color: #60a5fa;
+      outline-width: 2px;
+    }
+    .top3-badge {
+      color: #bfdbfe;
+    }
+    .modal-content,
+    .axis-detail-panel {
+      border-radius: 8px;
+      background: var(--bg-card);
+      border-color: var(--border);
+    }
+    .modal-header,
+    .axis-panel-header {
+      background: #0f172a;
+      border-color: var(--border);
+    }
+    #feedback-export-section {
+      border-radius: 8px;
+      background: #0f172a;
+      border-color: var(--border);
+      padding: 16px;
+    }
+    #feedback-export-section::before {
+      height: 1px;
+      background: var(--success);
+    }
+
+    @media (max-width: 1024px) {
+      .summary-hero,
+      .summary-content-grid {
+        grid-template-columns: 1fr;
+      }
+      .summary-hero-side {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .summary-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      .report-main {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      .summary-hero-main,
+      .summary-hero-side,
+      .summary-panel {
+        padding: 14px;
+      }
+      .summary-title {
+        font-size: 22px;
+      }
+      .summary-top3-strip,
+      .summary-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .summary-meta-row {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+    }
+
+    /* ===== Legacy design restore ===== */
+    body {
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+    .heatmap-wrapper,
+    .matrix-wrapper {
+      border-radius: 10px;
+      border: none;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+      background: transparent;
+    }
+    .heatmap-table,
+    .matrix-table {
+      background: #1e293b;
+    }
+    .top3-table th,
+    .matrix-table th {
+      background: #334155;
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+    .top3-table td,
+    .matrix-table td {
+      border-color: #1e2e42;
+    }
+    .top3-table tbody tr:hover,
+    .matrix-table tbody tr:hover {
+      background: #263548;
+    }
+    .th-step {
+      background: #f8fafc;
+      color: #64748b;
+      top: 0;
+    }
+    .td-category {
+      background: #f8fafc;
+      color: #334155;
+      border-right-color: #e2e8f0;
+    }
+    .td-business-type {
+      background: #eef2f7;
+      color: #475569;
+      border-right-color: #e2e8f0;
+    }
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      box-shadow: none;
+    }
+    .insight-card {
+      display: block;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-left: 3px solid #3b82f6;
+      border-radius: 8px;
+      padding: 16px 20px;
+      box-shadow: none;
+    }
+    .insight-card:hover {
+      border-color: #334155;
+      border-left-color: #3b82f6;
+      box-shadow: none;
+    }
+    #feedback-export-section {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: static;
+      overflow: visible;
+    }
+    #feedback-export-section::before {
+      content: none;
+    }
+    #fb-progress-bar-wrap {
+      flex: 1;
+      min-width: 120px;
+      height: 5px;
+      background: #334155;
+      border: none;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    #fb-progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      border-radius: 3px;
+      transition: width 0.3s;
+      box-shadow: none;
+    }
+    #fb-export-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+      box-shadow: none;
+    }
+    #fb-export-btn:hover {
+      background: #2563eb;
+      transform: none;
+      box-shadow: none;
+    }
+    .rank-badge {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 14px;
+      box-shadow: none !important;
+    }
+    .tl-group-row td {
+      background: #0f172a;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 10px;
+      padding: 4px 14px;
+      text-transform: uppercase;
+      border-top: 2px solid #1e293b;
+      border-bottom: 1px solid #334155;
+    }
+    .tl-group-row:hover td {
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+    .tl-group-row-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tl-group-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .tl-group-title {
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .tl-group-kicker,
+    .tl-group-meta .matrix-stat-pill {
+      display: none;
+    }
+    .tl-group-meta {
+      margin-left: auto;
+    }
+    .matrix-axis-row th {
+      background: #172033;
+      border-top: 1px solid #334155;
+      border-bottom: 1px solid #475569;
+    }
+    .matrix-section-axis {
+      background: #172033 !important;
+      min-width: 190px;
+      text-align: left;
+      padding: 10px 14px;
+      vertical-align: middle;
+      border-right: 1px solid #334155;
+    }
+    .matrix-section-cat {
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+    .matrix-section-label {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+    .matrix-pad-cell {
+      background: #172033;
+      border-bottom: 1px solid #334155;
+    }
+    .tl-col-type {
+      color: #e2e8f0;
+      background: #334155;
+      font-size: 12px;
+      white-space: nowrap;
+      min-width: 130px;
+      width: auto;
+      padding: 10px 14px;
+      border-right: none;
+      border-bottom: 1px solid #475569;
+      vertical-align: middle;
+    }
+    .bt-expand-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      min-width: 26px;
+      height: 26px;
+      padding: 0;
+      border-radius: 7px;
+      border: 1px solid #334155;
+      background: #111827;
+      color: #93c5fd;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .bt-expand-btn.is-open {
+      background: #1e3a5f;
+      border-color: #60a5fa;
+      color: #dbeafe;
+    }
+    .bt-type-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .bt-type-name {
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+    .tl-step-header {
+      background: #172033 !important;
+      text-align: center;
+      min-width: 160px;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 700;
+      padding: 10px 14px;
     }
   </style>
 </head>
@@ -1440,7 +2539,7 @@
         <table class="matrix-table" id="matrix-table"></table>
       </div>
       <p class="text-xs text-slate-600 mt-2 text-right">
-        全 <span id="matrix-count">0</span> タスク（仮案 — ヒアリング後に更新）
+        全 <span id="matrix-count">0</span> タスク（仮案・ヒアリング後に更新）
       </p>
     </section>
 
@@ -1739,6 +2838,24 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`)
         .join('')}</tbody></table>`;
     }
+    function hasDetailRows(rows) {
+      return rows.some(([, value]) => value !== undefined && value !== null && String(value).trim() !== '');
+    }
+    function detailGroup(title, rows) {
+      if (!hasDetailRows(rows)) return '';
+      return `
+        <div class="asis-detail-group">
+          <div class="asis-detail-group-title">${escapeHtml(title)}</div>
+          ${detailTable(rows)}
+        </div>
+      `;
+    }
+    function detailChips(items) {
+      const chips = items
+        .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
+        .map(([label, value]) => `<span class="asis-detail-chip">${escapeHtml(label)}: ${escapeHtml(value)}</span>`);
+      return chips.length ? `<div class="asis-detail-meta">${chips.join('')}</div>` : '';
+    }
     function emptyDetailMessage(message) {
       return `<div class="axis-empty-state">${escapeHtml(message || '該当する詳細データがありません。')}</div>`;
     }
@@ -1872,6 +2989,124 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       }, true);
     }
 
+    function normalizeEffectKeyForSummary(level) {
+      const text = String(level || '').trim().toLowerCase();
+      if (text === 'high' || text === '高') return 'high';
+      if (text === 'medium' || text === '中') return 'medium';
+      if (text === 'low' || text === '低') return 'low';
+      return 'low';
+    }
+
+    function uniqueCount(values) {
+      return new Set(values.map(value => String(value || '').trim()).filter(Boolean)).size;
+    }
+
+    function openQuestionCount(tasks) {
+      return (tasks || []).filter(task =>
+        String(task['確認事項'] || '').trim() &&
+        !String(task['クライアント回答'] || task.as_is_resolved_answer || '').trim()
+      ).length;
+    }
+
+    function executiveSummaryStats(data) {
+      const tasks = data.matrix_tasks || [];
+      const cells = data.heatmap_cells || [];
+      const effectCounts = cells.reduce((acc, cell) => {
+        const key = normalizeEffectKeyForSummary(cell.effect_level);
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, { high: 0, medium: 0, low: 0 });
+      return {
+        categoryCount: Array.isArray(data.categories) && data.categories.length
+          ? data.categories.length
+          : uniqueCount(tasks.map(task => task['業務分類'])),
+        businessTypeCount: uniqueCount(tasks.map(task => [task['業務分類'], task['業務種別']].filter(Boolean).join('|||'))),
+        taskCount: tasks.length,
+        heatmapCellCount: cells.length,
+        heatmapEffectCounts: effectCounts,
+        highEffectCellCount: effectCounts.high || 0,
+        openQuestionCount: openQuestionCount(tasks),
+        top3Summary: data.top3 || []
+      };
+    }
+
+    function summaryKpiCard(label, value, note) {
+      return `
+        <div class="summary-kpi-card">
+          <div class="summary-kpi-label">${escapeHtml(label)}</div>
+          <div class="summary-kpi-value">${escapeHtml(value)}</div>
+          <div class="summary-kpi-note">${escapeHtml(note || '')}</div>
+        </div>
+      `;
+    }
+
+    function buildExecutiveSummary(data) {
+      const stats = executiveSummaryStats(data);
+      const metadata = data.metadata || {};
+      const sources = (metadata.source_documents || []).join(', ');
+      const scope = metadata.analysis_scope || sources || '業務ドキュメント';
+      const totalCells = Math.max(1, stats.heatmapCellCount);
+
+      document.getElementById('summary-scope').textContent = scope;
+      document.getElementById('summary-sources').textContent = sources || '-';
+      document.getElementById('summary-date').textContent = metadata.created_at || '-';
+      document.getElementById('summary-lead').textContent =
+        `${stats.categoryCount}分類、${stats.businessTypeCount}業務種別、${stats.taskCount}タスクを対象に、AI導入効果の高い領域を整理しました。高効果セルは${stats.highEffectCellCount}件、未確認事項は${stats.openQuestionCount}件です。`;
+
+      document.getElementById('summary-kpis').innerHTML = [
+        summaryKpiCard('業務分類', `${stats.categoryCount}`, '分析対象の大分類'),
+        summaryKpiCard('業務種別', `${stats.businessTypeCount}`, 'As-Isフローの下位区分'),
+        summaryKpiCard('対象タスク', `${stats.taskCount}`, 'マトリクス化した作業数'),
+        summaryKpiCard('高効果セル', `${stats.highEffectCellCount}`, '優先検討候補'),
+        summaryKpiCard('効果セル', `${stats.heatmapCellCount}`, 'ヒートマップ対象'),
+        summaryKpiCard('未確認事項', `${stats.openQuestionCount}`, 'フロー反映待ち')
+      ].join('');
+
+      const top3Items = (stats.top3Summary || []).slice(0, 3);
+      document.getElementById('summary-top3-strip').innerHTML = top3Items.length
+        ? top3Items.map((item, index) => `
+            <button type="button" class="summary-top3-item" onclick="openModal(${index})">
+              <div class="summary-top3-rank">TOP${escapeHtml(item.rank || index + 1)}</div>
+              <div class="summary-top3-title">${escapeHtml(item.title || item.target_business || '-')}</div>
+              <div class="summary-top3-meta">${escapeHtml(targetLabel(item.target_category, top3BusinessType(item), item.target_flow_step, top3HeatmapGroup(item)))}</div>
+            </button>
+          `).join('')
+        : '<div class="summary-top3-item"><div class="summary-top3-title">TOP3未設定</div><div class="summary-top3-meta">スコアリング後に表示されます。</div></div>';
+
+      const levels = [
+        ['high', '高'],
+        ['medium', '中'],
+        ['low', '低']
+      ];
+      document.getElementById('summary-effect-distribution').innerHTML = `
+        <div class="effect-distribution-list">
+          ${levels.map(([key, label]) => {
+            const count = stats.heatmapEffectCounts[key] || 0;
+            const width = Math.round(count / totalCells * 100);
+            return `
+              <div class="effect-distribution-row">
+                <div class="effect-distribution-label">${label}</div>
+                <div class="effect-distribution-track">
+                  <div class="effect-distribution-fill ${key}" style="width:${width}%"></div>
+                </div>
+                <div class="effect-distribution-count">${count}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      const insights = (data.summary || {}).insights || [];
+      document.getElementById('insights-list').innerHTML = insights.length
+        ? insights.map((txt, i) =>
+            `<div class="insight-card">
+               <div class="insight-point-badge">${i + 1}</div>
+               <p class="text-sm text-slate-200 leading-relaxed">${escapeHtml(txt)}</p>
+             </div>`
+          ).join('')
+        : '<div class="axis-empty-state">分析結果の示唆は未生成です。</div>';
+    }
+
     function init() {
       if (!ANALYSIS_DATA || typeof ANALYSIS_DATA !== 'object') {
         document.querySelector('main').innerHTML =
@@ -1885,22 +3120,35 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       document.getElementById('page-subtitle').textContent = '分析対象: ' + (d.metadata.source_documents || []).join(', ');
       document.getElementById('page-date').textContent = '分析日: ' + (d.metadata.created_at || '');
 
-      // 示唆
       const insights = (d.summary || {}).insights || [];
-      document.getElementById('insights-list').innerHTML = insights.map((txt, i) =>
-        `<div class="insight-card">
-           <div class="flex items-start gap-3">
-             <span class="text-blue-400 font-black text-sm leading-none mt-1 flex-shrink-0 whitespace-nowrap">Point ${i + 1}</span>
-             <p class="text-sm text-slate-200 leading-relaxed">${txt}</p>
-           </div>
-         </div>`
-      ).join('');
+      document.getElementById('insights-list').innerHTML = insights.length
+        ? insights.map((txt, i) => `
+            <div class="insight-card">
+              <div class="flex items-start gap-3">
+                <span class="text-blue-400 font-black text-sm leading-none mt-1 flex-shrink-0 whitespace-nowrap">Point ${i + 1}</span>
+                <p class="text-sm text-slate-200 leading-relaxed">${escapeHtml(txt)}</p>
+              </div>
+            </div>
+          `).join('')
+        : '<div class="text-sm text-slate-400">分析結果の示唆は未生成です。</div>';
 
       buildHeatmap(d);
       buildTop3Table(d);
       buildMatrix(d);
       initAppTooltip();
       initAxisPanelResize();
+      (function initSectionNav() {
+        const links = document.querySelectorAll('.section-nav-link');
+        if (!links.length) return;
+        const sections = [...links].map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + entry.target.id));
+          });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+        sections.forEach(s => io.observe(s));
+      })();
     }
 
     function normalizeMatrixTasks(data) {
@@ -1987,6 +3235,16 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return source[category] || null;
     }
 
+    function businessTypeColumnSource(data, category, businessType) {
+      const source = categoryColumnSource(data, category);
+      const groups = Array.isArray(source) ? source : (source ? [source] : []);
+      const matched = groups.find(group =>
+        group && typeof group === 'object' &&
+        String(group.group || group.business_type || group['業務種別'] || '').trim() === String(businessType || '').trim()
+      );
+      return matched ? [matched] : null;
+    }
+
     function taskMatrixAxis(task) {
       return String(task['マトリクス横軸'] || task.matrix_axis || task['共通ステップ'] || task.common_step || task['タスク名'] || '').trim();
     }
@@ -2019,6 +3277,25 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         const step = taskMatrixAxis(task);
         if (!step || seen.has(step)) return;
         columns.push({ key: step, label: step, sub: task['業務分類'] || '' });
+        seen.add(step);
+      });
+      return columns.length ? columns : matrixFallbackColumns(tasks || []);
+    }
+
+    function buildBusinessTypeColumns(data, category, businessType, tasks) {
+      const businessSpecific = businessTypeColumnSource(data, category, businessType);
+      const flowSteps = businessSpecific ? flattenColumnGroups(businessSpecific) : [];
+      const columns = [];
+      const seen = new Set();
+      flowSteps.forEach(col => {
+        if (!col.key || seen.has(col.key)) return;
+        columns.push(col);
+        seen.add(col.key);
+      });
+      (tasks || []).forEach(task => {
+        const step = taskMatrixAxis(task);
+        if (!step || seen.has(step)) return;
+        columns.push({ key: step, label: step, sub: businessType || '' });
         seen.add(step);
       });
       return columns.length ? columns : matrixFallbackColumns(tasks || []);
@@ -2577,26 +3854,44 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     }
 
     function renderAsIsTaskDetail(task) {
+      const minutes = minutesValue(task);
+      const heatmapAxis = [task['ヒートマップグループ'], taskHeatmapStep(task)].filter(Boolean).join(' / ');
+      const operationRows = [
+        ['業務内容', task['業務内容詳細']],
+        ['具体的な実施内容', task['実施内容']],
+        ['担当・確認者', task['担当・確認者']],
+        ['使用資料/システム', task['使用資料/システム']],
+        ['成果物/記録', task['成果物/記録']]
+      ];
+      const controlRows = [
+        ['判断・確認ポイント', task['判断・確認ポイント']],
+        ['確認事項/回答', taskQuestionAnswer(task)]
+      ];
+      const burdenRows = [
+        ['1件あたり所要時間', minutes === '' || minutes === undefined || minutes === null ? '' : `${minutes}分`],
+        ['人手の負担', task['人手の負担']],
+        ['現状課題', task['現状課題']]
+      ];
+      const aiRows = [
+        ['AI導入余地', task['AI導入余地']],
+        ['AI活用余地', task['AI活用余地']],
+        ['区分', task['区分']]
+      ];
       return `
         <div class="axis-detail-section">
           <div class="axis-detail-row-title">
             <h4>${escapeHtml(task['タスク名'] || '')}</h4>
             <span class="axis-mini-badge">${escapeHtml(task['業務種別'] || '')}</span>
           </div>
-          ${detailTable([
+          ${detailChips([
             ['業務分類', task['業務分類']],
-            ['業務種別', task['業務種別']],
-            ['タスク順', task['タスク順']],
             ['マトリクス横軸', taskMatrixAxis(task)],
-            ['ヒートマップ軸', [taskHeatmapGroup(ANALYSIS_DATA, task), taskHeatmapStep(task)].filter(Boolean).join(' / ')],
-            ['タスク名', task['タスク名']],
-            ['業務内容詳細', task['業務内容詳細']],
-            ['現状課題', task['現状課題']],
-            ['所要時間', minutesValue(task) ? `${minutesValue(task)}分` : ''],
-            ['人手の負担', task['人手の負担']],
-            ['AI導入余地', task['AI導入余地']],
-            ['確認事項/回答', taskQuestionAnswer(task)]
+            ['ヒートマップ軸', heatmapAxis]
           ])}
+          ${detailGroup('業務手順・入出力', operationRows)}
+          ${detailGroup('確認・判断', controlRows)}
+          ${detailGroup('負荷・現状課題', burdenRows)}
+          ${detailGroup('AI活用観点', aiRows)}
         </div>
       `;
     }
@@ -2665,27 +3960,22 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       });
     }
 
-    function openMatrixAxisPanel(category, matrixAxis) {
+    function openMatrixAxisPanel(category, matrixAxis, businessType = '') {
       const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(task =>
-        task['業務分類'] === category && taskMatrixAxis(task) === matrixAxis
+        task['業務分類'] === category &&
+        (!businessType || task['業務種別'] === businessType) &&
+        taskMatrixAxis(task) === matrixAxis
       );
-      const totalMinutes = tasks.reduce((sum, task) => sum + (Number(minutesValue(task)) || 0), 0);
-      const openQuestions = tasks.filter(task => String(task['確認事項'] || '').trim() && !String(task['クライアント回答'] || task.as_is_resolved_answer || '').trim()).length;
-      const summaryHtml = [
-        summaryCard('タスク数', `${tasks.length}件`),
-        summaryCard('最大負担', maxBurdenLabel(tasks)),
-        summaryCard('合計所要時間', totalMinutes ? `${totalMinutes}分` : '-'),
-        summaryCard('未確認事項', `${openQuestions}件`)
-      ].join('');
       const contentHtml = tasks.length
         ? tasks.map(renderAsIsTaskDetail).join('')
         : emptyDetailMessage('このマトリクス横軸に該当するタスクはありません。');
+      const titleParts = [category, businessType, matrixAxis].filter(Boolean);
       openAxisDetailPanel({
         mode: 'As-Is',
-        title: `${category} / ${matrixAxis}`,
-        subtitle: '業務整理マトリクス横軸に値がある業務種別のみ表示',
-        countText: `${tasks.length}タスク`,
-        summaryHtml,
+        title: titleParts.join(' / '),
+        subtitle: '対象工程に含まれるAs-Is業務内容',
+        countText: '',
+        summaryHtml: '',
         contentHtml
       });
     }
@@ -2696,19 +3986,25 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         task['業務種別'] === businessType &&
         taskMatrixAxis(task) === matrixAxis
       );
-      const totalMinutes = tasks.reduce((sum, task) => sum + (Number(minutesValue(task)) || 0), 0);
-      const summaryHtml = [
-        summaryCard('タスク数', `${tasks.length}件`),
-        summaryCard('最大負担', maxBurdenLabel(tasks)),
-        summaryCard('合計所要時間', totalMinutes ? `${totalMinutes}分` : '-'),
-        summaryCard('未確認事項', `${tasks.filter(task => String(task['確認事項'] || '').trim() && !String(task['クライアント回答'] || task.as_is_resolved_answer || '').trim()).length}件`)
-      ].join('');
+      const aiLevels = tasks.map(task => task['AI導入余地']).filter(Boolean);
+      const highAiCount = aiLevels.filter(level => level === '高').length;
+      const aiRank = {高: 3, 中: 2, 低: 1};
+      const maxAiLevel = aiLevels.reduce((best, level) =>
+        (aiRank[level] || 0) > (aiRank[best] || 0) ? level : best, ''
+      );
+      const aiSummary = highAiCount
+        ? `高 ${highAiCount}件 / 全${tasks.length}件`
+        : (maxAiLevel ? `最大 ${maxAiLevel}` : '-');
       openAxisDetailPanel({
         mode: 'As-Is',
         title: `${category} / ${businessType} / ${matrixAxis}`,
-        subtitle: tasks.length ? 'マトリクスセル内のAs-Isタスク詳細' : 'このセルに該当するタスクはありません',
-        countText: `${tasks.length}タスク`,
-        summaryHtml,
+        subtitle: tasks.length ? 'マトリクスセル内のAs-Is業務内容' : 'このセルに該当するタスクはありません',
+        countText: tasks.length ? `${tasks.length}タスク` : '',
+        summaryHtml: tasks.length ? [
+          summaryCard('対象タスク', `${tasks.length}件`),
+          summaryCard('最大負担', maxBurdenLabel(tasks)),
+          summaryCard('AI導入余地', aiSummary)
+        ].join('') : '',
         contentHtml: tasks.length
           ? tasks.map(renderAsIsTaskDetail).join('')
           : emptyDetailMessage('このマトリクスセルには表示できるタスクがありません。')
@@ -2792,9 +4088,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           return cell ? cell.effect_level : null;
         })();
         return `
-        <tr onclick="openModal(${i})">
+        <tr data-rank="${item.rank}" onclick="openModal(${i})">
           <td>
-            <span class="rank-badge" style="${rankStyle(item.rank)}">${item.rank}</span>
+            <span class="rank-badge" data-rank="${item.rank}" style="${rankStyle(item.rank)}">${item.rank}</span>
           </td>
           <td>
             <div class="font-semibold text-white">${item.target_business || item.title}</div>
@@ -2807,7 +4103,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             ${level ? `<span style="${effectBadgeStyle(level)}">${effectLabel(level)}</span>` : ''}
           </td>
           <td>
-            <span class="text-xs text-blue-400 font-semibold whitespace-nowrap">詳細を見る →</span>
+            <span class="text-xs text-blue-400 font-semibold whitespace-nowrap">詳細</span>
           </td>
         </tr>`;
       }).join('');
@@ -3068,11 +4364,15 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     function toggleBusinessTypeExpand(category, businessType, totalCols) {
       const rowId = toBusinessTypeRowId(category, businessType);
       const expandRow = document.getElementById('bt-expand-' + rowId);
-      const arrow = document.getElementById('bt-arrow-' + rowId);
+      const button = document.getElementById('bt-arrow-' + rowId);
       if (!expandRow) return;
       const isOpen = expandRow.style.display !== 'none';
       expandRow.style.display = isOpen ? 'none' : 'table-row';
-      if (arrow) arrow.textContent = isOpen ? '▸' : '▾';
+      if (button) {
+        button.textContent = isOpen ? '▸' : '▾';
+        button.classList.toggle('is-open', !isOpen);
+        button.setAttribute('aria-expanded', String(!isOpen));
+      }
       if (!isOpen && !expandRow.dataset.rendered) {
         expandRow.dataset.rendered = '1';
         renderBusinessTypeExpandPane(category, businessType, rowId);
@@ -3153,7 +4453,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         btn.onclick = () => {
           filterArea.querySelectorAll('.matrix-filter-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          renderMatrix(allTasks.filter(t => t['業務分類'] === cat), buildMatrixColumns(data, allTasks.filter(t => t['業務分類'] === cat)));
+          renderMatrix(allTasks.filter(t => t['業務分類'] === cat), null);
         };
         filterArea.appendChild(btn);
       });
@@ -3199,10 +4499,10 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         task['タスク名'],
         '',
         '【業務内容】',
-        task['業務内容詳細'] || '—',
+        task['業務内容詳細'] || '-',
         '',
         '【現状課題】',
-        task['現状課題'] || '—',
+        task['現状課題'] || '-',
       ].join('\n');
     }
 
@@ -3215,20 +4515,61 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return `負担 ${task['人手の負担'] || '-'}`;
     }
 
+    function matrixAiLabel(task) {
+      return `AI ${task['AI導入余地'] || '-'}`;
+    }
+
+    function businessTypeSummary(category, businessType, tasks) {
+      const known = {
+        '経理体制・帳簿管理|||経理体制整備': '権限・職務分掌・承認体制',
+        '経理体制・帳簿管理|||帳簿・帳票管理': '帳簿一覧・更新ルール・会計システム設定'
+      };
+      const key = `${category}|||${businessType}`;
+      if (known[key]) return known[key];
+      const names = (tasks || []).map(t => t['タスク名']).filter(Boolean).slice(0, 3);
+      return names.length ? names.join('・') : '業務手順と確認ポイント';
+    }
+
+    function categoryStats(category, tasks) {
+      const categoryTasks = (tasks || []).filter(t => t['業務分類'] === category);
+      const businessTypes = new Set(categoryTasks.map(t => t['業務種別']).filter(Boolean));
+      const openQuestions = categoryTasks.filter(t =>
+        String(t['確認事項'] || '').trim() &&
+        !String(t['クライアント回答'] || t.as_is_resolved_answer || '').trim()
+      ).length;
+      return {
+        businessTypeCount: businessTypes.size,
+        taskCount: categoryTasks.length,
+        openQuestions
+      };
+    }
+
+    function renderMatrixTaskItem(task) {
+      const abstractStep = taskHeatmapStep(task) || taskMatrixAxis(task);
+      return [
+        '<div class="tl-cell-item">',
+        '<div class="tl-cell-title-row">',
+        '<div>',
+        `<div class="tl-cell-name">${escapeHtml(task['タスク名'] || '')}</div>`,
+        abstractStep ? `<div class="tl-cell-step">${escapeHtml(abstractStep)}</div>` : '',
+        '</div>',
+        '</div>',
+        '<div class="tl-cell-badges">',
+        `<span class="tl-cell-time">${escapeHtml(matrixMinutesLabel(task))}</span>`,
+        `<span class="tl-cell-burden-label burden-${burdenClass(task['人手の負担'])}">${escapeHtml(matrixBurdenLabel(task))}</span>`,
+        `<span class="tl-cell-ai-label ai-${aiClass(task['AI導入余地'])}">${escapeHtml(matrixAiLabel(task))}</span>`,
+        '</div>',
+        '</div>'
+      ].join('');
+    }
+
     function renderMatrixCell(tasksInCell, category, businessType, matrixAxis) {
       if (!tasksInCell.length) return '<td class="tl-cell is-empty" title="該当タスクなし"></td>';
       const burdCls = highestBurdenClass(tasksInCell);
       const tip = tasksInCell.map(matrixTaskTooltip).join('\n\n---\n\n');
       let html = `<td class="tl-cell is-clickable ${burdCls}" data-tooltip-text="${tooltipAttr(tip)}" onclick='openMatrixCellPanel(${jsAttrString(category)}, ${jsAttrString(businessType)}, ${jsAttrString(matrixAxis)})'>`;
       html += '<div class="tl-cell-stack">';
-      tasksInCell.forEach(t => {
-        html += '<div class="tl-cell-item">';
-        html += `<div class="tl-cell-name">${escapeHtml(t['タスク名'])}</div>`;
-        html += `<div class="tl-cell-badges">`;
-        html += `<span class="tl-cell-time">${escapeHtml(matrixMinutesLabel(t))}</span>`;
-        html += `<span class="tl-cell-burden-label burden-${burdenClass(t['人手の負担'])}">${escapeHtml(matrixBurdenLabel(t))}</span>`;
-        html += `</div></div>`;
-      });
+      tasksInCell.forEach((t, index) => { html += renderMatrixTaskItem(t, index); });
       html += '</div></td>';
       return html;
     }
@@ -3237,59 +4578,116 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       document.getElementById('matrix-count').textContent = tasks.length;
       if (!tasks.length) { document.getElementById('matrix-table').innerHTML = ''; return; }
 
-      const singleTableColumns = columns || buildMatrixColumns(ANALYSIS_DATA, tasks);
-      const catMap = buildMatrixRowMap(tasks, singleTableColumns);
-      const maxCategoryCols = Math.max(...[...new Set(tasks.map(t => t['業務分類']))].map(cat =>
-        buildMatrixColumns(ANALYSIS_DATA, tasks.filter(t => t['業務分類'] === cat)).length
-      ));
-      const totalCols = 2 + (columns ? columns.length : maxCategoryCols);
+      const categories = [...new Set(tasks.map(t => t['業務分類']).filter(Boolean))];
+      const columnCache = new Map();
+      const rowMapCache = new Map();
 
-      function renderMatrixAxisRow(cat, categoryColumns, categoryTotalCols) {
+      function cacheKey(cat, type) {
+        return `${cat}|||${type}`;
+      }
+
+      function columnsForBusinessType(cat, type) {
+        const key = cacheKey(cat, type);
+        if (!columnCache.has(key)) {
+          const scopedTasks = tasks.filter(t => t['業務分類'] === cat && t['業務種別'] === type);
+          columnCache.set(key, columns || buildBusinessTypeColumns(ANALYSIS_DATA, cat, type, scopedTasks));
+        }
+        return columnCache.get(key);
+      }
+
+      function rowMapForBusinessType(cat, type) {
+        const key = cacheKey(cat, type);
+        if (!rowMapCache.has(key)) {
+          const scopedTasks = tasks.filter(t => t['業務分類'] === cat && t['業務種別'] === type);
+          const scopedColumns = columnsForBusinessType(cat, type);
+          const scopedMap = buildMatrixRowMap(scopedTasks, scopedColumns);
+          rowMapCache.set(key, ((scopedMap.get(cat) || new Map()).get(type)) || new Map());
+        }
+        return rowMapCache.get(key);
+      }
+
+      const maxBusinessTypeCols = Math.max(...categories.flatMap(cat => {
+        const types = [...new Set(tasks.filter(t => t['業務分類'] === cat).map(t => t['業務種別']).filter(Boolean))];
+        return types.map(type => columnsForBusinessType(cat, type).length);
+      }));
+      const totalCols = 2 + (columns ? columns.length : maxBusinessTypeCols);
+
+      function renderMatrixAxisRow(cat, businessType, businessColumns, businessTotalCols) {
         let row = '<tr class="matrix-axis-row">';
         row += `<th class="matrix-section-axis" colspan="2">` +
-          `<div class="matrix-section-cat">${cat}</div>` +
+          `<div class="matrix-section-cat">${escapeHtml(businessType)}</div>` +
           `<div class="matrix-section-label">業務フロー工程</div>` +
           `</th>`;
-        categoryColumns.forEach(col => {
-          row += `<th class="tl-step-header axis-clickable" onclick='openMatrixAxisPanel(${jsAttrString(cat)}, ${jsAttrString(col.key)})'>` +
-            `<div style="color:#cbd5e1;font-size:12px;font-weight:800;">${col.label}</div>` +
-            `<div style="color:#64748b;font-size:10px;font-weight:600;margin-top:2px;">${col.sub || ''}</div>` +
+        businessColumns.forEach(col => {
+          row += `<th class="tl-step-header axis-clickable" onclick='openMatrixAxisPanel(${jsAttrString(cat)}, ${jsAttrString(col.key)}, ${jsAttrString(businessType)})'>` +
+            `<div style="color:#cbd5e1;font-size:12px;font-weight:800;">${escapeHtml(col.label)}</div>` +
+            `<div style="color:#64748b;font-size:10px;font-weight:600;margin-top:2px;">${escapeHtml(col.sub || '')}</div>` +
             `</th>`;
         });
-        for (let pad = categoryTotalCols; pad < totalCols; pad++) row += '<td class="matrix-pad-cell"></td>';
+        for (let pad = businessTotalCols; pad < totalCols; pad++) row += '<td class="matrix-pad-cell"></td>';
         row += '</tr>';
         return row;
       }
 
+      function renderBusinessTypeHeaderRow(cat, type, businessColumns, businessTasks) {
+        const openQuestions = businessTypeOpenQuestionCount(cat, type);
+        return `<tr class="matrix-business-row">` +
+          `<td colspan="${totalCols}">` +
+          `<div class="matrix-business-summary">` +
+          `<div class="matrix-business-title-block">` +
+          `<div class="matrix-business-breadcrumb">${escapeHtml(cat)} / 業務種別</div>` +
+          `<div class="matrix-business-title">${escapeHtml(type)}</div>` +
+          `<div class="matrix-business-sub">${escapeHtml(businessTypeSummary(cat, type, businessTasks))}</div>` +
+          `</div>` +
+          `<div class="matrix-business-meta">` +
+          `<span class="matrix-stat-pill">工程 ${businessColumns.length}</span>` +
+          `<span class="matrix-stat-pill">タスク ${businessTasks.length}</span>` +
+          (openQuestions ? `<span class="matrix-stat-pill warn">未確認 ${openQuestions}</span>` : '') +
+          `</div>` +
+          `</div>` +
+          `</td>` +
+          `</tr>`;
+      }
+
       let html = '<tbody>';
 
-      catMap.forEach((typeMap, cat) => {
+      categories.forEach(cat => {
         const categoryTasks = tasks.filter(t => t['業務分類'] === cat);
-        const categoryColumns = columns || buildMatrixColumns(ANALYSIS_DATA, categoryTasks);
-        const categoryMap = buildMatrixRowMap(categoryTasks, categoryColumns);
-        const categoryTypeMap = categoryMap.get(cat) || typeMap;
-        const categoryTotalCols = 2 + categoryColumns.length;
+        const businessTypes = [...new Set(categoryTasks.map(t => t['業務種別']).filter(Boolean))];
+        const stats = categoryStats(cat, tasks);
         const catId = toCatId(cat);
         html += `<tr class="tl-group-row">` +
           `<td colspan="${totalCols}">` +
           `<div class="tl-group-row-inner">` +
-          `<span>${escapeHtml(cat)}</span>` +
+          `<div class="tl-group-title-wrap">` +
+          `<span class="tl-group-kicker">業務分類</span>` +
+          `<span class="tl-group-title">${escapeHtml(cat)}</span>` +
+          `</div>` +
+          `<div class="tl-group-meta">` +
+          `<span class="matrix-stat-pill">業務種別 ${stats.businessTypeCount}</span>` +
+          `<span class="matrix-stat-pill">タスク ${stats.taskCount}</span>` +
+          (stats.openQuestions ? `<span class="matrix-stat-pill warn">未確認 ${stats.openQuestions}</span>` : '') +
           `<div class="tl-group-dots" id="tl-dots-${catId}"></div>` +
+          `</div>` +
           `</div></td></tr>`;
-        html += renderMatrixAxisRow(cat, categoryColumns, categoryTotalCols);
-        categoryTypeMap.forEach((stepMap, type) => {
+        businessTypes.forEach(type => {
+          const businessTasks = categoryTasks.filter(t => t['業務種別'] === type);
+          const businessColumns = columnsForBusinessType(cat, type);
+          const businessTotalCols = 2 + businessColumns.length;
+          const stepMap = rowMapForBusinessType(cat, type);
           const rowId = toBusinessTypeRowId(cat, type);
           const openQuestions = businessTypeOpenQuestionCount(cat, type);
+          html += renderMatrixAxisRow(cat, type, businessColumns, businessTotalCols);
           html += '<tr>';
           html += `<td class="tl-col-type" colspan="2">` +
             `<div class="bt-type-label">` +
-            `<button class="bt-expand-btn" id="bt-arrow-${rowId}" onclick='event.stopPropagation(); toggleBusinessTypeExpand(${jsAttrString(cat)}, ${jsAttrString(type)}, ${totalCols})' aria-label="As-Isフローを表示">▸</button>` +
-            `<span>${escapeHtml(type)}</span>` +
+            `<button class="bt-expand-btn" id="bt-arrow-${rowId}" onclick='event.stopPropagation(); toggleBusinessTypeExpand(${jsAttrString(cat)}, ${jsAttrString(type)}, ${totalCols})' aria-label="As-Isフローを表示" aria-expanded="false">▸</button>` +
+            `<span class="bt-type-name">${escapeHtml(type)}</span>` +
             (openQuestions ? `<span class="bt-question-badge">未確認 ${openQuestions}</span>` : '') +
             `</div>` +
             `</td>`;
-          categoryColumns.forEach(col => { html += renderMatrixCell(stepMap.get(col.key) || [], cat, type, col.key); });
-          for (let pad = categoryTotalCols; pad < totalCols; pad++) html += '<td class="tl-cell is-empty"></td>';
+          businessColumns.forEach(col => { html += renderMatrixCell(stepMap.get(col.key) || [], cat, type, col.key); });
+          for (let pad = businessTotalCols; pad < totalCols; pad++) html += '<td class="tl-cell is-empty"></td>';
           html += '</tr>';
           html += `<tr class="business-type-expand-row" id="bt-expand-${rowId}" style="display:none;">` +
             `<td colspan="${totalCols}">` +
@@ -3726,6 +5124,15 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         a.href = url; a.download = 'client_input_filled_' + date + '.csv';
         a.click();
         URL.revokeObjectURL(url);
+        const exportBtn = document.getElementById('fb-export-btn');
+        if (exportBtn) {
+          exportBtn.classList.add('success');
+          exportBtn.textContent = '✓ ダウンロード完了';
+          setTimeout(() => {
+            exportBtn.classList.remove('success');
+            exportBtn.textContent = 'CSVをダウンロード（Excel互換）';
+          }, 3000);
+        }
       }
 
       return {

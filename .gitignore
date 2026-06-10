@@ -6,6 +6,9 @@
 # Claude Code ローカル設定（個人の操作履歴・絶対パスを含む）
 .claude/settings.local.json
 
+# Playwright MCP ローカルログ
+.playwright-mcp/
+
 # 生成物
 output/analysis_*.json
 output/analysis_*.html

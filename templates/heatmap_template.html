@@ -121,15 +121,21 @@
       vertical-align: middle;
       cursor: default;
       position: relative;
-      transition: filter 0.12s;
+      transition: filter 0.12s, box-shadow 0.12s, transform 0.08s;
       padding: 0;
     }
 
-    .heatmap-cell.has-data { cursor: pointer; }
-    .heatmap-cell.has-data:hover { filter: brightness(0.88); }
+    .heatmap-cell.has-data { cursor: pointer; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+    .heatmap-cell.has-data:hover { filter: brightness(0.88); box-shadow: inset 0 0 0 2px rgba(59,130,246,0.75); }
+    .heatmap-cell.has-data:active { transform: scale(0.98); }
 
     /* 赤系グラデーション（ダーク背景） */
-    .effect-none   { background-color: #0f172a; }
+    .effect-none   { background-color: #0b1120; }
+    .heatmap-cell.effect-none {
+      background-image: repeating-linear-gradient(135deg, rgba(148,163,184,0.08) 0, rgba(148,163,184,0.08) 1px, transparent 1px, transparent 8px);
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
     .effect-low    { background-color: rgba(220,38,38,0.18); color: #fca5a5; }
     .effect-medium { background-color: rgba(220,38,38,0.45); color: #fecaca; }
     .effect-high   { background-color: rgba(220,38,38,0.85); color: #fff; }
@@ -150,38 +156,36 @@
       color: #3b82f6;
     }
 
-    /* ツールチップ */
-    .tooltip {
+    /* 共通ツールチップ */
+    .app-tooltip {
+      position: fixed;
+      z-index: 1200;
       display: none;
-      position: absolute;
-      z-index: 200;
-      background: #1e293b;
-      color: #f1f5f9;
-      padding: 8px 12px;
+      width: min(340px, calc(100vw - 24px));
+      max-height: min(420px, calc(100vh - 24px));
+      overflow-y: auto;
+      background: #0f172a;
+      color: #cbd5e1;
+      padding: 10px 14px;
       border-radius: 8px;
+      border: 1px solid #334155;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.58);
       font-size: 11px;
-      line-height: 1.5;
-      width: 220px;
-      top: calc(100% + 6px);
-      left: 50%;
-      transform: translateX(-50%);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      line-height: 1.6;
       pointer-events: none;
-      white-space: normal;
       text-align: left;
+      white-space: normal;
     }
-
-    .tooltip::before {
-      content: '';
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-bottom-color: #1e293b;
+    .app-tooltip.active { display: block; }
+    .app-tooltip strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #f8fafc;
+      font-size: 12px;
+      line-height: 1.45;
     }
-
-    .heatmap-cell:hover .tooltip { display: block; }
+    .app-tooltip .tooltip-muted { color: #94a3b8; }
+    .app-tooltip .tooltip-block { margin-top: 6px; }
 
     /* モーダル */
     .modal-overlay {
@@ -385,6 +389,605 @@
       .modal-header, .modal-body { padding: 16px; }
     }
 
+    /* 横軸詳細パネル */
+    .detail-panel-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.52);
+      z-index: 900;
+    }
+    .detail-panel-backdrop.active { display: block; }
+    .axis-detail-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(var(--axis-panel-width, 520px), calc(100vw - 24px));
+      height: 100vh;
+      background: #111827;
+      border-left: 1px solid #334155;
+      box-shadow: -16px 0 48px rgba(0,0,0,0.42);
+      z-index: 901;
+      transform: translateX(100%);
+      transition: transform 0.18s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .axis-panel-resize-handle {
+      position: absolute;
+      top: 0;
+      left: -5px;
+      width: 10px;
+      height: 100%;
+      cursor: ew-resize;
+      z-index: 2;
+    }
+    .axis-panel-resize-handle::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 4px;
+      width: 1px;
+      height: 100%;
+      background: transparent;
+      transition: background 0.12s;
+    }
+    .axis-panel-resize-handle:hover::before,
+    .axis-detail-panel.is-resizing .axis-panel-resize-handle::before {
+      background: #3b82f6;
+    }
+    .axis-detail-panel:focus { outline: 2px solid rgba(59,130,246,0.7); outline-offset: -2px; }
+    .axis-detail-panel.active { transform: translateX(0); }
+    .axis-panel-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid #334155;
+      background: #0f172a;
+      flex-shrink: 0;
+    }
+    .axis-panel-body {
+      padding: 16px 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .axis-panel-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #cbd5e1;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .axis-panel-close:hover { color: #fff; border-color: #475569; }
+    .axis-panel-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .axis-panel-badge.asis { background: #1e3a5f; color: #93c5fd; }
+    .axis-panel-badge.tobe { background: #14532d; color: #86efac; }
+    .axis-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .axis-summary-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px 12px;
+      min-height: 64px;
+    }
+    .axis-summary-label { font-size: 10px; color: #64748b; margin-bottom: 4px; }
+    .axis-summary-value { font-size: 16px; color: #f8fafc; font-weight: 900; line-height: 1.25; }
+    .axis-detail-section {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #1e293b;
+    }
+    .axis-detail-section:first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+    .axis-empty-state {
+      padding: 18px;
+      border: 1px dashed #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .axis-detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      table-layout: fixed;
+    }
+    .axis-detail-table th {
+      width: 104px;
+      padding: 8px 9px;
+      vertical-align: top;
+      text-align: left;
+      color: #94a3b8;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      font-weight: 700;
+    }
+    .axis-detail-table td {
+      padding: 8px 9px;
+      vertical-align: top;
+      color: #e2e8f0;
+      border: 1px solid #1e293b;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+    .axis-task-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      background: #0f172a;
+    }
+    .axis-task-table {
+      width: 100%;
+      min-width: 860px;
+      border-collapse: collapse;
+      font-size: 12px;
+      table-layout: fixed;
+    }
+    .axis-task-table th,
+    .axis-task-table td {
+      padding: 9px 10px;
+      vertical-align: top;
+      border: 1px solid #1e293b;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .axis-task-table th {
+      color: #94a3b8;
+      background: #111827;
+      font-weight: 800;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .axis-task-table td {
+      color: #e2e8f0;
+      background: #0f172a;
+    }
+    .axis-task-table .col-category { width: 112px; }
+    .axis-task-table .col-business { width: 128px; }
+    .axis-task-table .col-task { width: 150px; }
+    .axis-task-table .col-burden { width: 92px; }
+    .axis-task-table .col-effect { width: 92px; }
+    .axis-task-table .col-saving { width: 132px; }
+    .axis-task-table .col-tobe { width: 254px; }
+    .axis-task-tobe-list {
+      margin: 0;
+      padding-left: 16px;
+    }
+    .axis-task-tobe-list li { margin-bottom: 4px; }
+    .axis-task-tobe-list li:last-child { margin-bottom: 0; }
+    .axis-agent-overview {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid #075985;
+      border-radius: 8px;
+      background: #071827;
+    }
+    .axis-agent-overview h4 {
+      margin: 0 0 5px;
+      color: #e0f2fe;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+    .axis-agent-overview p {
+      margin: 0;
+      color: #bae6fd;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .axis-agent-layout {
+      display: block;
+      margin-top: 12px;
+    }
+    .axis-agent-diagram,
+    .axis-agent-map,
+    .axis-agent-assets {
+      min-width: 0;
+      border: 1px solid #0c4a6e;
+      border-radius: 8px;
+      background: #082033;
+      padding: 12px;
+    }
+    .axis-agent-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .axis-agent-layer {
+      border-radius: 8px;
+      border: 1px solid #0e7490;
+      padding: 9px 10px;
+      background: rgba(8,47,73,0.76);
+    }
+    .axis-agent-layer.user { border-color: #38bdf8; background: rgba(14,116,144,0.18); }
+    .axis-agent-layer.common { border-color: #0284c7; background: rgba(2,132,199,0.22); }
+    .axis-agent-layer.routing { border-color: #0ea5e9; background: rgba(14,165,233,0.16); }
+    .axis-agent-layer.skills { border-color: #7dd3fc; background: rgba(125,211,252,0.11); }
+    .axis-agent-layer.systems { border-color: #67e8f9; background: rgba(103,232,249,0.10); }
+    .axis-agent-layer-title {
+      color: #f0f9ff;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .axis-agent-layer-text {
+      margin-top: 3px;
+      color: #bae6fd;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .axis-agent-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .axis-agent-chip {
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.34);
+      background: rgba(8,47,73,0.72);
+      padding: 3px 7px;
+      color: #e0f2fe;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .axis-agent-rationale-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .axis-agent-rationale {
+      border-radius: 6px;
+      border: 1px solid rgba(125,211,252,0.34);
+      background: rgba(7,89,133,0.28);
+      padding: 4px 7px;
+      color: #bae6fd;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .axis-agent-connector {
+      align-self: center;
+      color: #38bdf8;
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .axis-agent-agent-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+    .axis-agent-branch-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+    }
+    .axis-agent-node {
+      border-radius: 8px;
+      border: 1px solid #0e7490;
+      padding: 8px 10px;
+      background: rgba(8,47,73,0.76);
+    }
+    .axis-agent-node.agent { border-color: #38bdf8; background: rgba(14,165,233,0.16); }
+    .axis-agent-node.common { border-color: #0284c7; background: rgba(2,132,199,0.22); }
+    .axis-agent-node.skill { border-color: #7dd3fc; background: rgba(125,211,252,0.12); }
+    .axis-agent-node.connection { border-color: #67e8f9; background: rgba(103,232,249,0.10); }
+    .axis-agent-node-label {
+      color: #f0f9ff;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .axis-agent-node-text {
+      margin-top: 4px;
+      color: #bae6fd;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .axis-agent-mini-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .axis-agent-mini-item {
+      border-radius: 5px;
+      border: 1px solid rgba(125,211,252,0.3);
+      background: rgba(8,47,73,0.48);
+      padding: 3px 6px;
+      color: #e0f2fe;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+    .axis-agent-map-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .axis-agent-map-column {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .axis-agent-map-title {
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+    .axis-agent-part {
+      border-radius: 7px;
+      border: 1px solid #334155;
+      padding: 8px 9px;
+      color: #e2e8f0;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.35;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+    .axis-agent-part.common { border-color: #0284c7; background: rgba(2,132,199,0.18); }
+    .axis-agent-part.individual { border-color: #38bdf8; background: rgba(14,165,233,0.14); }
+    .axis-agent-part.agent { border-color: #38bdf8; background: rgba(14,165,233,0.14); }
+    .axis-agent-part.skill { border-color: #7dd3fc; background: rgba(125,211,252,0.12); }
+    .axis-agent-part.connection { border-color: #67e8f9; background: rgba(103,232,249,0.10); }
+    .axis-agent-assets {
+      grid-column: 1 / -1;
+    }
+    .axis-agent-targets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .axis-agent-target {
+      max-width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.34);
+      background: rgba(8,47,73,0.72);
+      padding: 4px 8px;
+      color: #bae6fd;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .axis-agent-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .axis-agent-block {
+      min-width: 0;
+      padding: 11px;
+      border: 1px solid #0c4a6e;
+      border-radius: 8px;
+      background: #082033;
+    }
+    .axis-agent-block-title {
+      margin-bottom: 7px;
+      color: #7dd3fc;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .axis-agent-list {
+      margin: 0;
+      padding-left: 16px;
+      color: #e0f2fe;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .axis-agent-list li { margin-bottom: 5px; }
+    .axis-agent-list li:last-child { margin-bottom: 0; }
+    .axis-agent-layer-row {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      margin: 4px 0;
+    }
+    .axis-agent-layer-badge {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: #475569;
+      padding: 4px 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+    }
+    .axis-agent-layer-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .axis-agent-node-condition {
+      margin-top: 4px;
+      color: #93c5fd;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+    .axis-agent-node-section-title {
+      margin-top: 6px;
+      color: #475569;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .axis-agent-node-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin-top: 3px;
+    }
+    .axis-agent-node-tag {
+      border-radius: 4px;
+      padding: 2px 5px;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1.3;
+      border: 1px solid rgba(125,211,252,0.3);
+      background: rgba(8,47,73,0.5);
+      color: #e0f2fe;
+    }
+    .axis-agent-node-tag.skill { border-color: #7dd3fc; background: rgba(125,211,252,0.1); }
+    .axis-agent-node-tag.tool  { border-color: #67e8f9; background: rgba(103,232,249,0.1); color: #cffafe; }
+    .axis-agent-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid #1e3a4a;
+    }
+    .axis-agent-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+    .axis-agent-legend-box {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid;
+      flex-shrink: 0;
+    }
+    .axis-agent-legend-box.common { border-color: #0284c7; background: rgba(2,132,199,0.22); }
+    .axis-agent-legend-box.agent  { border-color: #38bdf8; background: rgba(14,165,233,0.16); }
+    .axis-agent-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid;
+      flex-shrink: 0;
+    }
+    .axis-agent-legend-dot.skill { border-color: #7dd3fc; background: rgba(125,211,252,0.15); }
+    .axis-agent-legend-dot.tool  { border-color: #67e8f9; background: rgba(103,232,249,0.12); }
+    .axis-agent-unit {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 8px;
+      padding-top: 7px;
+      color: #e0f2fe;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .axis-agent-unit:first-of-type { padding-top: 0; }
+    .axis-agent-unit-label {
+      color: #7dd3fc;
+      font-weight: 800;
+    }
+    .axis-task-table .axis-action-btn {
+      margin-top: 8px;
+      width: 100%;
+    }
+    .axis-detail-row-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .axis-detail-row-title h4 {
+      color: #f8fafc;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+    .axis-mini-badge {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: #1e293b;
+      color: #cbd5e1;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .axis-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #2563eb;
+      background: #1e3a8a;
+      color: #dbeafe;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .axis-action-btn:hover { background: #1d4ed8; color: #fff; }
+    .axis-clickable {
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, box-shadow 0.12s, transform 0.08s;
+    }
+    .axis-clickable:hover {
+      background: #1e3a5f !important;
+      color: #bfdbfe !important;
+      box-shadow: inset 0 -2px 0 #3b82f6;
+    }
+    .axis-clickable:active { transform: translateY(1px); }
+    @media (max-width: 640px) {
+      .axis-detail-panel {
+        top: auto;
+        bottom: 0;
+        right: 0;
+        width: 100vw;
+        height: min(82vh, 760px);
+        border-left: none;
+        border-top: 1px solid #334155;
+        transform: translateY(100%);
+      }
+      .axis-detail-panel.active { transform: translateY(0); }
+      .axis-panel-resize-handle { display: none; }
+      .axis-panel-header, .axis-panel-body { padding-left: 16px; padding-right: 16px; }
+      .axis-summary-grid { grid-template-columns: 1fr; }
+      .axis-agent-grid { grid-template-columns: 1fr; }
+      .axis-agent-unit { grid-template-columns: 1fr; }
+      .axis-agent-layout,
+      .axis-agent-map-grid,
+      .axis-agent-agent-grid,
+      .axis-agent-branch-grid { grid-template-columns: 1fr; }
+    }
+
     /* ===== フィードバック（インライン統合） ===== */
     .fb-dot { width: 8px; height: 8px; border-radius: 50%; background: #334155; }
     .fb-dot.answered { background: #22c55e; }
@@ -394,6 +997,12 @@
     .fb-q-card.answered { border-color: #16a34a; }
     .fb-q-card.skipped  { border-color: #475569; opacity: 0.65; }
     .fb-q-card.focused  { border-color: #3b82f6; }
+    .fb-flow-card { background: #172033; border: 1.5px solid #334155; border-radius: 10px; padding: 12px 14px; transition: border-color 0.15s; }
+    .fb-flow-card.has-note { border-color: #3b82f6; }
+    .fb-flow-card.focused { border-color: #60a5fa; }
+    .fb-flow-heading { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .fb-flow-title { font-size: 12px; font-weight: 800; color: #dbeafe; line-height: 1.35; }
+    .fb-flow-sub { font-size: 10px; color: #64748b; margin-top: 2px; line-height: 1.35; }
     .fb-q-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
     .fb-q-num { font-size: 16px; font-weight: 900; color: #60a5fa; line-height: 1; flex-shrink: 0; }
     .fb-q-meta { font-size: 10px; color: #64748b; flex: 1; line-height: 1.4; }
@@ -402,6 +1011,7 @@
     .fb-q-badge.skipped  { background: #334155; color: #94a3b8; }
     .fb-q-issue { font-size: 10px; color: #64748b; margin-bottom: 5px; line-height: 1.4; }
     .fb-q-question { font-size: 12px; color: #cbd5e1; margin-bottom: 8px; line-height: 1.55; background: #0f172a; border-radius: 6px; padding: 7px 9px; }
+    .fb-field-label { display: block; font-size: 10px; font-weight: 700; color: #94a3b8; margin: 8px 0 4px; }
     .fb-q-textarea { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #f1f5f9; font-size: 12px; padding: 7px 9px; resize: vertical; min-height: 64px; font-family: inherit; line-height: 1.5; transition: border-color 0.12s; }
     .fb-q-textarea:focus { outline: none; border-color: #3b82f6; }
     .fb-q-skip-row { display: flex; align-items: center; gap: 6px; margin-top: 7px; }
@@ -422,24 +1032,25 @@
     .tl-group-dots { display: flex; gap: 3px; flex-wrap: wrap; margin-left: auto; }
 
     /* 展開ペイン */
-    .cat-expand-row td {
+    .business-type-expand-row td {
       padding: 0 !important;
       background: #0d1829;
       border-top: 2px solid #3b82f6;
       border-bottom: 2px solid #1e293b;
     }
-    .cat-expand-pane {
+    .business-type-expand-pane {
       display: grid;
       grid-template-columns: 1fr;
-      grid-template-rows: auto min(400px, 50vh) auto;
+      grid-template-rows: auto minmax(360px, min(520px, 58vh)) auto auto;
     }
-    .cat-expand-toolbar {
+    .business-type-expand-toolbar {
       background: #0a1120;
       border-bottom: 1px solid #1e293b;
       display: flex;
       gap: 8px;
       padding: 10px 12px;
       overflow-x: auto;
+      grid-column: 1 / -1;
     }
     .cat-flow-tab {
       border: 1px solid #334155;
@@ -457,24 +1068,62 @@
       border-color: #3b82f6;
       color: #93c5fd;
     }
-    .cat-expand-diagram { background: #fff; overflow: hidden; height: min(400px, 50vh); }
-    .cat-expand-qa {
+    .business-type-expand-diagram { background: #fff; overflow: hidden; min-height: 360px; }
+    .business-type-expand-qa {
       background: #0f172a;
-      border-top: 2px solid #334155;
       overflow-y: auto;
-      max-height: 480px;
+      max-height: min(420px, 46vh);
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      border-top: 1px solid #1e293b;
     }
-    .cat-expand-actions {
+    .business-type-expand-actions {
       padding: 8px 14px;
       background: #0a1120;
       border-top: 1px solid #1e293b;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      grid-column: 1 / -1;
+    }
+    .bt-expand-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      border: 1px solid #334155;
+      background: #111827;
+      color: #93c5fd;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .bt-expand-btn:hover {
+      background: #1e3a5f;
+      border-color: #3b82f6;
+    }
+    .bt-type-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .bt-question-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #334155;
+      color: #cbd5e1;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    @media (max-width: 900px) {
+      .business-type-expand-pane { grid-template-rows: auto minmax(320px, 46vh) auto auto; }
+      .business-type-expand-qa { max-height: none; }
     }
 
     /* 全体進捗サマリー */
@@ -588,7 +1237,19 @@
       border-bottom: 1px solid #1e2e42;
       position: relative;
       cursor: default;
+      transition: background 0.12s, box-shadow 0.12s, transform 0.08s;
     }
+    .tl-cell.is-empty {
+      background: rgba(15,23,42,0.34);
+      background-image: repeating-linear-gradient(135deg, rgba(148,163,184,0.06) 0, rgba(148,163,184,0.06) 1px, transparent 1px, transparent 8px);
+      cursor: not-allowed;
+    }
+    .tl-cell.is-clickable { cursor: pointer; }
+    .tl-cell.is-clickable:hover {
+      box-shadow: inset 0 0 0 2px rgba(59,130,246,0.65);
+      background-color: rgba(30,58,95,0.28);
+    }
+    .tl-cell.is-clickable:active { transform: scale(0.99); }
     .tl-cell.burden-high-cell  { background:rgba(220,38,38,0.12); border-left-color:#dc2626; }
     .tl-cell.burden-mid-cell   { background:rgba(245,158,11,0.10); border-left-color:#f59e0b; }
     .tl-cell.burden-low-cell   { background:rgba(34,197,94,0.07);  border-left-color:#22c55e; }
@@ -612,29 +1273,31 @@
     .tl-cell-badges { display:flex; gap:4px; flex-wrap:wrap; align-items:center; }
     .tl-cell-time   { font-size:10px; color:#64748b; }
 
-    /* CSSツールチップ */
-    .tl-cell[data-tooltip] { cursor: help; }
-    .tl-cell[data-tooltip]::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: calc(100% + 6px);
-      left: 0;
-      width: 280px;
-      background: #0f172a;
+    .tl-cell[data-tooltip-html],
+    .tl-cell[data-tooltip-text] { cursor: pointer; }
+    .tl-cell-time {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: rgba(15,23,42,0.8);
       color: #cbd5e1;
-      font-size: 11px;
-      line-height: 1.6;
-      padding: 10px 14px;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      white-space: pre-wrap;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.15s;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.4;
     }
-    .tl-cell[data-tooltip]:hover::after { opacity: 1; }
+    .tl-cell-burden-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: rgba(15,23,42,0.56);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
 
     /* 業務分類グループ行 */
     .tl-group-row td {
@@ -647,11 +1310,45 @@
       text-transform: uppercase;
       border-top: 2px solid #1e293b;
       border-bottom: 1px solid #334155;
-      cursor: pointer;
     }
     .tl-group-row:hover td {
       background: #1e293b;
       color: #cbd5e1;
+    }
+
+    .matrix-axis-row th {
+      background: #172033;
+      border-top: 1px solid #334155;
+      border-bottom: 1px solid #475569;
+    }
+
+    .matrix-section-axis {
+      min-width: 190px;
+      text-align: left;
+      padding: 10px 14px;
+      vertical-align: middle;
+      border-right: 1px solid #334155;
+    }
+
+    .matrix-section-cat {
+      color: #e2e8f0;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .matrix-section-label {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+
+    .matrix-pad-cell {
+      background: #172033;
+      border-bottom: 1px solid #334155;
     }
 
     /* 業務種別・業務分類の固定列 */
@@ -731,7 +1428,7 @@
         <div>
           <h2 class="text-base font-bold text-white">業務整理マトリクス</h2>
           <p class="text-xs text-slate-400 mt-1">
-            ヒアリング前の仮案。横軸はヒートマップと同じ共通ステップ。セルの左ボーダー色は人手の負担（<span class="text-red-400 font-semibold">赤=高</span> / <span class="text-amber-400 font-semibold">黄=中</span> / <span class="text-green-400 font-semibold">緑=低</span>）。セルにカーソルを当てると詳細が表示されます。
+            業務種別ごとにAs-Isフローを展開できます。負担色: <span class="text-red-400 font-semibold">高</span> / <span class="text-amber-400 font-semibold">中</span> / <span class="text-green-400 font-semibold">低</span>。未確認件数は行見出しに表示します。
           </p>
         </div>
         <div class="flex items-center gap-4 flex-wrap">
@@ -805,7 +1502,7 @@
       </div>
     </section>
 
-    <!-- ③ TOP3テーブル -->
+    <!-- ④ TOP3テーブル -->
     <section>
       <h2 class="text-base font-bold text-white mb-1">AI導入効果 TOP3</h2>
       <p class="text-xs text-slate-400 mb-4">優先的に着手すべき業務領域</p>
@@ -859,7 +1556,6 @@
         </div>
         <div class="flex gap-2 mt-4">
           <button class="tab-btn active" id="tab-tobe"   onclick="switchTab('tobe')">To-Be フロー</button>
-          <button class="tab-btn"        id="tab-asis"   onclick="switchTab('asis')">As-Is フロー</button>
           <button class="tab-btn"        id="tab-detail" onclick="switchTab('detail')">詳細情報</button>
         </div>
       </div>
@@ -874,13 +1570,6 @@
             <p class="text-xs text-slate-300"><span class="text-yellow-400 font-bold">リスク・注意点：</span><span id="modal-risks"></span></p>
           </div>
           <div class="mt-3 flex gap-3" id="tobe-drawio-link-area"></div>
-        </div>
-
-        <!-- As-Is -->
-        <div id="panel-asis" class="hidden">
-          <p class="text-xs text-slate-400 mb-3" id="modal-issue"></p>
-          <div id="asis-diagram-container" class="rounded-lg overflow-hidden border border-slate-600" style="height:480px;background:#fff;"></div>
-          <div class="mt-3 flex gap-3" id="asis-drawio-link-area"></div>
         </div>
 
         <!-- 詳細情報 -->
@@ -929,6 +1618,30 @@
     </div>
   </div>
 
+  <!-- 横軸詳細パネル -->
+  <div class="detail-panel-backdrop" id="axis-detail-backdrop" onclick="closeAxisDetailPanel()"></div>
+  <aside class="axis-detail-panel" id="axis-detail-panel" aria-hidden="true" tabindex="-1">
+    <div class="axis-panel-resize-handle" id="axis-panel-resize-handle" role="separator" aria-orientation="vertical" aria-label="詳細パネルの幅を変更"></div>
+    <div class="axis-panel-header">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="axis-panel-badge" id="axis-panel-mode">As-Is</span>
+            <span class="text-xs text-slate-500" id="axis-panel-count"></span>
+          </div>
+          <h3 class="text-base font-bold text-white leading-snug" id="axis-panel-title"></h3>
+          <p class="text-xs text-slate-400 mt-1" id="axis-panel-subtitle"></p>
+        </div>
+        <button class="axis-panel-close" onclick="closeAxisDetailPanel()" aria-label="詳細パネルを閉じる">×</button>
+      </div>
+    </div>
+    <div class="axis-panel-body">
+      <div class="axis-summary-grid" id="axis-panel-summary"></div>
+      <div id="axis-panel-content"></div>
+    </div>
+  </aside>
+  <div class="app-tooltip" id="app-tooltip" role="tooltip"></div>
+
   <!-- データ注入ポイント -->
   <script>
 const ANALYSIS_DATA = /* ANALYSIS_DATA_PLACEHOLDER */;
@@ -949,16 +1662,23 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return ({ 'Human': '人', 'AI': 'AI', 'Human Review': '確認', 'System': 'Sys' })[actor] || actor;
     }
     function effectClass(level) {
-      return ({ 'high': 'effect-high', 'medium': 'effect-medium', 'low': 'effect-low' })[level] || 'effect-none';
+      return ({
+        'high': 'effect-high', '高': 'effect-high',
+        'medium': 'effect-medium', '中': 'effect-medium',
+        'low': 'effect-low', '低': 'effect-low'
+      })[level] || 'effect-none';
     }
     function effectLabel(level) {
-      return ({ 'high': '高', 'medium': '中', 'low': '低' })[level] || '';
+      return ({ 'high': '高', 'medium': '中', 'low': '低', '高': '高', '中': '中', '低': '低' })[level] || '';
     }
     function effectBadgeStyle(level) {
       return ({
         'high':   'background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;',
+        '高':      'background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;',
         'medium': 'background:#f87171;color:#7f1d1d;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;',
-        'low':    'background:#fce4e4;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid #fca5a5;'
+        '中':      'background:#f87171;color:#7f1d1d;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;',
+        'low':    'background:#fce4e4;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid #fca5a5;',
+        '低':      'background:#fce4e4;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid #fca5a5;'
       })[level] || '';
     }
     function scaleColor(scale) {
@@ -966,6 +1686,190 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     }
     function rankStyle(rank) {
       return (['background:#facc15;color:#78350f;', 'background:#cbd5e1;color:#1e293b;', 'background:#d97706;color:#fff;'])[rank - 1] || 'background:#475569;color:#fff;';
+    }
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[ch]);
+    }
+    function tooltipAttr(html) {
+      return escapeHtml(html).replace(/\n/g, '&#10;');
+    }
+    function tooltipTextToHtml(text) {
+      return escapeHtml(text).replace(/\n/g, '<br>');
+    }
+    function jsString(value) {
+      return JSON.stringify(String(value ?? ''));
+    }
+    function jsAttrString(value) {
+      return jsString(value).replace(/'/g, '&#39;');
+    }
+    function minutesValue(task) {
+      return task['所要時間_分'] || task['1件あたり所要時間_分'] || task.estimated_minutes || '';
+    }
+    function taskQuestionAnswer(task) {
+      const answer = task.as_is_resolved_answer || task['クライアント回答'] || '';
+      const question = task.as_is_resolved_question || task['確認事項'] || '';
+      const updateNote = task.as_is_update_note || task['As-Isフロー更新内容'] || '';
+      return [
+        question,
+        answer ? `回答: ${answer}` : '',
+        updateNote ? `As-Isフロー更新内容: ${updateNote}` : ''
+      ].filter(Boolean).join('\n');
+    }
+    function maxBurdenLabel(tasks) {
+      const rank = {高: 3, 中: 2, 低: 1};
+      return tasks.reduce((best, task) =>
+        (rank[task['人手の負担']] || 0) > (rank[best] || 0) ? task['人手の負担'] : best, ''
+      ) || '-';
+    }
+    function summaryCard(label, value) {
+      return `<div class="axis-summary-card">
+        <div class="axis-summary-label">${escapeHtml(label)}</div>
+        <div class="axis-summary-value">${escapeHtml(value || '-')}</div>
+      </div>`;
+    }
+    function detailTable(rows) {
+      return `<table class="axis-detail-table"><tbody>${rows
+        .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
+        .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`)
+        .join('')}</tbody></table>`;
+    }
+    function emptyDetailMessage(message) {
+      return `<div class="axis-empty-state">${escapeHtml(message || '該当する詳細データがありません。')}</div>`;
+    }
+    function openAxisDetailPanel({ mode, title, subtitle, countText, summaryHtml, contentHtml }) {
+      const badge = document.getElementById('axis-panel-mode');
+      badge.textContent = mode;
+      badge.className = 'axis-panel-badge ' + (mode === 'To-Be' ? 'tobe' : 'asis');
+      document.getElementById('axis-panel-title').textContent = title || '';
+      document.getElementById('axis-panel-subtitle').textContent = subtitle || '';
+      document.getElementById('axis-panel-count').textContent = countText || '';
+      document.getElementById('axis-panel-summary').innerHTML = summaryHtml || '';
+      document.getElementById('axis-panel-content').innerHTML = contentHtml || '<p class="text-sm text-slate-400">表示できる詳細がありません。</p>';
+      document.getElementById('axis-detail-backdrop').classList.add('active');
+      const panel = document.getElementById('axis-detail-panel');
+      const body = panel.querySelector('.axis-panel-body');
+      if (body) body.scrollTop = 0;
+      panel.classList.add('active');
+      panel.setAttribute('aria-hidden', 'false');
+      const focusPanel = () => panel.focus({ preventScroll: true });
+      if (typeof requestAnimationFrame === 'function') requestAnimationFrame(focusPanel);
+      else setTimeout(focusPanel, 0);
+    }
+    function closeAxisDetailPanel() {
+      document.getElementById('axis-detail-backdrop').classList.remove('active');
+      const panel = document.getElementById('axis-detail-panel');
+      panel.classList.remove('active');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+
+    function clampNumber(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function axisPanelMaxWidth() {
+      return Math.min(900, Math.max(360, window.innerWidth - 48));
+    }
+
+    function applySavedAxisPanelWidth() {
+      if (window.matchMedia('(max-width: 640px)').matches) return;
+      let saved = 0;
+      try {
+        saved = Number(localStorage.getItem('axisDetailPanelWidth'));
+      } catch (_) {
+        saved = 0;
+      }
+      if (!Number.isFinite(saved) || saved <= 0) return;
+      document.documentElement.style.setProperty('--axis-panel-width', `${clampNumber(saved, 360, axisPanelMaxWidth())}px`);
+    }
+
+    function initAxisPanelResize() {
+      const panel = document.getElementById('axis-detail-panel');
+      const handle = document.getElementById('axis-panel-resize-handle');
+      if (!panel || !handle) return;
+      applySavedAxisPanelWidth();
+
+      handle.addEventListener('pointerdown', event => {
+        if (window.matchMedia('(max-width: 640px)').matches) return;
+        event.preventDefault();
+        panel.classList.add('is-resizing');
+        handle.setPointerCapture(event.pointerId);
+
+        const onMove = moveEvent => {
+          const nextWidth = clampNumber(window.innerWidth - moveEvent.clientX, 360, axisPanelMaxWidth());
+          document.documentElement.style.setProperty('--axis-panel-width', `${nextWidth}px`);
+          try {
+            localStorage.setItem('axisDetailPanelWidth', String(Math.round(nextWidth)));
+          } catch (_) {}
+        };
+        const onEnd = () => {
+          panel.classList.remove('is-resizing');
+          handle.removeEventListener('pointermove', onMove);
+          handle.removeEventListener('pointerup', onEnd);
+          handle.removeEventListener('pointercancel', onEnd);
+        };
+
+        handle.addEventListener('pointermove', onMove);
+        handle.addEventListener('pointerup', onEnd);
+        handle.addEventListener('pointercancel', onEnd);
+      });
+
+      window.addEventListener('resize', applySavedAxisPanelWidth);
+    }
+
+    function positionTooltip(tooltip, event, target) {
+      const margin = 12;
+      const gap = 10;
+      const rect = target.getBoundingClientRect();
+      const preferX = event?.clientX ?? rect.left + rect.width / 2;
+      const preferY = event?.clientY ?? rect.top + rect.height / 2;
+      tooltip.style.left = '0px';
+      tooltip.style.top = '0px';
+      const tipRect = tooltip.getBoundingClientRect();
+      const maxLeft = window.innerWidth - tipRect.width - margin;
+      const maxTop = window.innerHeight - tipRect.height - margin;
+      let left = preferX + gap;
+      let top = preferY + gap;
+      if (left > maxLeft) left = preferX - tipRect.width - gap;
+      if (top > maxTop) top = preferY - tipRect.height - gap;
+      tooltip.style.left = `${clampNumber(left, margin, Math.max(margin, maxLeft))}px`;
+      tooltip.style.top = `${clampNumber(top, margin, Math.max(margin, maxTop))}px`;
+    }
+
+    function initAppTooltip() {
+      const tooltip = document.getElementById('app-tooltip');
+      if (!tooltip) return;
+      let activeTarget = null;
+
+      document.addEventListener('mouseover', event => {
+        const target = event.target.closest('[data-tooltip-html], [data-tooltip-text]');
+        if (!target) return;
+        activeTarget = target;
+        tooltip.innerHTML = target.dataset.tooltipHtml || tooltipTextToHtml(target.dataset.tooltipText || '');
+        tooltip.classList.add('active');
+        positionTooltip(tooltip, event, target);
+      });
+
+      document.addEventListener('mousemove', event => {
+        if (!activeTarget) return;
+        positionTooltip(tooltip, event, activeTarget);
+      });
+
+      document.addEventListener('mouseout', event => {
+        if (!activeTarget || activeTarget.contains(event.relatedTarget)) return;
+        activeTarget = null;
+        tooltip.classList.remove('active');
+      });
+
+      window.addEventListener('scroll', () => {
+        activeTarget = null;
+        tooltip.classList.remove('active');
+      }, true);
     }
 
     function init() {
@@ -986,7 +1890,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       document.getElementById('insights-list').innerHTML = insights.map((txt, i) =>
         `<div class="insight-card">
            <div class="flex items-start gap-3">
-             <span class="text-blue-400 font-black text-lg leading-none mt-0.5 flex-shrink-0">${i + 1}</span>
+             <span class="text-blue-400 font-black text-sm leading-none mt-1 flex-shrink-0 whitespace-nowrap">Point ${i + 1}</span>
              <p class="text-sm text-slate-200 leading-relaxed">${txt}</p>
            </div>
          </div>`
@@ -995,6 +1899,8 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       buildHeatmap(d);
       buildTop3Table(d);
       buildMatrix(d);
+      initAppTooltip();
+      initAxisPanelResize();
     }
 
     function normalizeMatrixTasks(data) {
@@ -1002,6 +1908,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         ['業務分類', 'category'],
         ['業務種別', 'business_type'],
         ['タスク順', 'task_order'],
+        ['マトリクス横軸', 'matrix_axis'],
+        ['ヒートマップグループ', 'heatmap_group'],
+        ['ヒートマップステップ', 'heatmap_step'],
         ['共通ステップ', 'common_step'],
         ['タスク名', 'task_name'],
         ['業務内容詳細', 'detail'],
@@ -1021,27 +1930,84 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           }
         });
         if (task['タスク順'] !== undefined) task['タスク順'] = Number(task['タスク順']);
+        if (!task['マトリクス横軸']) task['マトリクス横軸'] = task['共通ステップ'] || task['タスク名'] || '';
+        if (!task['ヒートマップステップ']) task['ヒートマップステップ'] = task['共通ステップ'] || task['マトリクス横軸'] || '';
         if (!task['クライアント回答']) task['クライアント回答'] = '';
         if (!task['区分']) task['区分'] = '仮案';
       });
     }
 
-    function flatFlowColumns(data) {
+    function normalizeColumnItem(item, fallbackGroup) {
+      if (typeof item === 'string') return { key: item, label: item, sub: fallbackGroup || '', group: fallbackGroup || '' };
+      const label = String(item.label || item.name || item.step || item.key || '');
+      const group = item.group || fallbackGroup || item.sub || '';
+      return { key: String(item.key || label), label, sub: group, group };
+    }
+
+    function flattenColumnGroups(groups) {
       const cols = [];
-      (data.flow_columns || []).forEach(group => {
-        (group.steps || []).forEach(step => {
-          cols.push({
-            key: String(step),
-            label: String(step),
-            sub: group.group || ''
-          });
-        });
+      const list = Array.isArray(groups) ? groups : (groups ? [groups] : []);
+      list.forEach(group => {
+        if (typeof group === 'string') {
+          cols.push(normalizeColumnItem(group, ''));
+          return;
+        }
+        if (Array.isArray(group.steps)) {
+          group.steps.forEach(step => cols.push(normalizeColumnItem(step, group.group || '')));
+          return;
+        }
+        if (Array.isArray(group.columns)) {
+          group.columns.forEach(col => cols.push(normalizeColumnItem(col, group.group || '')));
+          return;
+        }
+        cols.push(normalizeColumnItem(group, group.group || ''));
       });
-      return cols;
+      return cols.filter(col => col.key);
+    }
+
+    function flatFlowColumns(data) {
+      return flattenColumnGroups(data.flow_columns || []);
+    }
+
+    function flatHeatmapColumns(data) {
+      const columns = flattenColumnGroups(data.heatmap_columns || data.flow_columns || []);
+      return columns.map(col => ({
+        ...col,
+        heatmapKey: `${col.group || col.sub || ''}|||${col.key}`
+      }));
+    }
+
+    function categoryColumnSource(data, category) {
+      const source = data.category_flow_columns;
+      if (!source) return null;
+      if (Array.isArray(source)) {
+        const entry = source.find(item => item.category === category || item['業務分類'] === category);
+        return entry ? (entry.columns || entry.flow_columns || entry.steps || entry) : null;
+      }
+      return source[category] || null;
+    }
+
+    function taskMatrixAxis(task) {
+      return String(task['マトリクス横軸'] || task.matrix_axis || task['共通ステップ'] || task.common_step || task['タスク名'] || '').trim();
+    }
+
+    function taskHeatmapStep(task) {
+      return String(task['ヒートマップステップ'] || task.heatmap_step || task['共通ステップ'] || task.common_step || task['マトリクス横軸'] || '').trim();
+    }
+
+    function inferHeatmapGroup(data, step) {
+      const col = flatHeatmapColumns(data).find(c => c.key === step || c.label === step);
+      return col ? (col.group || col.sub || '') : '';
+    }
+
+    function taskHeatmapGroup(data, task) {
+      return String(task['ヒートマップグループ'] || task.heatmap_group || inferHeatmapGroup(data, taskHeatmapStep(task))).trim();
     }
 
     function buildMatrixColumns(data, tasks) {
-      const flowSteps = flatFlowColumns(data);
+      const category = [...new Set((tasks || []).map(t => t['業務分類']).filter(Boolean))];
+      const categorySpecific = category.length === 1 ? categoryColumnSource(data, category[0]) : null;
+      const flowSteps = categorySpecific ? flattenColumnGroups(categorySpecific) : [];
       const columns = [];
       const seen = new Set();
       flowSteps.forEach(col => {
@@ -1050,9 +2016,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         seen.add(col.key);
       });
       (tasks || []).forEach(task => {
-        const step = String(task['共通ステップ'] || '').trim();
+        const step = taskMatrixAxis(task);
         if (!step || seen.has(step)) return;
-        columns.push({ key: step, label: step, sub: '' });
+        columns.push({ key: step, label: step, sub: task['業務分類'] || '' });
         seen.add(step);
       });
       return columns.length ? columns : matrixFallbackColumns(tasks || []);
@@ -1064,7 +2030,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       (tasks || []).forEach(t => {
         const cat = t['業務分類'];
         const type = t['業務種別'];
-        const step = String(t['共通ステップ'] || '').trim();
+        const step = taskMatrixAxis(t);
         if (!cat || !type || !step || !columnKeys.has(step)) return;
         if (!catMap.has(cat)) catMap.set(cat, new Map());
         const typeMap = catMap.get(cat);
@@ -1084,39 +2050,694 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return cell.business_type || cell.target_business_type || '';
     }
 
-    function targetLabel(category, businessType, flowStep) {
-      return [category, businessType, flowStep].filter(Boolean).join(' × ');
+    function targetLabel(category, businessType, flowStep, heatmapGroup) {
+      const stepLabel = [heatmapGroup, flowStep].filter(Boolean).join(' / ');
+      return [category, businessType, stepLabel].filter(Boolean).join(' × ');
     }
 
-    function findHeatmapCell(cells, category, businessType, flowStep) {
+    function cellHeatmapGroup(cell) {
+      return cell.heatmap_group || cell.target_heatmap_group || '';
+    }
+
+    function cellDisplayHeatmapGroup(data, cell) {
+      return cellHeatmapGroup(cell) || inferHeatmapGroup(data, cell.flow_step || cell.target_flow_step || '');
+    }
+
+    function findHeatmapCell(cells, category, businessType, heatmapGroup, flowStep) {
       return cells.find(c =>
         c.category === category &&
         cellBusinessType(c) === businessType &&
-        c.flow_step === flowStep
+        c.flow_step === flowStep &&
+        (!heatmapGroup || !cellHeatmapGroup(c) || cellHeatmapGroup(c) === heatmapGroup)
       );
     }
 
-    function findTop3Index(top3, category, businessType, flowStep) {
+    function top3HeatmapGroup(item) {
+      return item.target_heatmap_group || item.heatmap_group || '';
+    }
+
+    function findTop3Index(top3, category, businessType, heatmapGroup, flowStep) {
       return top3.findIndex(item =>
         item.target_category === category &&
         top3BusinessType(item) === businessType &&
-        item.target_flow_step === flowStep
+        item.target_flow_step === flowStep &&
+        (!heatmapGroup || !top3HeatmapGroup(item) || top3HeatmapGroup(item) === heatmapGroup)
       );
+    }
+
+    function buildHeatmapRowMap(data, tasks, columns) {
+      const columnKeys = new Set(columns.map(c => c.heatmapKey));
+      const catMap = new Map();
+      (tasks || []).forEach(t => {
+        const cat = t['業務分類'];
+        const type = t['業務種別'];
+        const step = taskHeatmapStep(t);
+        const group = taskHeatmapGroup(data, t);
+        const key = `${group}|||${step}`;
+        if (!cat || !type || !step || !columnKeys.has(key)) return;
+        if (!catMap.has(cat)) catMap.set(cat, new Map());
+        const typeMap = catMap.get(cat);
+        if (!typeMap.has(type)) typeMap.set(type, new Map());
+        const stepMap = typeMap.get(type);
+        if (!stepMap.has(key)) stepMap.set(key, []);
+        stepMap.get(key).push(t);
+      });
+      return catMap;
+    }
+
+    function tasksForHeatmapCell(data, cell) {
+      if (!cell) return [];
+      const group = cellDisplayHeatmapGroup(data, cell);
+      return (data.matrix_tasks || []).filter(task =>
+        task['業務分類'] === cell.category &&
+        task['業務種別'] === cell.business_type &&
+        taskHeatmapStep(task) === cell.flow_step &&
+        (!group || !taskHeatmapGroup(data, task) || taskHeatmapGroup(data, task) === group)
+      );
+    }
+
+    function toBeTasksForCell(cell) {
+      const tasks = Array.isArray(cell.to_be_tasks) ? cell.to_be_tasks.filter(Boolean) : [];
+      if (tasks.length) return tasks;
+      return [{
+        actor: 'AI',
+        to_be_task: cell.ai_use_case || 'AI支援タスク',
+        ai_role: cell.ai_use_case || '',
+        human_review: 'AIの出力結果、根拠、例外を担当者が確認する。',
+        expected_effect: cell.estimated_time_saved || '',
+        prerequisite_or_risk: cell.reason || ''
+      }];
+    }
+
+    function top3IndexForCell(data, cell) {
+      return findTop3Index(data.top3 || [], cell.category, cell.business_type, cellDisplayHeatmapGroup(data, cell), cell.flow_step);
+    }
+
+    function toBeTaskLabel(task) {
+      return task.to_be_task || task.step || task.ai_role || task.description || '';
+    }
+
+    function toBeTasksTextForCell(cell) {
+      const labels = toBeTasksForCell(cell).map(toBeTaskLabel).filter(Boolean);
+      return labels.length ? labels : [cell.ai_use_case || 'AI支援タスク'];
+    }
+
+    function uniqueCompact(values, limit) {
+      const seen = new Set();
+      const result = [];
+      values.forEach(value => {
+        const text = String(value || '').replace(/\s+/g, ' ').trim();
+        if (!text || seen.has(text)) return;
+        seen.add(text);
+        result.push(text);
+      });
+      return result.slice(0, limit || result.length);
+    }
+
+    function uniqueCompactBy(arr, keyFn, limit) {
+      const seen = new Set();
+      const result = [];
+      for (const item of arr) {
+        const key = keyFn(item);
+        if (key && !seen.has(key)) {
+          seen.add(key);
+          result.push(item);
+          if (result.length >= limit) break;
+        }
+      }
+      return result;
+    }
+
+    function buildCellSkills(cellText, task) {
+      const taskName = String(task?.['タスク名'] || '').trim();
+      const matrixAxis = String(task?.['マトリクス横軸'] || '').trim();
+      const scopeDocumentName = String(ANALYSIS_DATA?.metadata?.analysis_scope || '')
+        .split(/[（(]/)[0]
+        .replace(/（.*$/, '')
+        .trim();
+      const sourceDocuments = (ANALYSIS_DATA?.metadata?.source_documents || [])
+        .map(name => String(name || '').replace(/\.[^.]+$/, '').trim())
+        .filter(Boolean);
+      const documentName = scopeDocumentName || sourceDocuments[0] || '';
+      const documentSkill = documentName
+        ? `${documentName}参照スキル`
+        : (/マニュアル|FAQ|規程|手順|資料/.test(cellText) ? '業務規程・手順参照スキル' : '');
+      const taskSpecificSkills = uniqueCompact([
+        taskName ? `${taskName}スキル` : '',
+        !taskName && matrixAxis && !/受付・起案|内容確認|情報収集・照合|見積・契約|計算・作成|承認・決裁|システム入力|実行・支払|記録・保管|報告・提出/.test(matrixAxis)
+          ? `${matrixAxis}スキル`
+          : ''
+      ], 2);
+      return uniqueCompact([
+        ...taskSpecificSkills,
+        /予算|収支|積算|勘定科目/.test(cellText) ? '勘定科目・予算判定' : '',
+        /請求|収納|領収|帳票/.test(cellText) ? '帳票読取・作成' : '',
+        /契約|見積|稟議/.test(cellText) ? '契約・見積条件照合' : '',
+        /給与|賞与|年末調整|社会保険|源泉/.test(cellText) ? '給与・控除計算' : '',
+        /決算|月次|仕訳|計算書類|試算表/.test(cellText) ? '仕訳・決算整理' : '',
+        /固定資産|棚卸|債権|債務|台帳/.test(cellText) ? '台帳照合・差異検知' : '',
+        /承認|決裁|差戻|レビュー/.test(cellText) ? '承認条件チェック' : '',
+        /例外|不備|差戻|再承認/.test(cellText) ? '例外・差戻し判定' : '',
+        /下書き|作成|生成|起案/.test(cellText) ? '業務別下書き生成・根拠付与' : '',
+        documentSkill,
+        '根拠要約・出力整形'
+      ], 5);
+    }
+
+    function buildCellTools(cellText) {
+      return uniqueCompact([
+        /会計|仕訳|試算表|計算書類/.test(cellText) ? '会計システム' : '',
+        /給与|賞与|年末調整|社会保険|源泉/.test(cellText) ? '給与計算システム' : '',
+        /台帳|固定資産|債権|債務|棚卸/.test(cellText) ? '各種台帳DB' : '',
+        /Excel|CSV|取込|出力/.test(cellText) ? 'Excel / CSV入出力' : '',
+        /申請|稟議|承認/.test(cellText) ? '申請・承認ワークフロー' : '',
+        /帳票|報告|資料|文書|証憑/.test(cellText) ? '文書保管システム' : ''
+      ], 3);
+    }
+
+    function heatmapAxisRows(cells, data) {
+      const rows = [];
+      cells.forEach(cell => {
+        tasksForHeatmapCell(data, cell).forEach(task => {
+          rows.push({ cell, task });
+        });
+      });
+      return rows;
+    }
+
+    function splitDesignPhrases(text) {
+      return String(text || '')
+        .split(/[。\n]/)
+        .map(part => part.replace(/^[-・\s]+/, '').trim())
+        .filter(part => part.length >= 6);
+    }
+
+    function displayRiskText(value, fallback) {
+      const text = String(value || '').trim();
+      if (/^想定開発規模\s*[:：]/.test(text)) return fallback || '';
+      return text;
+    }
+
+    function taskDesignText(task) {
+      return [
+        task.to_be_task,
+        task.step,
+        task.ai_role,
+        task.human_review,
+        task.expected_effect,
+        task.prerequisite_or_risk,
+        task.description
+      ].filter(Boolean).join(' ');
+    }
+
+    function commonAgentCapabilities(toBeTasks, textPool, group, flowStep) {
+      const taskTexts = toBeTasks.map(taskDesignText);
+      const axisText = [group, flowStep].filter(Boolean).join(' / ');
+      const axisCapabilities = [
+        /計算・作成|作成・承認/.test(axisText) ? '計算・作成共通機能' : '',
+        /計算・作成|作成・承認/.test(axisText) ? '根拠資料確認' : '',
+        /計算・作成|作成・承認/.test(axisText) ? '計算結果・作成物検証' : '',
+        /情報収集・照合|確認・判断|内容確認/.test(axisText) ? '照合・確認共通機能' : '',
+        /情報収集・照合|確認・判断|内容確認/.test(axisText) ? '差異検知・確認観点整理' : '',
+        /システム入力|入力・実行/.test(axisText) ? '入力・連携共通機能' : '',
+        /システム入力|入力・実行/.test(axisText) ? '取込データ整形' : '',
+        /承認・決裁/.test(axisText) ? '承認・決裁支援共通機能' : '',
+        /承認・決裁/.test(axisText) ? '承認条件・差戻し観点整理' : '',
+        /受付・起案|準備・受付/.test(axisText) ? '受付・起案共通機能' : '',
+        /受付・起案|準備・受付/.test(axisText) ? '依頼内容・前提条件整理' : '',
+        /記録・保管|報告・提出|記録・報告/.test(axisText) ? '記録・報告共通機能' : '',
+        /記録・保管|報告・提出|記録・報告/.test(axisText) ? '証跡整理・出力整形' : ''
+      ];
+      const candidates = [
+        ...axisCapabilities,
+        taskTexts.some(text => /下書き|ドラフト|作成|生成|起案|帳票|資料|報告/.test(text)) ? '下書き生成共通機能' : '',
+        taskTexts.some(text => /照合|突合|確認|検算|差異|チェック|レビュー/.test(text)) ? '照合結果確認' : '',
+        taskTexts.some(text => /承認|決裁|判断|差戻|例外|可否/.test(text)) ? '判断支援・例外整理' : '',
+        taskTexts.some(text => /読取|抽出|取込|入力|受付|文書|証憑/.test(text)) ? '入力受付・文書読取' : '',
+        taskTexts.some(text => /根拠|要約|説明|理由|注意点/.test(text)) ? '根拠要約・説明生成' : '',
+        taskTexts.some(text => /出力|連携|登録|転記|CSV|Excel|システム/.test(text)) ? '出力整形・連携準備' : '',
+        /監査|ログ|証跡|履歴/.test(textPool) ? '監査ログ・証跡記録' : ''
+      ];
+      const result = uniqueCompact(candidates, 5);
+      return result.length ? result : ['対象タスク共通機能', '根拠要約・説明生成', '出力整形・連携準備'];
+    }
+
+    function individualAgentResponsibilities(cells, rows, toBeTasks, textPool) {
+      const phrases = uniqueCompact([
+        ...cells.flatMap(cell => splitDesignPhrases(cell.reason || '').slice(0, 1)),
+        ...toBeTasks.flatMap(task => splitDesignPhrases(task.prerequisite_or_risk || '').slice(0, 1)),
+        /例外|差戻|不備|再承認/.test(textPool) ? '例外条件、不備時の差戻し、再承認要否を業務別に判定' : '',
+        /会計|台帳|申請|稟議|Excel|CSV|帳票|文書/.test(textPool) ? '参照先と出力形式を業務分類・業務種別ごとに選択' : '',
+        '対象業務の判断順序、確認観点、最終出力を個別化'
+      ], 4);
+      return phrases.length ? phrases : ['対象業務の判断順序、確認観点、最終出力を個別化'];
+    }
+
+    function buildAgentDesignOverview(cells, data, group, flowStep) {
+      const rows = heatmapAxisRows(cells, data);
+      if (!cells.length || !rows.length) return null;
+      const axisLabel = [group, flowStep].filter(Boolean).join(' / ') || 'AI導入効果';
+      const toBeTasks = cells.flatMap(cell => toBeTasksForCell(cell));
+      const textPool = [
+        axisLabel,
+        ...cells.flatMap(cell => [
+          cell.ai_use_case,
+          cell.reason,
+          cell.source_reference,
+          ...toBeTasksForCell(cell).flatMap(task => [
+            task.to_be_task,
+            task.ai_role,
+            task.human_review,
+            task.prerequisite_or_risk
+          ])
+        ]),
+        ...rows.flatMap(({ task }) => [
+          task['タスク名'],
+          task['業務内容詳細'],
+          task['現状課題'],
+          task['マトリクス横軸']
+        ])
+      ].filter(Boolean).join(' ');
+      const applicationTargets = uniqueCompactBy(
+        rows.map(({ cell, task }) => {
+          const businessType = cell.business_type || task['業務種別'] || '';
+          const category = cell.category || task['業務分類'] || '';
+          const taskName = task['タスク名'] || '';
+          const target = [businessType || category, taskName].filter(Boolean).join(' / ') || flowStep || category;
+          if (!target) return null;
+          const cellText = [
+            cell.ai_use_case, cell.reason,
+            ...toBeTasksForCell(cell).flatMap(t => [t.to_be_task, t.ai_role, t.human_review, t.prerequisite_or_risk]),
+            task['タスク名'], task['業務内容詳細'], task['現状課題']
+          ].filter(Boolean).join(' ');
+          return {
+            name: target,
+            condition: businessType
+              ? `${businessType}の${taskName || flowStep || '対象タスク'}に適用`
+              : `${category}の対象業務に適用`,
+            score: Number(cell.score) || 0,
+            skills: buildCellSkills(cellText, task),
+            tools: buildCellTools(cellText)
+          };
+        }).filter(Boolean),
+        obj => obj.name,
+        6
+      );
+      const prioritizedTargets = [...applicationTargets].sort((a, b) => (b.score || 0) - (a.score || 0));
+      const rawSkills = uniqueCompact([
+        /予算|収支|積算|勘定科目/.test(textPool) ? '勘定科目・予算判定' : '',
+        /請求|収納|領収|帳票/.test(textPool) ? '帳票読取・作成' : '',
+        /契約|見積|稟議/.test(textPool) ? '契約・見積条件照合' : '',
+        /給与|賞与|年末調整|社会保険|源泉/.test(textPool) ? '給与・控除計算' : '',
+        /決算|月次|仕訳|計算書類|試算表/.test(textPool) ? '仕訳・決算整理' : '',
+        /固定資産|棚卸|債権|債務|台帳/.test(textPool) ? '台帳照合・差異検知' : '',
+        /承認|決裁|差戻|レビュー/.test(textPool) ? '承認条件チェック' : '',
+        /例外|不備|差戻|再承認/.test(textPool) ? '例外・差戻し判定' : '',
+        /下書き|作成|生成|起案/.test(textPool) ? '下書き生成・根拠付与' : '',
+        '根拠要約・出力整形'
+      ], 8);
+      const targetSkills = uniqueCompact(prioritizedTargets.flatMap(target => target.skills || []), 8);
+      const skills = targetSkills.length
+        ? (targetSkills.length > 5 ? [...targetSkills.slice(0, 4), `その他のスキル`] : targetSkills)
+        : (rawSkills.length > 5 ? [...rawSkills.slice(0, 4), `他${rawSkills.length - 4}スキル`] : rawSkills);
+      const rawTools = uniqueCompact([
+        /会計|仕訳|試算表|計算書類/.test(textPool) ? '会計システム' : '',
+        /給与|賞与|年末調整|社会保険|源泉/.test(textPool) ? '給与計算システム' : '',
+        /台帳|固定資産|債権|債務|棚卸/.test(textPool) ? '各種台帳DB' : '',
+        /Excel|CSV|取込|出力/.test(textPool) ? 'Excel / CSV入出力' : '',
+        /申請|稟議|承認/.test(textPool) ? '申請・承認ワークフロー' : '',
+        /帳票|報告|資料|文書|証憑/.test(textPool) ? '文書保管システム' : ''
+      ], 6);
+      const tools = rawTools;
+      const flowStepLabel = flowStep || group || 'AI導入対象業務';
+      return {
+        title: `「${flowStepLabel}」共通AI機能の展開イメージ`,
+        description: '業務別にエージェントを乱立させず、ヒートマップ横軸のタスク単位で共通AI機能を作り、スキルで業務固有の判断ルール・参照知識・出力形式を切り替える構成です。',
+        commonParts: commonAgentCapabilities(toBeTasks, textPool, group, flowStep),
+        applicationTargets: prioritizedTargets,
+        individualResponsibilities: individualAgentResponsibilities(cells, rows, toBeTasks, textPool),
+        skills,
+        tools,
+        userLayerText: `${flowStepLabel}に関する依頼内容・対象資料・前提条件を入力し、共通AI機能へ処理を依頼する。`,
+        commonLayerText: `${flowStepLabel}という対象タスク種別で再利用する共通機能を基盤化する。業務固有の判断条件、参照知識、出力形式はスキルで切り替え、外部接続先はツールで扱う。`,
+        rationaleLabels: {
+          common: ['対象タスク種別で再利用できる処理を共通化', '計算・作成、照合、入力、承認などの横軸単位で基盤機能化'],
+          agent: ['判断順序・例外条件・出力形式は業務別', '代表タスクごとに参照知識と適用ルールをスキルで切り替え'],
+          skill: ['業務固有の判断・読取・照合・生成能力を管理', 'マニュアル等は具体名付きの参照スキルとして適用'],
+          tool: ['スキルが利用する外部接続先', '参照・更新・出力に使うシステムやデータ接続']
+        }
+      };
+    }
+
+    function renderAgentDesignOverview(overview) {
+      if (!overview) return '';
+      const rationaleChips = (items) => (items || [])
+        .map(item => `<span class="axis-agent-rationale">${escapeHtml(item)}</span>`)
+        .join('');
+      const miniItems = (items) => (items || [])
+        .map(item => `<span class="axis-agent-mini-item">${escapeHtml(item)}</span>`)
+        .join('');
+      const commonChips = overview.commonParts
+        .map(item => `<span class="axis-agent-chip">${escapeHtml(item)}</span>`)
+        .join('');
+      const targetList = (overview.applicationTargets || []).length
+        ? overview.applicationTargets
+        : [{ name: '対象業務', condition: '対象タスク種別を含む業務に適用', skills: [], tools: [] }];
+      const targetCards = targetList.map(target => {
+        const skillTags = (target.skills || [])
+          .map(s => `<span class="axis-agent-node-tag skill">${escapeHtml(s)}</span>`).join('');
+        const toolTags = (target.tools || [])
+          .map(t => `<span class="axis-agent-node-tag tool">${escapeHtml(t)}</span>`).join('');
+        return `
+          <div class="axis-agent-node agent">
+            <div class="axis-agent-node-label">${escapeHtml(target.name)}</div>
+            <div class="axis-agent-node-condition">▶ ${escapeHtml(target.condition)}</div>
+            ${skillTags ? `<div class="axis-agent-node-section-title">スキル</div><div class="axis-agent-node-tag-row">${skillTags}</div>` : ''}
+            ${toolTags ? `<div class="axis-agent-node-section-title">参照・連携先</div><div class="axis-agent-node-tag-row">${toolTags}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      const skillItems = overview.skills.length ? overview.skills : ['業務別判断・生成スキル'];
+      const toolItems = overview.tools.length ? overview.tools : ['既存システム・データ接続'];
+      return `
+        <section class="axis-agent-overview">
+          <h4>${escapeHtml(overview.title)}</h4>
+          <p>${escapeHtml(overview.description)}</p>
+          <div class="axis-agent-legend">
+            <span class="axis-agent-legend-item"><span class="axis-agent-legend-box common"></span>共通AI機能（四角＝対象タスク種別で再利用する機能）</span>
+            <span class="axis-agent-legend-item"><span class="axis-agent-legend-box agent"></span>適用先業務（四角＝共通機能を展開する業務）</span>
+            <span class="axis-agent-legend-item"><span class="axis-agent-legend-dot skill"></span>スキル（丸タグ＝業務固有の判断・読取・照合・生成能力）</span>
+            <span class="axis-agent-legend-item"><span class="axis-agent-legend-dot tool"></span>ツール（丸タグ＝参照・更新する外部接続先）</span>
+          </div>
+          <div class="axis-agent-layout">
+            <div class="axis-agent-diagram">
+              <div class="axis-agent-flow">
+                <div class="axis-agent-layer-row">
+                  <div class="axis-agent-layer-badge">User Layer</div>
+                  <div class="axis-agent-layer-content">
+                    <div class="axis-agent-layer user">
+                      <div class="axis-agent-layer-title">利用者・業務担当</div>
+                      <div class="axis-agent-layer-text">${escapeHtml(overview.userLayerText)}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="axis-agent-connector">↓</div>
+                <div class="axis-agent-layer-row">
+                  <div class="axis-agent-layer-badge">Common Layer</div>
+                  <div class="axis-agent-layer-content">
+                    <div class="axis-agent-layer common">
+                      <div class="axis-agent-layer-title">共通AI機能</div>
+                      <div class="axis-agent-layer-text">${escapeHtml(overview.commonLayerText)}</div>
+                      <div class="axis-agent-chip-row">${commonChips}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="axis-agent-connector">↓</div>
+                <div class="axis-agent-layer-row">
+                  <div class="axis-agent-layer-badge">Apply Layer</div>
+                  <div class="axis-agent-layer-content">
+                    <div class="axis-agent-agent-grid">${targetCards}</div>
+                  </div>
+                </div>
+                <div class="axis-agent-connector">↓</div>
+                <div class="axis-agent-layer-row">
+                  <div class="axis-agent-layer-badge">Replace Layer</div>
+                  <div class="axis-agent-layer-content">
+                    <div class="axis-agent-branch-grid">
+                      <div class="axis-agent-layer skills">
+                        <div class="axis-agent-layer-title">スキル</div>
+                        <div class="axis-agent-layer-text">業務固有の判断、読取、照合、生成、要約、承認条件チェックを担う。マニュアル等は具体名付きの参照スキルとして扱う。</div>
+                        <div class="axis-agent-mini-list">${miniItems(skillItems)}</div>
+                      </div>
+                      <div class="axis-agent-layer systems">
+                        <div class="axis-agent-layer-title">ツール</div>
+                        <div class="axis-agent-layer-text">スキルが参照、更新、出力に使う外部接続先。既存システム、台帳DB、文書保管、CSV入出力などを扱う。</div>
+                        <div class="axis-agent-mini-list">${miniItems(toolItems)}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderHeatmapAxisTaskTable(cells, data) {
+      const rows = heatmapAxisRows(cells, data);
+      if (!rows.length) {
+        return emptyDetailMessage('この横軸に該当するヒートマップセルはありません。');
+      }
+      return `
+        <div class="axis-task-table-wrap">
+          <table class="axis-task-table">
+            <thead>
+              <tr>
+                <th class="col-category">業務分類</th>
+                <th class="col-business">業務種別</th>
+                <th class="col-task">As-Isタスク</th>
+                <th class="col-burden">現状負担</th>
+                <th class="col-effect">AI導入効果</th>
+                <th class="col-saving">削減見込み</th>
+                <th class="col-tobe">To-Beタスク</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(({ cell, task }) => {
+                const top3Index = top3IndexForCell(data, cell);
+                const toBeItems = toBeTasksTextForCell(cell)
+                  .map(label => `<li>${escapeHtml(label)}</li>`)
+                  .join('');
+                const top3Button = top3Index >= 0
+                  ? `<button class="axis-action-btn" onclick="openModal(${top3Index})">To-Beフローを見る</button>`
+                  : '';
+                return `
+                  <tr>
+                    <td>${escapeHtml(task['業務分類'] || cell.category || '')}</td>
+                    <td>${escapeHtml(task['業務種別'] || cell.business_type || '')}</td>
+                    <td>${escapeHtml(task['タスク名'] || '')}</td>
+                    <td>${escapeHtml(task['人手の負担'] || '-')}</td>
+                    <td><span style="${effectBadgeStyle(cell.effect_level)}">${escapeHtml(effectLabel(cell.effect_level) || '-')}</span></td>
+                    <td>${escapeHtml(cell.estimated_time_saved || '-')}</td>
+                    <td>
+                      <ul class="axis-task-tobe-list">${toBeItems}</ul>
+                      ${top3Button}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderToBeTaskTables(cell, data) {
+      const top3Index = top3IndexForCell(data, cell);
+      const tasks = tasksForHeatmapCell(data, cell);
+      const linkedTaskNames = tasks.map(t => t['タスク名']).filter(Boolean).join('、');
+      const toBeRows = toBeTasksForCell(cell).map((task, index) => `
+        <div class="axis-detail-section">
+          <div class="axis-detail-row-title">
+            <h4>${escapeHtml(index + 1)}. ${escapeHtml(task.to_be_task || task.step || 'To-Beタスク')}</h4>
+            <span class="axis-mini-badge">${escapeHtml(task.actor || 'AI')}</span>
+          </div>
+          ${detailTable([
+            ['AIが担う処理', task.ai_role || task.description || cell.ai_use_case],
+            ['人の確認・判断', task.human_review],
+            ['期待効果', task.expected_effect || cell.estimated_time_saved],
+            ['前提・リスク', displayRiskText(task.prerequisite_or_risk, cell.reason) || cell.reason]
+          ])}
+        </div>
+      `).join('');
+
+      const sourceTable = detailTable([
+        ['業務分類', cell.category],
+        ['業務種別', cell.business_type],
+        ['ヒートマップ軸', targetLabel(cell.category, cell.business_type, cell.flow_step, cellDisplayHeatmapGroup(data, cell))],
+        ['導入効果', effectLabel(cell.effect_level)],
+        ['対象As-Isタスク', linkedTaskNames],
+        ['スコア根拠', cell.reason]
+      ]);
+      const top3Button = top3Index >= 0
+        ? `<button class="axis-action-btn" onclick="openModal(${top3Index})">To-Beフローを見る</button>`
+        : '';
+      return `
+        <div class="axis-detail-section">
+          <div class="axis-detail-row-title">
+            <h4>${escapeHtml(cell.business_type || '')} / ${escapeHtml(cell.flow_step || '')}</h4>
+            <span class="axis-mini-badge">${escapeHtml(effectLabel(cell.effect_level) || '-')}</span>
+          </div>
+          ${sourceTable}
+          ${top3Button}
+        </div>
+        ${toBeRows}
+      `;
+    }
+
+    function renderAsIsTaskDetail(task) {
+      return `
+        <div class="axis-detail-section">
+          <div class="axis-detail-row-title">
+            <h4>${escapeHtml(task['タスク名'] || '')}</h4>
+            <span class="axis-mini-badge">${escapeHtml(task['業務種別'] || '')}</span>
+          </div>
+          ${detailTable([
+            ['業務分類', task['業務分類']],
+            ['業務種別', task['業務種別']],
+            ['タスク順', task['タスク順']],
+            ['マトリクス横軸', taskMatrixAxis(task)],
+            ['ヒートマップ軸', [taskHeatmapGroup(ANALYSIS_DATA, task), taskHeatmapStep(task)].filter(Boolean).join(' / ')],
+            ['タスク名', task['タスク名']],
+            ['業務内容詳細', task['業務内容詳細']],
+            ['現状課題', task['現状課題']],
+            ['所要時間', minutesValue(task) ? `${minutesValue(task)}分` : ''],
+            ['人手の負担', task['人手の負担']],
+            ['AI導入余地', task['AI導入余地']],
+            ['確認事項/回答', taskQuestionAnswer(task)]
+          ])}
+        </div>
+      `;
+    }
+
+    function openHeatmapAxisPanel(group, flowStep) {
+      const cells = (ANALYSIS_DATA.heatmap_cells || []).filter(cell => {
+        const cellGroup = cellDisplayHeatmapGroup(ANALYSIS_DATA, cell);
+        const sameGroup = !group || !cellGroup || cellGroup === group;
+        const sameStep = !flowStep || cell.flow_step === flowStep;
+        return sameGroup && sameStep;
+      });
+      const levels = cells.reduce((acc, cell) => {
+        acc[cell.effect_level] = (acc[cell.effect_level] || 0) + 1;
+        return acc;
+      }, {});
+      const taskCount = cells.reduce((sum, cell) => sum + tasksForHeatmapCell(ANALYSIS_DATA, cell).length, 0);
+      const summaryHtml = [
+        summaryCard('導入効果', `高:${levels.high || 0} 中:${levels.medium || 0} 低:${levels.low || 0}`),
+        summaryCard('対象As-Is', `${taskCount}件`)
+      ].join('');
+      const contentHtml = cells.length
+        ? [
+            renderHeatmapAxisTaskTable(cells, ANALYSIS_DATA),
+            renderAgentDesignOverview(buildAgentDesignOverview(cells, ANALYSIS_DATA, group, flowStep))
+          ].join('')
+        : emptyDetailMessage('この横軸に該当するヒートマップセルはありません。');
+      openAxisDetailPanel({
+        mode: 'To-Be',
+        title: [group, flowStep].filter(Boolean).join(' / ') || 'AI導入効果',
+        subtitle: 'この横軸に関連する業務とAI導入後のタスク',
+        countText: `${taskCount}タスク`,
+        summaryHtml,
+        contentHtml
+      });
+    }
+
+    function openHeatmapCellPanel(category, businessType, group, flowStep) {
+      const cell = findHeatmapCell(ANALYSIS_DATA.heatmap_cells || [], category, businessType, group, flowStep);
+      if (!cell) {
+        openAxisDetailPanel({
+          mode: 'To-Be',
+          title: targetLabel(category, businessType, flowStep, group) || 'ヒートマップセル',
+          subtitle: 'このセルに該当するAI導入効果データはありません',
+          countText: '0セル',
+          summaryHtml: [
+            summaryCard('導入効果', '-'),
+            summaryCard('対象As-Is', '0件')
+          ].join(''),
+          contentHtml: emptyDetailMessage('このセルは分析対象外、または該当タスクがないため詳細データがありません。')
+        });
+        return;
+      }
+      const tasks = tasksForHeatmapCell(ANALYSIS_DATA, cell);
+      const summaryHtml = [
+        summaryCard('導入効果', effectLabel(cell.effect_level) || '-'),
+        summaryCard('対象As-Is', `${tasks.length}件`),
+        summaryCard('削減見込み', cell.estimated_time_saved || '-')
+      ].join('');
+      openAxisDetailPanel({
+        mode: 'To-Be',
+        title: targetLabel(category, businessType, flowStep, group),
+        subtitle: 'ヒートマップセルのTo-BeタスクとAI導入効果',
+        countText: '1セル',
+        summaryHtml,
+        contentHtml: renderToBeTaskTables(cell, ANALYSIS_DATA)
+      });
+    }
+
+    function openMatrixAxisPanel(category, matrixAxis) {
+      const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(task =>
+        task['業務分類'] === category && taskMatrixAxis(task) === matrixAxis
+      );
+      const totalMinutes = tasks.reduce((sum, task) => sum + (Number(minutesValue(task)) || 0), 0);
+      const openQuestions = tasks.filter(task => String(task['確認事項'] || '').trim() && !String(task['クライアント回答'] || task.as_is_resolved_answer || '').trim()).length;
+      const summaryHtml = [
+        summaryCard('タスク数', `${tasks.length}件`),
+        summaryCard('最大負担', maxBurdenLabel(tasks)),
+        summaryCard('合計所要時間', totalMinutes ? `${totalMinutes}分` : '-'),
+        summaryCard('未確認事項', `${openQuestions}件`)
+      ].join('');
+      const contentHtml = tasks.length
+        ? tasks.map(renderAsIsTaskDetail).join('')
+        : emptyDetailMessage('このマトリクス横軸に該当するタスクはありません。');
+      openAxisDetailPanel({
+        mode: 'As-Is',
+        title: `${category} / ${matrixAxis}`,
+        subtitle: '業務整理マトリクス横軸に値がある業務種別のみ表示',
+        countText: `${tasks.length}タスク`,
+        summaryHtml,
+        contentHtml
+      });
+    }
+
+    function openMatrixCellPanel(category, businessType, matrixAxis) {
+      const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(task =>
+        task['業務分類'] === category &&
+        task['業務種別'] === businessType &&
+        taskMatrixAxis(task) === matrixAxis
+      );
+      const totalMinutes = tasks.reduce((sum, task) => sum + (Number(minutesValue(task)) || 0), 0);
+      const summaryHtml = [
+        summaryCard('タスク数', `${tasks.length}件`),
+        summaryCard('最大負担', maxBurdenLabel(tasks)),
+        summaryCard('合計所要時間', totalMinutes ? `${totalMinutes}分` : '-'),
+        summaryCard('未確認事項', `${tasks.filter(task => String(task['確認事項'] || '').trim() && !String(task['クライアント回答'] || task.as_is_resolved_answer || '').trim()).length}件`)
+      ].join('');
+      openAxisDetailPanel({
+        mode: 'As-Is',
+        title: `${category} / ${businessType} / ${matrixAxis}`,
+        subtitle: tasks.length ? 'マトリクスセル内のAs-Isタスク詳細' : 'このセルに該当するタスクはありません',
+        countText: `${tasks.length}タスク`,
+        summaryHtml,
+        contentHtml: tasks.length
+          ? tasks.map(renderAsIsTaskDetail).join('')
+          : emptyDetailMessage('このマトリクスセルには表示できるタスクがありません。')
+      });
     }
 
     function buildHeatmap(data) {
       const table = document.getElementById('heatmap-table');
       const tasks = data.matrix_tasks || [];
-      const columns = buildMatrixColumns(data, tasks);
-      const catMap = buildMatrixRowMap(tasks, columns);
+      const columns = flatHeatmapColumns(data);
+      const catMap = buildHeatmapRowMap(data, tasks, columns);
       const cells = data.heatmap_cells || [];
       const top3 = data.top3 || [];
 
       let html = '<thead><tr>';
-      html += `<th class="th-corner">業務分類</th>`;
-      html += `<th class="th-corner">業務種別</th>`;
+      html += `<th class="th-corner" rowspan="2">業務分類</th>`;
+      html += `<th class="th-corner" rowspan="2">業務種別</th>`;
+      let i = 0;
+      while (i < columns.length) {
+        const group = columns[i].group || columns[i].sub || '';
+        let span = 1;
+        while (i + span < columns.length && (columns[i + span].group || columns[i + span].sub || '') === group) span += 1;
+        html += `<th class="th-step axis-clickable" colspan="${span}" onclick='openHeatmapAxisPanel(${jsAttrString(group)}, "")'>${escapeHtml(group || 'AI導入効果')}</th>`;
+        i += span;
+      }
+      html += '</tr><tr>';
       columns.forEach(col => {
-        html += `<th class="th-step">${col.label}</th>`;
+        const group = col.group || col.sub || '';
+        html += `<th class="th-step axis-clickable" onclick='openHeatmapAxisPanel(${jsAttrString(group)}, ${jsAttrString(col.key)})'>${escapeHtml(col.label)}</th>`;
       });
       html += '</tr></thead><tbody>';
 
@@ -1128,25 +2749,29 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           if (rowIndex === 0) html += `<td class="td-category" rowspan="${rowSpan}">${category}</td>`;
           html += `<td class="td-business-type">${businessType}</td>`;
           columns.forEach(col => {
-            const cell = findHeatmapCell(cells, category, businessType, col.key);
-            if (!cell || !(stepMap.get(col.key) || []).length) {
-              html += `<td class="heatmap-cell effect-none"></td>`;
+            const group = col.group || col.sub || '';
+            const cell = findHeatmapCell(cells, category, businessType, group, col.key);
+            if (!cell || !(stepMap.get(col.heatmapKey) || []).length) {
+              html += `<td class="heatmap-cell effect-none" title="該当タスクなし" aria-label="該当タスクなし"></td>`;
               return;
             }
             const cls = effectClass(cell.effect_level);
             const lbl = effectLabel(cell.effect_level);
-            const top3Index = findTop3Index(top3, category, businessType, col.key);
+            const top3Index = findTop3Index(top3, category, businessType, group, col.key);
             const rank = top3Index + 1;
             const isTop3 = top3Index >= 0 || cell.is_top3;
+            const linkedTasks = (stepMap.get(col.heatmapKey) || []).map(t => t['タスク名']).filter(Boolean).join('、');
+            const tooltipHtml = [
+              `<strong>${escapeHtml(targetLabel(category, businessType, col.key, group))}</strong>`,
+              cell.ai_use_case ? `<div>${escapeHtml(cell.ai_use_case)}</div>` : '',
+              linkedTasks ? `<div class="tooltip-block">対象タスク: ${escapeHtml(linkedTasks)}</div>` : '',
+              cell.reason ? `<div class="tooltip-block tooltip-muted">${escapeHtml(cell.reason)}</div>` : ''
+            ].filter(Boolean).join('');
             html += `<td class="heatmap-cell has-data ${cls} ${isTop3?'top3-cell':''}"
-                        ${top3Index >= 0 ? `onclick="openModal(${top3Index})"` : ''}>`;
+                        data-tooltip-html="${tooltipAttr(tooltipHtml)}"
+                        onclick='openHeatmapCellPanel(${jsAttrString(category)}, ${jsAttrString(businessType)}, ${jsAttrString(group)}, ${jsAttrString(col.key)})'>`;
             html += `<span style="font-size:11px;font-weight:700;color:inherit;">${lbl}</span>`;
             if (isTop3 && rank > 0) html += `<span class="top3-badge">★${rank}</span>`;
-            html += `<div class="tooltip">
-              <strong style="display:block;margin-bottom:4px;">${targetLabel(category, businessType, col.key)}</strong>
-              <div style="margin-bottom:4px;font-size:11px;">${cell.ai_use_case || ''}</div>
-              <span style="color:#94a3b8;">${cell.reason || ''}</span>
-            </div>`;
             html += '</td>';
           });
           html += '</tr>';
@@ -1163,7 +2788,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       tbody.innerHTML = (data.top3 || []).map((item, i) => {
         const businessType = top3BusinessType(item);
         const level = (() => {
-          const cell = findHeatmapCell(data.heatmap_cells || [], item.target_category, businessType, item.target_flow_step);
+          const cell = findHeatmapCell(data.heatmap_cells || [], item.target_category, businessType, top3HeatmapGroup(item), item.target_flow_step);
           return cell ? cell.effect_level : null;
         })();
         return `
@@ -1173,7 +2798,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           </td>
           <td>
             <div class="font-semibold text-white">${item.target_business || item.title}</div>
-            <div class="text-xs text-slate-400 mt-0.5">${targetLabel(item.target_category, businessType, item.target_flow_step)}</div>
+            <div class="text-xs text-slate-400 mt-0.5">${targetLabel(item.target_category, businessType, item.target_flow_step, top3HeatmapGroup(item))}</div>
           </td>
           <td>
             <span class="text-sm text-slate-300">${item.current_issue_short || item.current_issue || ''}</span>
@@ -1193,10 +2818,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       if (!item) return;
 
       document.getElementById('modal-rank').textContent = `TOP${item.rank}`;
-      document.getElementById('modal-meta').textContent = targetLabel(item.target_category, top3BusinessType(item), item.target_flow_step);
+      document.getElementById('modal-meta').textContent = targetLabel(item.target_category, top3BusinessType(item), item.target_flow_step, top3HeatmapGroup(item));
       document.getElementById('modal-title').textContent = item.title;
       document.getElementById('modal-solution').textContent = item.ai_solution || '';
-      document.getElementById('modal-issue').textContent = item.current_issue || '';
       document.getElementById('modal-risks').textContent = item.risks || '';
       document.getElementById('detail-effect').textContent = item.expected_effect || '';
 
@@ -1229,7 +2853,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
 
       const rank = item.rank;
       renderDrawio('tobe-diagram-container', (DRAWIO_XML_MAP || {})[`top${rank}_to_be`]);
-      renderDrawio('asis-diagram-container', (DRAWIO_XML_MAP || {})[`top${rank}_as_is`]);
 
       // draw.io ファイルリンク
       const ff = item.flow_files || {};
@@ -1242,7 +2865,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           ${label}（.drawio）
         </a>` : '';
       document.getElementById('tobe-drawio-link-area').innerHTML = drawioLinkHtml(ff.to_be_drawio, 'To-Be業務フローを開く');
-      document.getElementById('asis-drawio-link-area').innerHTML = drawioLinkHtml(ff.as_is_drawio, 'As-Is業務フローを開く');
 
       switchTab('tobe');
       document.getElementById('modal').classList.add('active');
@@ -1290,7 +2912,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     }
 
     function switchTab(tab) {
-      ['tobe', 'asis', 'detail'].forEach(t => {
+      ['tobe', 'detail'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
         document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
       });
@@ -1304,6 +2926,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         document.getElementById('modal').classList.remove('active');
+        closeAxisDetailPanel();
       }
     });
 
@@ -1373,6 +2996,89 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       }
     }
 
+    function toBusinessTypeRowId(category, businessType) {
+      return 'bt' + btoa(encodeURIComponent(category + '___' + businessType)).replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function businessTypeTasks(category, businessType) {
+      return (ANALYSIS_DATA.matrix_tasks || []).filter(task =>
+        task['業務分類'] === category && task['業務種別'] === businessType
+      );
+    }
+
+    function businessTypeOpenQuestionCount(category, businessType) {
+      return businessTypeTasks(category, businessType).filter(task =>
+        String(task['確認事項'] || '').trim() &&
+        !String(task['クライアント回答'] || task.as_is_resolved_answer || '').trim()
+      ).length;
+    }
+
+    function resolveBusinessTypeFlowKey(category, businessType) {
+      const taskFlowKey = businessTypeTasks(category, businessType)
+        .map(task => task.as_is_business_type_flow_key)
+        .find(key => key && DRAWIO_XML_MAP && DRAWIO_XML_MAP[key]);
+      if (taskFlowKey) return taskFlowKey;
+      return resolveMatrixFlowKey(category, businessType);
+    }
+
+    function switchBusinessTypeFlow(category, businessType, rowId, mode) {
+      const flowBusinessType = mode === 'category' ? null : businessType;
+      const key = flowBusinessType
+        ? resolveBusinessTypeFlowKey(category, flowBusinessType)
+        : resolveMatrixFlowKey(category, null);
+      const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
+      const processNodes = parseProcessNodes(xml);
+      const numMap = buildNumMap(processNodes);
+      renderDrawio('bt-expand-diagram-' + rowId, addNumbersToDrawioXml(xml, numMap));
+      FeedbackManager.renderQAPanelInto(
+        document.getElementById('bt-expand-qa-' + rowId),
+        category,
+        processNodes,
+        numMap,
+        businessType
+      );
+      const countEl = document.getElementById('bt-expand-qa-count-' + rowId);
+      if (countEl) countEl.textContent = '未確認事項: ' + businessTypeOpenQuestionCount(category, businessType) + '件';
+      document.querySelectorAll('#bt-expand-toolbar-' + rowId + ' .cat-flow-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.flowMode === (mode || 'business'));
+      });
+    }
+
+    function renderBusinessTypeExpandPane(category, businessType, rowId) {
+      const toolbarEl = document.getElementById('bt-expand-toolbar-' + rowId);
+      if (toolbarEl) {
+        toolbarEl.innerHTML = '';
+        const businessBtn = document.createElement('button');
+        businessBtn.className = 'cat-flow-tab active';
+        businessBtn.textContent = businessType + 'のAs-Is';
+        businessBtn.dataset.flowMode = 'business';
+        businessBtn.onclick = () => switchBusinessTypeFlow(category, businessType, rowId, 'business');
+        toolbarEl.appendChild(businessBtn);
+
+        const categoryBtn = document.createElement('button');
+        categoryBtn.className = 'cat-flow-tab';
+        categoryBtn.textContent = '全体像';
+        categoryBtn.dataset.flowMode = 'category';
+        categoryBtn.onclick = () => switchBusinessTypeFlow(category, businessType, rowId, 'category');
+        toolbarEl.appendChild(categoryBtn);
+      }
+      switchBusinessTypeFlow(category, businessType, rowId, 'business');
+    }
+
+    function toggleBusinessTypeExpand(category, businessType, totalCols) {
+      const rowId = toBusinessTypeRowId(category, businessType);
+      const expandRow = document.getElementById('bt-expand-' + rowId);
+      const arrow = document.getElementById('bt-arrow-' + rowId);
+      if (!expandRow) return;
+      const isOpen = expandRow.style.display !== 'none';
+      expandRow.style.display = isOpen ? 'none' : 'table-row';
+      if (arrow) arrow.textContent = isOpen ? '▸' : '▾';
+      if (!isOpen && !expandRow.dataset.rendered) {
+        expandRow.dataset.rendered = '1';
+        renderBusinessTypeExpandPane(category, businessType, rowId);
+      }
+    }
+
     function parseProcessNodes(xml) {
       if (!xml) return {};
       const doc = new DOMParser().parseFromString(xml, 'text/xml');
@@ -1438,7 +3144,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       allBtn.onclick = () => {
         filterArea.querySelectorAll('.matrix-filter-btn').forEach(b => b.classList.remove('active'));
         allBtn.classList.add('active');
-        renderMatrix(allTasks, columns);
+        renderMatrix(allTasks, null);
       };
       filterArea.appendChild(allBtn);
 
@@ -1447,12 +3153,12 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         btn.onclick = () => {
           filterArea.querySelectorAll('.matrix-filter-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          renderMatrix(allTasks.filter(t => t['業務分類'] === cat), columns);
+          renderMatrix(allTasks.filter(t => t['業務分類'] === cat), buildMatrixColumns(data, allTasks.filter(t => t['業務分類'] === cat)));
         };
         filterArea.appendChild(btn);
       });
 
-      renderMatrix(allTasks, columns);
+      renderMatrix(allTasks, null);
     }
 
     function burdenClass(v) {
@@ -1474,7 +3180,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     }
 
     function matrixCellKey(task, columns, useCommonStep) {
-      if (useCommonStep && task['共通ステップ']) return String(task['共通ステップ']);
+      if (useCommonStep && taskMatrixAxis(task)) return taskMatrixAxis(task);
       const order = Number(task['タスク順']);
       if (!Number.isFinite(order) || order < 1) return '';
       return useCommonStep ? (columns[order - 1] || {}).key || '' : String(order);
@@ -1500,18 +3206,27 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       ].join('\n');
     }
 
-    function renderMatrixCell(tasksInCell) {
-      if (!tasksInCell.length) return '<td class="tl-cell"></td>';
+    function matrixMinutesLabel(task) {
+      const minutes = minutesValue(task);
+      return minutes === '' || minutes === undefined || minutes === null ? '所要 -' : `所要 ${minutes}分/件`;
+    }
+
+    function matrixBurdenLabel(task) {
+      return `負担 ${task['人手の負担'] || '-'}`;
+    }
+
+    function renderMatrixCell(tasksInCell, category, businessType, matrixAxis) {
+      if (!tasksInCell.length) return '<td class="tl-cell is-empty" title="該当タスクなし"></td>';
       const burdCls = highestBurdenClass(tasksInCell);
-      const tip = tasksInCell.map(matrixTaskTooltip).join('\n\n---\n\n').replace(/"/g, '&quot;');
-      let html = `<td class="tl-cell ${burdCls}" data-tooltip="${tip}">`;
+      const tip = tasksInCell.map(matrixTaskTooltip).join('\n\n---\n\n');
+      let html = `<td class="tl-cell is-clickable ${burdCls}" data-tooltip-text="${tooltipAttr(tip)}" onclick='openMatrixCellPanel(${jsAttrString(category)}, ${jsAttrString(businessType)}, ${jsAttrString(matrixAxis)})'>`;
       html += '<div class="tl-cell-stack">';
       tasksInCell.forEach(t => {
         html += '<div class="tl-cell-item">';
-        html += `<div class="tl-cell-name">${t['タスク名']}</div>`;
+        html += `<div class="tl-cell-name">${escapeHtml(t['タスク名'])}</div>`;
         html += `<div class="tl-cell-badges">`;
-        html += `<span class="tl-cell-time">${t['所要時間_分'] || t['1件あたり所要時間_分'] || '—'}</span>`;
-        html += `<span class="burden-${burdenClass(t['人手の負担'])}" style="margin-left:4px;">${t['人手の負担'] || '—'}</span>`;
+        html += `<span class="tl-cell-time">${escapeHtml(matrixMinutesLabel(t))}</span>`;
+        html += `<span class="tl-cell-burden-label burden-${burdenClass(t['人手の負担'])}">${escapeHtml(matrixBurdenLabel(t))}</span>`;
         html += `</div></div>`;
       });
       html += '</div></td>';
@@ -1522,49 +3237,74 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       document.getElementById('matrix-count').textContent = tasks.length;
       if (!tasks.length) { document.getElementById('matrix-table').innerHTML = ''; return; }
 
-      const catMap = buildMatrixRowMap(tasks, columns);
+      const singleTableColumns = columns || buildMatrixColumns(ANALYSIS_DATA, tasks);
+      const catMap = buildMatrixRowMap(tasks, singleTableColumns);
+      const maxCategoryCols = Math.max(...[...new Set(tasks.map(t => t['業務分類']))].map(cat =>
+        buildMatrixColumns(ANALYSIS_DATA, tasks.filter(t => t['業務分類'] === cat)).length
+      ));
+      const totalCols = 2 + (columns ? columns.length : maxCategoryCols);
 
-      const totalCols = 2 + columns.length;
-
-      let html = '<thead><tr>';
-      html += `<th class="tl-col-cat" style="background:#334155;border-bottom:2px solid #475569;">業務分類</th>`;
-      html += `<th class="tl-col-type" style="background:#334155;border-bottom:2px solid #475569;">業務種別</th>`;
-      columns.forEach(col => {
-        html += `<th class="tl-step-header" style="background:#334155;border-bottom:2px solid #475569;">` +
-          `<div style="color:#94a3b8;font-size:12px;font-weight:700;">${col.label}</div>` +
-          `<div style="color:#475569;font-size:10px;font-weight:400;margin-top:2px;">${col.sub || ''}</div>` +
+      function renderMatrixAxisRow(cat, categoryColumns, categoryTotalCols) {
+        let row = '<tr class="matrix-axis-row">';
+        row += `<th class="matrix-section-axis" colspan="2">` +
+          `<div class="matrix-section-cat">${cat}</div>` +
+          `<div class="matrix-section-label">業務フロー工程</div>` +
           `</th>`;
-      });
-      html += '</tr></thead><tbody>';
+        categoryColumns.forEach(col => {
+          row += `<th class="tl-step-header axis-clickable" onclick='openMatrixAxisPanel(${jsAttrString(cat)}, ${jsAttrString(col.key)})'>` +
+            `<div style="color:#cbd5e1;font-size:12px;font-weight:800;">${col.label}</div>` +
+            `<div style="color:#64748b;font-size:10px;font-weight:600;margin-top:2px;">${col.sub || ''}</div>` +
+            `</th>`;
+        });
+        for (let pad = categoryTotalCols; pad < totalCols; pad++) row += '<td class="matrix-pad-cell"></td>';
+        row += '</tr>';
+        return row;
+      }
+
+      let html = '<tbody>';
 
       catMap.forEach((typeMap, cat) => {
+        const categoryTasks = tasks.filter(t => t['業務分類'] === cat);
+        const categoryColumns = columns || buildMatrixColumns(ANALYSIS_DATA, categoryTasks);
+        const categoryMap = buildMatrixRowMap(categoryTasks, categoryColumns);
+        const categoryTypeMap = categoryMap.get(cat) || typeMap;
+        const categoryTotalCols = 2 + categoryColumns.length;
         const catId = toCatId(cat);
-        html += `<tr class="tl-group-row" onclick="toggleCatExpand('${cat.replace(/'/g, "\\'")}', ${totalCols})">` +
+        html += `<tr class="tl-group-row">` +
           `<td colspan="${totalCols}">` +
           `<div class="tl-group-row-inner">` +
-          `<span id="arrow-${catId}">▸</span>` +
-          `<span>${cat}</span>` +
+          `<span>${escapeHtml(cat)}</span>` +
           `<div class="tl-group-dots" id="tl-dots-${catId}"></div>` +
           `</div></td></tr>`;
-        html += `<tr class="cat-expand-row" id="expand-${catId}" style="display:none;">` +
-          `<td colspan="${totalCols}">` +
-          `<div class="cat-expand-pane">` +
-          `<div class="cat-expand-toolbar" id="expand-toolbar-${catId}"></div>` +
-          `<div class="cat-expand-diagram" id="expand-diagram-${catId}"></div>` +
-          `<div class="cat-expand-qa" id="expand-qa-${catId}"></div>` +
-          `</div>` +
-          `<div class="cat-expand-actions">` +
-          `<span id="expand-qa-count-${catId}" style="font-size:11px;color:#64748b;"></span>` +
-          `<button onclick="FeedbackManager.markCategoryComplete('${cat.replace(/'/g, "\\'")}','${catId}')" ` +
-          `style="padding:6px 14px;background:#1e3a5f;color:#60a5fa;border:1px solid #3b82f6;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">` +
-          `このカテゴリの回答を完了にする</button>` +
-          `</div></td></tr>`;
-        typeMap.forEach((stepMap, type) => {
+        html += renderMatrixAxisRow(cat, categoryColumns, categoryTotalCols);
+        categoryTypeMap.forEach((stepMap, type) => {
+          const rowId = toBusinessTypeRowId(cat, type);
+          const openQuestions = businessTypeOpenQuestionCount(cat, type);
           html += '<tr>';
-          html += `<td class="tl-col-cat"></td>`;
-          html += `<td class="tl-col-type">${type}</td>`;
-          columns.forEach(col => { html += renderMatrixCell(stepMap.get(col.key) || []); });
+          html += `<td class="tl-col-type" colspan="2">` +
+            `<div class="bt-type-label">` +
+            `<button class="bt-expand-btn" id="bt-arrow-${rowId}" onclick='event.stopPropagation(); toggleBusinessTypeExpand(${jsAttrString(cat)}, ${jsAttrString(type)}, ${totalCols})' aria-label="As-Isフローを表示">▸</button>` +
+            `<span>${escapeHtml(type)}</span>` +
+            (openQuestions ? `<span class="bt-question-badge">未確認 ${openQuestions}</span>` : '') +
+            `</div>` +
+            `</td>`;
+          categoryColumns.forEach(col => { html += renderMatrixCell(stepMap.get(col.key) || [], cat, type, col.key); });
+          for (let pad = categoryTotalCols; pad < totalCols; pad++) html += '<td class="tl-cell is-empty"></td>';
           html += '</tr>';
+          html += `<tr class="business-type-expand-row" id="bt-expand-${rowId}" style="display:none;">` +
+            `<td colspan="${totalCols}">` +
+            `<div class="business-type-expand-pane">` +
+            `<div class="business-type-expand-toolbar" id="bt-expand-toolbar-${rowId}"></div>` +
+            `<div class="business-type-expand-diagram" id="bt-expand-diagram-${rowId}"></div>` +
+            `<div class="business-type-expand-qa" id="bt-expand-qa-${rowId}"></div>` +
+            `<div class="business-type-expand-actions">` +
+            `<span id="bt-expand-qa-count-${rowId}" style="font-size:11px;color:#64748b;"></span>` +
+            `<button onclick='FeedbackManager.markBusinessTypeComplete(${jsAttrString(cat)}, ${jsAttrString(type)}, ${jsAttrString(rowId)})' ` +
+            `style="padding:6px 14px;background:#1e3a5f;color:#60a5fa;border:1px solid #3b82f6;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">` +
+            `この業務種別の回答を完了にする</button>` +
+            `</div>` +
+            `</div>` +
+            `</td></tr>`;
         });
       });
 
@@ -1578,7 +3318,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
 
     const FeedbackManager = (function() {
       const storageKey = 'ai_feedback_' + ((ANALYSIS_DATA.metadata || {}).created_at || 'unknown').replace(/-/g, '');
-      let state = { version: '1.0', answers: {} };
+      let state = { version: '1.2', answers: {}, category_updates: {} };
       let _saveTimer = null;
       let _autosaveTimer = null;
       let _currentCategory = null;
@@ -1586,7 +3326,20 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       function load() {
         try {
           const raw = localStorage.getItem(storageKey);
-          if (raw) { const parsed = JSON.parse(raw); if (parsed.answers) state = parsed; }
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed.answers) state = { version: '1.2', answers: {}, category_updates: {}, ...parsed };
+            if (!state.category_updates) state.category_updates = {};
+            if (parsed.flow_updates && !Object.keys(state.category_updates).length) {
+              Object.entries(parsed.flow_updates).forEach(([key, value]) => {
+                const category = String(key || '').split('___')[0] || '';
+                const note = String(value || '').trim();
+                if (!category || !note) return;
+                const existing = String(state.category_updates[category] || '').trim();
+                state.category_updates[category] = existing && existing !== note ? existing + ' / ' + note : note;
+              });
+            }
+          }
         } catch(e) {}
       }
 
@@ -1600,7 +3353,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       }
 
       function taskKey(task) {
-        return task['業務分類'] + '___' + task['業務種別'] + '___' + (task['共通ステップ'] || task['タスク順'] || '') + '___' + task['タスク名'];
+        return task['業務分類'] + '___' + task['業務種別'] + '___' + (taskMatrixAxis(task) || task['タスク順'] || '') + '___' + task['タスク名'];
       }
 
       function hasResolvedServerAnswer(task) {
@@ -1619,6 +3372,25 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         updateFooterProgress();
         updateGroupRowDots(_currentCategory);
         updateMatrixFbProgress();
+      }
+
+      function setCategoryUpdate(category, value) {
+        if (!state.category_updates) state.category_updates = {};
+        state.category_updates[category] = value;
+        save();
+      }
+
+      function categoryUpdateValue(category, tasks) {
+        const saved = state.category_updates || {};
+        if (String(saved[category] || '').trim()) return saved[category];
+        const analysisUpdates = ANALYSIS_DATA.as_is_category_updates || {};
+        if (String(analysisUpdates[category] || '').trim()) return analysisUpdates[category];
+        const notes = [];
+        (tasks || []).forEach(task => {
+          const note = String(task.as_is_update_note || task['As-Isフロー更新内容'] || '').trim();
+          if (note && !notes.includes(note)) notes.push(note);
+        });
+        return notes.join(' / ');
       }
 
       function getProgress(category) {
@@ -1712,34 +3484,53 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
 
       function renderQAPanelInto(listEl, category, processNodes, numMap, businessType) {
         if (!listEl) return;
-        const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
+        const allFlowTasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
+          t['業務分類'] === category && (!businessType || t['業務種別'] === businessType)
+        );
+        const tasks = allFlowTasks.filter(t =>
           t['業務分類'] === category && (!businessType || t['業務種別'] === businessType) && isOpenQuestion(t)
         );
         const countEl = document.getElementById('expand-qa-count-' + toCatId(category));
         if (countEl) {
           countEl.textContent = (businessType ? businessType + ' / ' : '') + '確認事項: ' + tasks.length + '件';
         }
-        if (tasks.length === 0) {
+        if (allFlowTasks.length === 0) {
           listEl.innerHTML = '<p style="font-size:13px;color:#475569;padding:16px;">このカテゴリに確認事項はありません。</p>';
           return;
         }
 
-        let displayNum = 1;
-        listEl.innerHTML = tasks.map((t, taskIdx) => {
+        const categoryNoteVal = categoryUpdateValue(category, allFlowTasks);
+        const flowUpdateHtml = '<div class="fb-flow-card' + (categoryNoteVal ? ' has-note' : '') + '" data-categorykey="' + escAttr(category) + '">' +
+          '<div class="fb-flow-heading">' +
+          '<span class="fb-q-num">ⓘ</span>' +
+          '<div>' +
+          '<div class="fb-flow-title">' + escHtml(category) + '</div>' +
+          '<div class="fb-flow-sub">業務分類単位のAs-Isフロー反映メモ</div>' +
+          '</div>' +
+          '</div>' +
+          '<label class="fb-field-label">As-Isフロー更新内容_業務分類</label>' +
+          '<textarea class="fb-q-textarea" rows="4" placeholder="例: この業務分類では会計責任者承認後に差戻しが発生する。例外時は担当者が修正し再承認する。"' +
+          ' onchange="FeedbackManager.handleCategoryUpdate(\'' + escAttr(category) + '\', this.value)"' +
+          ' oninput="FeedbackManager.handleCategoryUpdateInput(\'' + escAttr(category) + '\', this)">' + escHtml(categoryNoteVal) + '</textarea>' +
+          '</div>';
+
+        if (tasks.length === 0) {
+          listEl.innerHTML = '<p style="font-size:13px;color:#475569;padding:8px 2px;">この表示範囲に未回答の確認事項はありません。</p>' + flowUpdateHtml;
+          return;
+        }
+
+        const qaHtml = tasks.map((t, taskIdx) => {
           const pid = t.as_is_node_id && processNodes[t.as_is_node_id] ? t.as_is_node_id : matchProcessId(t['タスク名'], processNodes);
-          const n = pid ? (numMap[parseInt(pid.replace('process-', ''), 10)] || displayNum) : displayNum;
-          displayNum++;
+          const n = pid ? (numMap[parseInt(pid.replace('process-', ''), 10)] || (taskIdx + 1)) : (taskIdx + 1);
           const circle = n <= 20 ? String.fromCodePoint(0x245F + n) : '[' + n + ']';
           const key = taskKey(t);
           const saved = state.answers[key] || {};
-          const isAnswered = (saved.answer && saved.answer.length >= 5) || saved.skipped;
-          const isSkipped = saved.skipped;
           const answerVal = saved.answer || '';
           const timeVal = saved.time_after || '';
           const burdenVal = saved.burden_after || '';
-          const freqVal = saved.frequency || '';
           const volumeVal = saved.volume || '';
-          const aiVal = saved.ai_after || '';
+          const isAnswered = (answerVal && answerVal.length >= 5) || saved.skipped;
+          const isSkipped = saved.skipped;
 
           return '<div class="fb-q-card' + (isSkipped ? ' skipped' : isAnswered ? ' answered' : '') + '" data-fbkey="' + escAttr(key) + '">' +
             '<div class="fb-q-header">' +
@@ -1749,6 +3540,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             '</div>' +
             (t['現状課題'] ? '<div class="fb-q-issue">課題: ' + escHtml(t['現状課題']) + '</div>' : '') +
             '<div class="fb-q-question">' + escHtml(t['確認事項']) + '</div>' +
+            '<label class="fb-field-label">確認事項への回答</label>' +
             '<textarea class="fb-q-textarea" rows="3" placeholder="回答を入力してください…"' +
             ' onchange="FeedbackManager.handleAnswer(\'' + escAttr(key) + '\', this.value)"' +
             ' oninput="FeedbackManager.handleAnswerInput(\'' + escAttr(key) + '\', this)">' + escHtml(answerVal) + '</textarea>' +
@@ -1770,19 +3562,10 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             '<div class="fb-field-group"><label>月間件数</label>' +
             '<input type="number" min="0" placeholder="例: 50" value="' + escHtml(volumeVal) + '"' +
             ' onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'volume\', this.value)"></div>' +
-            '<div class="fb-field-group"><label>発生頻度</label>' +
-            '<select onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'frequency\', this.value)">' +
-            '<option value="">選択</option>' +
-            ['毎日','週次','月次','不定期'].map(v => '<option' + (freqVal===v?' selected':'') + '>' + v + '</option>').join('') +
-            '</select></div>' +
-            '<div class="fb-field-group"><label>AI導入余地_ヒアリング後</label>' +
-            '<select onchange="FeedbackManager.handleDetail(\'' + escAttr(key) + '\', \'ai_after\', this.value)">' +
-            '<option value="">選択</option>' +
-            ['低','中','高'].map(v => '<option' + (aiVal===v?' selected':'') + '>' + v + '</option>').join('') +
-            '</select></div>' +
             '</div>' +
             '</div>';
         }).join('');
+        listEl.innerHTML = qaHtml + flowUpdateHtml;
       }
 
       function handleAnswer(key, value) {
@@ -1795,6 +3578,18 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         if (card) { card.classList.add('focused'); card.classList.remove('answered','skipped'); }
         setAnswer(key, { answer: textarea.value });
         refreshCardState(key);
+      }
+
+      function handleCategoryUpdate(category, value) {
+        setCategoryUpdate(category, value);
+        refreshCategoryCardState(category);
+      }
+
+      function handleCategoryUpdateInput(category, textarea) {
+        const card = textarea.closest('.fb-flow-card');
+        if (card) card.classList.add('focused');
+        setCategoryUpdate(category, textarea.value);
+        refreshCategoryCardState(category);
       }
 
       function handleSkip(key, checked) {
@@ -1826,6 +3621,14 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         updateMatrixFbProgress();
       }
 
+      function refreshCategoryCardState(category) {
+        const card = document.querySelector('.fb-flow-card[data-categorykey="' + category.replace(/"/g, '&quot;') + '"]');
+        if (!card) return;
+        const note = ((state.category_updates || {})[category] || '').trim();
+        card.classList.toggle('has-note', Boolean(note));
+        card.classList.remove('focused');
+      }
+
       function markCategoryComplete(category, catId) {
         if (!category) return;
         const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
@@ -1850,19 +3653,46 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         }
       }
 
+      function markBusinessTypeComplete(category, businessType, rowId) {
+        if (!category || !businessType) return;
+        const tasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
+          t['業務分類'] === category && t['業務種別'] === businessType && isOpenQuestion(t)
+        );
+        tasks.forEach(t => {
+          const k = taskKey(t);
+          if (!state.answers[k] || (!state.answers[k].answer && !state.answers[k].skipped)) {
+            setAnswer(k, { skipped: true });
+          }
+        });
+        updateGroupRowDots(category);
+        updateFooterProgress();
+        updateMatrixFbProgress();
+        if (rowId) {
+          const qaEl = document.getElementById('bt-expand-qa-' + rowId);
+          const key = resolveBusinessTypeFlowKey(category, businessType);
+          const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
+          const processNodes = parseProcessNodes(xml);
+          const numMap = buildNumMap(processNodes);
+          if (qaEl) renderQAPanelInto(qaEl, category, processNodes, numMap, businessType);
+          const countEl = document.getElementById('bt-expand-qa-count-' + rowId);
+          if (countEl) countEl.textContent = '未確認事項: ' + businessTypeOpenQuestionCount(category, businessType) + '件';
+        }
+      }
+
       function exportCsv() {
         const allTasks = ANALYSIS_DATA.matrix_tasks || [];
         const headers = [
-          '業務分類','業務種別','タスク順','共通ステップ','タスク名','業務内容詳細',
+          '業務分類','業務種別','タスク順','マトリクス横軸','ヒートマップグループ','ヒートマップステップ','タスク名','業務内容詳細',
           '1件あたり所要時間_分_仮案','1件あたり所要時間_分_ヒアリング後',
           '人手の負担_仮案','人手の負担_ヒアリング後',
-          '月間件数','発生頻度',
+          '月間件数',
           '現状課題','確認したいこと','クライアント回答',
-          'AI導入余地_仮案','AI導入余地_ヒアリング後','備考'
+          'AI導入余地_仮案','As-Isフロー更新内容_業務分類','備考'
         ];
         const rows = allTasks.map(t => {
           const k = taskKey(t);
           const a = state.answers[k] || {};
+          const flowUpdate = categoryUpdateValue(t['業務分類'] || '', allTasks.filter(row => row['業務分類'] === t['業務分類']));
           const serverResolved = hasResolvedServerAnswer(t);
           const question = serverResolved ? '' : (t['確認事項'] || '');
           const answer = serverResolved ? '' : (a.answer || (a.skipped ? '（確認不要）' : ''));
@@ -1870,7 +3700,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             t['業務分類'] || '',
             t['業務種別'] || '',
             t['タスク順'] || '',
-            t['共通ステップ'] || '',
+            taskMatrixAxis(t),
+            taskHeatmapGroup(ANALYSIS_DATA, t),
+            taskHeatmapStep(t),
             t['タスク名'] || '',
             t['業務内容詳細'] || '',
             t['1件あたり所要時間_分'] || t['所要時間_分'] || '',
@@ -1878,12 +3710,11 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             t['人手の負担'] || '',
             a.burden_after || '',
             a.volume || '',
-            a.frequency || '',
             t['現状課題'] || '',
             question,
             answer,
             t['AI導入余地'] || '',
-            a.ai_after || '',
+            flowUpdate,
             ''
           ].map(v => '"' + String(v).replace(/"/g, '""') + '"');
         });
@@ -1900,8 +3731,8 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return {
         load, updateFooterProgress, updateAllGroupDots, updateMatrixFbProgress,
         renderExpandPane, renderQAPanelInto, getProgress,
-        handleAnswer, handleAnswerInput, handleSkip, handleDetail,
-        markCategoryComplete, exportCsv,
+        handleAnswer, handleAnswerInput, handleCategoryUpdate, handleCategoryUpdateInput, handleSkip, handleDetail,
+        markCategoryComplete, markBusinessTypeComplete, exportCsv,
         get currentCategory() { return _currentCategory; }
       };
     })();

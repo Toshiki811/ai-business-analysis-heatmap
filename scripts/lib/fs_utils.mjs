@@ -34,9 +34,10 @@ export function findLatestAnalysis(root) {
   if (!fs.existsSync(outputDir)) return null;
   const files = fs.readdirSync(outputDir)
     .filter((name) => /^analysis_\d{8}\.json$/.test(name))
-    .sort();
+    .map((name) => ({ name, mtimeMs: fs.statSync(path.join(outputDir, name)).mtimeMs }))
+    .sort((a, b) => b.mtimeMs - a.mtimeMs);
   if (files.length === 0) return null;
-  return path.join(outputDir, files[files.length - 1]);
+  return path.join(outputDir, files[0].name);
 }
 
 export function parseArgs(argv) {

@@ -153,12 +153,187 @@ function ensureQuestionAnswerExamples(analysis) {
 
 function applyResolvedQuestionToTask(task, resolved) {
   const answer = String(resolved.answer || '').trim();
-  if (!answer) return;
-  const { impact, note } = asIsResolvedNote(resolved.question, answer);
-  task.as_is_answer_impact = impact;
-  task.as_is_resolved_note = note;
+  const updateNote = String(resolved.as_is_update_note || '').trim();
+  if (!answer && !updateNote) return;
+  if (answer) {
+    const { impact, note } = asIsResolvedNote(resolved.question, answer);
+    task.as_is_answer_impact = impact;
+    task.as_is_resolved_note = note;
+    task.as_is_resolved_answer = answer;
+  }
   task.as_is_resolved_question = resolved.question || '';
-  task.as_is_resolved_answer = answer;
+  if (updateNote) {
+    task.as_is_update_note = updateNote;
+    task['As-Isフロー更新内容'] = updateNote;
+  }
+}
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let value = '';
+  let inQuotes = false;
+  const source = String(text || '').replace(/^\uFEFF/, '');
+
+  for (let i = 0; i < source.length; i += 1) {
+    const ch = source[i];
+    const next = source[i + 1];
+    if (inQuotes) {
+      if (ch === '"' && next === '"') {
+        value += '"';
+        i += 1;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        value += ch;
+      }
+      continue;
+    }
+    if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ',') {
+      row.push(value);
+      value = '';
+    } else if (ch === '\n') {
+      row.push(value);
+      rows.push(row);
+      row = [];
+      value = '';
+    } else if (ch !== '\r') {
+      value += ch;
+    }
+  }
+  if (value || row.length > 0) {
+    row.push(value);
+    rows.push(row);
+  }
+  if (rows.length === 0) return [];
+  const headers = rows[0].map((header) => String(header || '').trim());
+  return rows.slice(1)
+    .filter((cols) => cols.some((col) => String(col || '').trim()))
+    .map((cols) => Object.fromEntries(headers.map((header, index) => [header, cols[index] || ''])));
+}
+
+function latestClientInputFile(root) {
+  const sourceDir = path.join(root, 'input', 'source');
+  if (!fs.existsSync(sourceDir)) return null;
+  const files = fs.readdirSync(sourceDir)
+    .filter((name) => /^client_input_filled(?:_\d{8})?\.csv$/i.test(name))
+    .map((name) => {
+      const filePath = path.join(sourceDir, name);
+      return { name, filePath, mtimeMs: fs.statSync(filePath).mtimeMs };
+    })
+    .sort((a, b) => b.mtimeMs - a.mtimeMs);
+  return files[0] || null;
+}
+
+function clientInputTaskKey(row) {
+  return [
+    row['業務分類'] || '',
+    row['業務種別'] || '',
+    row['タスク順'] || '',
+    row['マトリクス横軸'] || '',
+    row['タスク名'] || ''
+  ].map((value) => String(value || '').trim()).join('|||');
+}
+
+function matrixTaskKey(task) {
+  return [
+    task['業務分類'] || '',
+    task['業務種別'] || '',
+    task['タスク順'] || '',
+    getTaskMatrixAxis(task),
+    task['タスク名'] || ''
+  ].map((value) => String(value || '').trim()).join('|||');
+}
+
+function fallbackClientInputTaskKey(row) {
+  return [
+    row['業務分類'] || '',
+    row['業務種別'] || '',
+    row['タスク名'] || ''
+  ].map((value) => String(value || '').trim()).join('|||');
+}
+
+function fallbackMatrixTaskKey(task) {
+  return [
+    task['業務分類'] || '',
+    task['業務種別'] || '',
+    task['タスク名'] || ''
+  ].map((value) => String(value || '').trim()).join('|||');
+}
+
+function ensureCategoryUpdateMap(analysis) {
+  if (!analysis.as_is_category_updates || typeof analysis.as_is_category_updates !== 'object' || Array.isArray(analysis.as_is_category_updates)) {
+    analysis.as_is_category_updates = {};
+  }
+  return analysis.as_is_category_updates;
+}
+
+function appendLegacyCategoryUpdate(categoryUpdates, category, note) {
+  const normalizedCategory = String(category || '').trim();
+  const normalizedNote = String(note || '').trim();
+  if (!normalizedCategory || !normalizedNote) return false;
+  const existing = String(categoryUpdates[normalizedCategory] || '').trim();
+  if (!existing) {
+    categoryUpdates[normalizedCategory] = normalizedNote;
+    return true;
+  }
+  const parts = existing.split(/\s*\/\s*/).map((part) => part.trim()).filter(Boolean);
+  if (!parts.includes(normalizedNote)) {
+    categoryUpdates[normalizedCategory] = `${existing} / ${normalizedNote}`;
+    return true;
+  }
+  return false;
+}
+
+function categoryUpdateNote(analysis, category) {
+  const categoryUpdates = ensureCategoryUpdateMap(analysis);
+  return String(categoryUpdates[String(category || '').trim()] || '').trim();
+}
+
+export function applyLatestClientInput(analysis, root) {
+  const latest = latestClientInputFile(root);
+  if (!latest) return { file: '', rows: 0, applied: 0 };
+
+  const rows = parseCsv(fs.readFileSync(latest.filePath, 'utf8'));
+  const categoryUpdates = ensureCategoryUpdateMap(analysis);
+  const byFullKey = new Map();
+  const byFallbackKey = new Map();
+  for (const task of analysis.matrix_tasks || []) {
+    byFullKey.set(matrixTaskKey(task), task);
+    const fallbackKey = fallbackMatrixTaskKey(task);
+    if (!byFallbackKey.has(fallbackKey)) byFallbackKey.set(fallbackKey, task);
+  }
+
+  let applied = 0;
+  for (const row of rows) {
+    const task = byFullKey.get(clientInputTaskKey(row)) || byFallbackKey.get(fallbackClientInputTaskKey(row));
+    if (!task) continue;
+
+    const answer = String(row['クライアント回答'] || '').trim();
+    const category = String(row['業務分類'] || task['業務分類'] || '').trim();
+    const categoryUpdate = String(row['As-Isフロー更新内容_業務分類'] || '').trim();
+    const legacyUpdate = String(row['As-Isフロー更新内容'] || '').trim();
+    const timeAfter = String(row['1件あたり所要時間_分_ヒアリング後'] || '').trim();
+    const burdenAfter = String(row['人手の負担_ヒアリング後'] || '').trim();
+    const volume = String(row['月間件数'] || '').trim();
+
+    if (answer) task['クライアント回答'] = answer;
+    if (categoryUpdate && category) categoryUpdates[category] = categoryUpdate;
+    if (!categoryUpdate && legacyUpdate) appendLegacyCategoryUpdate(categoryUpdates, category, legacyUpdate);
+    if (timeAfter) task['1件あたり所要時間_分_ヒアリング後'] = timeAfter;
+    if (burdenAfter) task['人手の負担_ヒアリング後'] = burdenAfter;
+    if (volume) task['月間件数'] = volume;
+    if (answer || categoryUpdate || legacyUpdate || timeAfter || burdenAfter || volume) applied += 1;
+  }
+
+  analysis.metadata = {
+    ...(analysis.metadata || {}),
+    client_input: latest.name,
+    client_input_applied_rows: applied
+  };
+  return { file: latest.filePath, rows: rows.length, applied };
 }
 
 function applyResolvedQuestionsToTasks(analysis) {
@@ -178,13 +353,20 @@ export function resolveQuestions(analysis) {
 
   for (const task of analysis.matrix_tasks || []) {
     const answer = String(task['クライアント回答'] || '').trim();
-    if (!answer) continue;
+    const updateNote = String(task.as_is_update_note || task['As-Isフロー更新内容'] || '').trim();
+    if (!answer && !updateNote) continue;
+    if (!answer) {
+      task.as_is_update_note = updateNote;
+      task['As-Isフロー更新内容'] = updateNote;
+      continue;
+    }
     const item = {
       category: task['業務分類'] || '',
       task_type: task['業務種別'] || '',
       task_name: task['タスク名'] || '',
       question: task['確認事項'] || '',
       answer: task['クライアント回答'] || '',
+      as_is_update_note: updateNote,
       applied_to: ['matrix_tasks', 'heatmap_cells.reason', 'as_is_flow', 'to_be_flow']
     };
     if (!seen.has(questionKey(item))) {
@@ -221,9 +403,15 @@ export function writeTop3Drawio(analysis, flowsDir) {
     if (!rank) continue;
     const asIsPath = path.join(flowsDir, `top${rank}_as_is.drawio`);
     const toBePath = path.join(flowsDir, `top${rank}_to_be.drawio`);
-    fs.writeFileSync(asIsPath, flowToDrawio(item.as_is_flow, `Top${rank} As-Is: ${item.title || ''}`));
+    if (fs.existsSync(asIsPath)) fs.rmSync(asIsPath);
     fs.writeFileSync(toBePath, flowToDrawio(item.to_be_flow, `Top${rank} To-Be: ${item.title || ''}`));
-    written.push(asIsPath, toBePath);
+    delete item.as_is_flow;
+    item.flow_files = {
+      ...(item.flow_files || {}),
+      to_be_drawio: `output/flows/top${rank}_to_be.drawio`
+    };
+    delete item.flow_files.as_is_drawio;
+    written.push(toBePath);
   }
   return written;
 }
@@ -242,7 +430,213 @@ function hashId(value, prefix = 'task') {
 }
 
 function getTaskMinutes(task) {
-  return task['所要時間_分'] || task['1件あたり所要時間_分'] || task.estimated_minutes || '';
+  return task['1件あたり所要時間_分_ヒアリング後'] || task['所要時間_分'] || task['1件あたり所要時間_分'] || task.estimated_minutes || '';
+}
+
+function getTaskMatrixAxis(task) {
+  return task['マトリクス横軸'] || task.matrix_axis || task['共通ステップ'] || task.common_step || task['タスク名'] || '';
+}
+
+function getTaskHeatmapStep(task) {
+  return task['ヒートマップステップ'] || task.heatmap_step || task['共通ステップ'] || task.common_step || getTaskMatrixAxis(task);
+}
+
+function normalizeColumnGroups(groups) {
+  return (Array.isArray(groups) ? groups : [])
+    .map((group) => ({
+      group: String(group?.group || group?.name || '').trim(),
+      steps: (Array.isArray(group?.steps) ? group.steps : [])
+        .map((step) => String(step || '').trim())
+        .filter(Boolean)
+    }))
+    .filter((group) => group.group || group.steps.length > 0);
+}
+
+function columnStepGroupMap(groups) {
+  const map = new Map();
+  for (const group of normalizeColumnGroups(groups)) {
+    for (const step of group.steps) {
+      if (!map.has(step)) map.set(step, group.group);
+    }
+  }
+  return map;
+}
+
+function inferHeatmapGroup(analysis, step) {
+  const normalizedStep = String(step || '').trim();
+  if (!normalizedStep) return '';
+  const fromHeatmap = columnStepGroupMap(analysis.heatmap_columns).get(normalizedStep);
+  if (fromHeatmap) return fromHeatmap;
+  const fromFlow = columnStepGroupMap(analysis.flow_columns).get(normalizedStep);
+  return fromFlow || '';
+}
+
+function deriveHeatmapColumns(analysis) {
+  const baseColumns = normalizeColumnGroups(analysis.heatmap_columns || analysis.flow_columns);
+  if (baseColumns.length > 0) return baseColumns;
+
+  const groupMap = new Map();
+  for (const cell of analysis.heatmap_cells || []) {
+    const step = String(cell.flow_step || '').trim();
+    if (!step) continue;
+    const group = String(cell.heatmap_group || 'AI導入効果').trim();
+    if (!groupMap.has(group)) groupMap.set(group, []);
+    const steps = groupMap.get(group);
+    if (!steps.includes(step)) steps.push(step);
+  }
+
+  return [...groupMap.entries()].map(([group, steps]) => ({ group, steps }));
+}
+
+function deriveCategoryFlowColumns(analysis) {
+  const categoryMap = new Map();
+  for (const task of analysis.matrix_tasks || []) {
+    const category = String(task['業務分類'] || task.category || '未分類').trim();
+    const group = String(task['ヒートマップグループ'] || task.heatmap_group || '業務ステップ').trim();
+    const matrixAxis = String(getTaskMatrixAxis(task) || '').trim();
+    if (!matrixAxis) continue;
+    if (!categoryMap.has(category)) categoryMap.set(category, new Map());
+    const groupMap = categoryMap.get(category);
+    if (!groupMap.has(group)) groupMap.set(group, []);
+    const steps = groupMap.get(group);
+    if (!steps.includes(matrixAxis)) steps.push(matrixAxis);
+  }
+
+  return Object.fromEntries([...categoryMap.entries()].map(([category, groupMap]) => [
+    category,
+    [...groupMap.entries()].map(([group, steps]) => ({ group, steps }))
+  ]));
+}
+
+function normalizeEffectLevel(value) {
+  const text = String(value || '').trim().toLowerCase();
+  if (text === '高' || text === 'high') return 'high';
+  if (text === '中' || text === 'medium') return 'medium';
+  if (text === '低' || text === 'low') return 'low';
+  return text || 'low';
+}
+
+export function normalizeAnalysisSchema(analysis) {
+  const stats = {
+    matrix_tasks_normalized: 0,
+    heatmap_cells_normalized: 0,
+    category_flow_columns_generated: false,
+    heatmap_columns_generated: false
+  };
+
+  analysis.matrix_tasks = Array.isArray(analysis.matrix_tasks) ? analysis.matrix_tasks : [];
+  analysis.heatmap_cells = Array.isArray(analysis.heatmap_cells) ? analysis.heatmap_cells : [];
+  analysis.top3 = Array.isArray(analysis.top3) ? analysis.top3 : [];
+
+  const heatmapColumns = deriveHeatmapColumns(analysis);
+  if (!Array.isArray(analysis.heatmap_columns) || analysis.heatmap_columns.length === 0) {
+    analysis.heatmap_columns = heatmapColumns;
+    stats.heatmap_columns_generated = true;
+  } else {
+    analysis.heatmap_columns = normalizeColumnGroups(analysis.heatmap_columns);
+  }
+  if (!Array.isArray(analysis.flow_columns) || analysis.flow_columns.length === 0) {
+    analysis.flow_columns = analysis.heatmap_columns;
+  } else {
+    analysis.flow_columns = normalizeColumnGroups(analysis.flow_columns);
+  }
+
+  for (const task of analysis.matrix_tasks) {
+    const before = [
+      task['マトリクス横軸'],
+      task['ヒートマップグループ'],
+      task['ヒートマップステップ']
+    ].join('|');
+    const matrixAxis = String(getTaskMatrixAxis(task) || '').trim();
+    const heatmapStep = String(getTaskHeatmapStep(task) || matrixAxis).trim();
+    const heatmapGroup = String(task['ヒートマップグループ'] || task.heatmap_group || inferHeatmapGroup(analysis, heatmapStep)).trim();
+    task['マトリクス横軸'] = matrixAxis;
+    task['ヒートマップグループ'] = heatmapGroup;
+    task['ヒートマップステップ'] = heatmapStep;
+    const after = [
+      task['マトリクス横軸'],
+      task['ヒートマップグループ'],
+      task['ヒートマップステップ']
+    ].join('|');
+    if (before !== after) stats.matrix_tasks_normalized += 1;
+  }
+
+  for (const cell of analysis.heatmap_cells) {
+    const before = [cell.heatmap_group, cell.effect_level].join('|');
+    cell.category = cell.category || cell['業務分類'] || '';
+    cell.business_type = cell.business_type || cell['業務種別'] || '';
+    cell.flow_step = cell.flow_step || cell['ヒートマップステップ'] || cell.common_step || '';
+    cell.heatmap_group = cell.heatmap_group || inferHeatmapGroup(analysis, cell.flow_step);
+    cell.effect_level = normalizeEffectLevel(cell.effect_level);
+    const after = [cell.heatmap_group, cell.effect_level].join('|');
+    if (before !== after) stats.heatmap_cells_normalized += 1;
+  }
+
+  for (const item of analysis.top3) {
+    item.target_business_type = top3BusinessType(item);
+    item.target_heatmap_group = item.target_heatmap_group || inferHeatmapGroup(analysis, item.target_flow_step);
+  }
+
+  if (!Array.isArray(analysis.categories) || analysis.categories.length === 0) {
+    analysis.categories = [...new Set(analysis.matrix_tasks.map((task) => task['業務分類']).filter(Boolean))];
+  }
+
+  if (!analysis.category_flow_columns || Object.keys(analysis.category_flow_columns).length === 0) {
+    analysis.category_flow_columns = deriveCategoryFlowColumns(analysis);
+    stats.category_flow_columns_generated = true;
+  }
+
+  analysis.metadata = {
+    ...(analysis.metadata || {}),
+    schema_version: new Date().toISOString().slice(0, 10),
+    schema_normalized_at: analysis.metadata?.created_at || ''
+  };
+
+  return stats;
+}
+
+export function validateAnalysisContract(analysis) {
+  const errors = [];
+  const warnings = [];
+  if (!Array.isArray(analysis.matrix_tasks) || analysis.matrix_tasks.length === 0) errors.push('matrix_tasks is missing or empty');
+  if (!Array.isArray(analysis.heatmap_cells) || analysis.heatmap_cells.length === 0) errors.push('heatmap_cells is missing or empty');
+  if (!Array.isArray(analysis.top3) || analysis.top3.length === 0) errors.push('top3 is missing or empty');
+  else if (analysis.top3.length !== 3) warnings.push(`top3 has ${analysis.top3.length} item(s); expected 3`);
+  if (!analysis.category_flow_columns || Object.keys(analysis.category_flow_columns).length === 0) errors.push('category_flow_columns is missing');
+  if (!Array.isArray(analysis.heatmap_columns) || analysis.heatmap_columns.length === 0) errors.push('heatmap_columns is missing or empty');
+
+  (analysis.matrix_tasks || []).forEach((task, index) => {
+    for (const key of ['業務分類', '業務種別', 'タスク名', 'マトリクス横軸', 'ヒートマップグループ', 'ヒートマップステップ']) {
+      if (!String(task[key] || '').trim()) errors.push(`matrix_tasks[${index}] missing ${key}`);
+    }
+  });
+
+  (analysis.heatmap_cells || []).forEach((cell, index) => {
+    for (const key of ['category', 'business_type', 'heatmap_group', 'flow_step', 'reason', 'effect_level']) {
+      if (!String(cell[key] || '').trim()) errors.push(`heatmap_cells[${index}] missing ${key}`);
+    }
+    if (!['high', 'medium', 'low', '高', '中', '低'].includes(String(cell.effect_level || '').trim())) {
+      errors.push(`heatmap_cells[${index}] invalid effect_level: ${cell.effect_level}`);
+    }
+  });
+
+  (analysis.top3 || []).forEach((item, index) => {
+    for (const key of ['rank', 'title', 'target_category', 'target_business_type', 'target_heatmap_group', 'target_flow_step']) {
+      if (!String(item[key] || '').trim()) errors.push(`top3[${index}] missing ${key}`);
+    }
+    if (!Array.isArray(item.to_be_flow) || item.to_be_flow.length === 0) {
+      errors.push(`top3[${index}] missing to_be_flow`);
+    }
+  });
+
+  if (warnings.length > 0) {
+    console.warn(`[validation warnings]\n${warnings.join('\n')}`);
+  }
+  if (errors.length > 0) {
+    throw new Error(`Analysis contract validation failed:\n${errors.slice(0, 40).join('\n')}${errors.length > 40 ? `\n...and ${errors.length - 40} more` : ''}`);
+  }
+
+  return true;
 }
 
 function inferAsIsActor(task) {
@@ -251,7 +645,8 @@ function inferAsIsActor(task) {
     task['業務内容詳細'],
     task['現状課題'],
     task['クライアント回答'],
-    task.as_is_resolved_answer
+    task.as_is_resolved_answer,
+    task.as_is_update_note
   ].filter(Boolean).join(' ').replace(/承認済み/g, '');
   if (/システム|入力|登録|取込|連携|出力|自動|データ|CSV|アップロード|ダウンロード/.test(text)) {
     return 'システム';
@@ -291,13 +686,16 @@ function buildAsIsStep(task, section, nodeId) {
     node_id: nodeId,
     section,
     task_order: task['タスク順'] || '',
-    common_step: task['共通ステップ'] || '',
+    common_step: getTaskMatrixAxis(task),
+    heatmap_group: task['ヒートマップグループ'] || task.heatmap_group || '',
+    heatmap_step: getTaskHeatmapStep(task),
     task_name: task['タスク名'] || '',
     actor: inferAsIsActor(task),
     description: task['業務内容詳細'] || '',
     issue: task['現状課題'] || '',
     question: task['確認事項'] || '',
     resolved_note: task.as_is_resolved_note || '',
+    update_note: task.as_is_update_note || task['As-Isフロー更新内容'] || '',
     answer_impact: task.as_is_answer_impact || '',
     burden: task['人手の負担'] || '',
     minutes: getTaskMinutes(task)
@@ -318,6 +716,7 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
     const categorySlug = slugify(category);
     const categoryFlowKey = `asis_${categorySlug}_${dateKey}`;
     const categoryFlowFile = `output/flows/${categoryFlowKey}.drawio`;
+    const updateNote = categoryUpdateNote(analysis, category);
     const categorySteps = [];
     const categoryTaskIds = [];
     let nodeIndex = 1;
@@ -329,14 +728,15 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
           category,
           businessType,
           task['タスク順'] || rowIndex + 1,
-          task['共通ステップ'] || '',
+          getTaskMatrixAxis(task),
           task['タスク名'] || ''
         ].join('|');
         task.task_id = task.task_id || hashId(taskIdSource);
         const nodeId = `process-${String(nodeIndex).padStart(3, '0')}`;
         task.as_is_category_flow_key = categoryFlowKey;
         task.as_is_node_id = nodeId;
-        task.as_is_position_label = `${category} > ${businessType} > ${task['タスク順'] || rowIndex + 1}. ${task['タスク名'] || ''}${task['共通ステップ'] ? ` / ${task['共通ステップ']}` : ''}`;
+        const matrixAxis = getTaskMatrixAxis(task);
+        task.as_is_position_label = `${category} > ${businessType} > ${task['タスク順'] || rowIndex + 1}. ${task['タスク名'] || ''}${matrixAxis ? ` / ${matrixAxis}` : ''}`;
         categorySteps.push(buildAsIsStep(task, rowIndex === 0 ? section : '', nodeId));
         categoryTaskIds.push(task.task_id);
         nodeIndex += 1;
@@ -344,7 +744,7 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
     });
 
     const categoryPath = path.join(flowsDir, `${categoryFlowKey}.drawio`);
-    fs.writeFileSync(categoryPath, asIsFlowToDrawio(categorySteps, `As-Is 全体: ${category}`));
+    fs.writeFileSync(categoryPath, asIsFlowToDrawio(categorySteps, `As-Is 全体: ${category}`, updateNote));
     written.push(categoryPath);
 
     const childFlowKeys = [];
@@ -357,7 +757,7 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
         return buildAsIsStep(task, index === 0 ? businessType : '', task.as_is_node_id);
       });
       const businessPath = path.join(flowsDir, `${businessFlowKey}.drawio`);
-      fs.writeFileSync(businessPath, asIsFlowToDrawio(businessSteps, `As-Is 部分: ${category} / ${businessType}`));
+      fs.writeFileSync(businessPath, asIsFlowToDrawio(businessSteps, `As-Is 部分: ${category} / ${businessType}`, updateNote));
       written.push(businessPath);
       childFlowKeys.push(businessFlowKey);
       businessTypeFlows.push({
@@ -366,6 +766,7 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
         flow_key: businessFlowKey,
         flow_file: businessFlowFile,
         category_flow_key: categoryFlowKey,
+        category_update_note: updateNote,
         source_task_ids: rows.map((task) => task.task_id),
         steps: businessSteps
       });
@@ -376,6 +777,7 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
       flow_key: categoryFlowKey,
       flow_file: categoryFlowFile,
       business_type_flow_keys: childFlowKeys,
+      update_note: updateNote,
       source_task_ids: categoryTaskIds,
       steps: categorySteps
     });
@@ -391,16 +793,91 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
   return written;
 }
 
+function cellHeatmapGroup(cell) {
+  return cell.heatmap_group || cell.target_heatmap_group || '';
+}
+
+function top3BusinessType(item) {
+  return item.target_business_type || item.target_business || item.business_type || '';
+}
+
+function top3HeatmapGroup(item) {
+  return item.target_heatmap_group || item.heatmap_group || '';
+}
+
+function findTop3ForCell(analysis, cell) {
+  return (analysis.top3 || []).find((item) =>
+    item.target_category === cell.category &&
+    top3BusinessType(item) === (cell.business_type || '') &&
+    item.target_flow_step === cell.flow_step &&
+    (!cellHeatmapGroup(cell) || !top3HeatmapGroup(item) || top3HeatmapGroup(item) === cellHeatmapGroup(cell))
+  );
+}
+
+function toBeTasksFromTop3(item) {
+  return (item.to_be_flow || [])
+    .filter((step) => (step.node_type || 'process') !== 'decision')
+    .slice(0, 5)
+    .map((step) => ({
+      actor: step.actor || 'AI',
+      to_be_task: step.step || '',
+      ai_role: step.actor === 'AI' ? (step.description || '') : '',
+      human_review: step.actor === 'Human Review' ? (step.description || '') : 'AI出力の根拠、例外、承認要否を人が確認する。',
+      expected_effect: item.expected_effect || '',
+      prerequisite_or_risk: item.risks || ''
+    }));
+}
+
+function fallbackToBeTasksForCell(cell) {
+  const effect = cell.estimated_time_saved || '作業時間削減と確認品質の平準化を見込む。';
+  const risk = cell.reason || '対象業務のデータ形式、承認条件、例外処理を実装前に確認する。';
+  return [
+    {
+      actor: 'AI',
+      to_be_task: `${cell.flow_step || '対象業務'}のAI下書き・照合`,
+      ai_role: cell.ai_use_case || '対象タスクの入力情報を読み取り、転記、照合、下書き作成を支援する。',
+      human_review: '担当者がAIの出力、根拠、例外候補を確認する。',
+      expected_effect: effect,
+      prerequisite_or_risk: risk
+    },
+    {
+      actor: 'Human Review',
+      to_be_task: '結果確認・承認判断',
+      ai_role: '確認観点、差異、注意点を一覧化する。',
+      human_review: '担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。',
+      expected_effect: cell.ai_use_case || effect,
+      prerequisite_or_risk: cell.development_scale ? `想定開発規模: ${cell.development_scale}` : risk
+    }
+  ];
+}
+
+export function ensureHeatmapToBeTasks(analysis) {
+  let updated = 0;
+  for (const cell of analysis.heatmap_cells || []) {
+    if (Array.isArray(cell.to_be_tasks) && cell.to_be_tasks.length > 0) continue;
+    const top3 = findTop3ForCell(analysis, cell);
+    const fromTop3 = top3 ? toBeTasksFromTop3(top3) : [];
+    cell.to_be_tasks = fromTop3.length ? fromTop3 : fallbackToBeTasksForCell(cell);
+    updated += 1;
+  }
+  analysis.metadata = {
+    ...(analysis.metadata || {}),
+    to_be_tasks_generated_count: updated,
+    to_be_tasks_cell_count: (analysis.heatmap_cells || []).filter((cell) =>
+      Array.isArray(cell.to_be_tasks) && cell.to_be_tasks.length > 0
+    ).length
+  };
+  return updated;
+}
+
 export function buildDrawioMap(analysis, flowsDir, dateKey) {
   const drawioMap = {};
 
   for (const item of analysis.top3 || []) {
-    for (const suffix of ['as_is', 'to_be']) {
-      const key = `top${item.rank}_${suffix}`;
-      const filePath = path.join(flowsDir, `${key}.drawio`);
-      if (fs.existsSync(filePath)) {
-        drawioMap[key] = fs.readFileSync(filePath, 'utf8');
-      }
+    const key = `top${item.rank}_to_be`;
+    const filePath = path.join(flowsDir, `${key}.drawio`);
+    if (fs.existsSync(filePath)) {
+      drawioMap[key] = fs.readFileSync(filePath, 'utf8');
     }
   }
 

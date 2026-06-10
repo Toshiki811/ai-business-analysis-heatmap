@@ -48,6 +48,26 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 ```
 
 このスクリプトはTOP3 draw.ioを再生成し、日付が一致するAs-Is draw.ioだけをHTMLへ埋め込みます。
+`input/source/client_input_filled.csv` または `client_input_filled_YYYYMMDD.csv` がある場合は、最新更新日時のCSVから `クライアント回答` と業務分類単位の `As-Isフロー更新内容_業務分類` を読み込み、As-Is draw.ioへ反映します。旧CSVの `As-Isフロー更新内容` は互換入力として業務分類単位のメモへ移行します。
+
+## 再入力時の検証
+
+新しい業務ドキュメントを投入して現在と同等のHTMLを出す場合、前段はAIエージェントが `prompts/01` 〜 `06` に従って `flow_axes`、`matrix`、`client_input`、`analysis`、`top3` を生成します。raw PDF / docx から最終HTMLまでの完全自動生成は未対応のため、まず `input/normalized/*.md` を作成してください。
+
+`analysis_YYYYMMDD.json` を作成したら、レンダリング前にJSON契約を確認できます。
+
+```bash
+node scripts/verify_outputs.mjs --date YYYYMMDD --skip-html
+```
+
+HTML生成後は、JSON契約とHTML埋め込み状態をまとめて確認します。
+
+```bash
+node scripts/render_outputs.mjs --date YYYYMMDD
+node scripts/verify_outputs.mjs --date YYYYMMDD
+```
+
+検証では、`matrix_tasks` / `heatmap_cells` / `top3` の必須項目、マトリクス軸とヒートマップ軸の一致、TOP3対象セルの存在、HTML内のプレースホルダー残存、TOP3 To-BeとAs-Is draw.ioの埋め込みを確認します。
 
 ## フォルダ構成
 

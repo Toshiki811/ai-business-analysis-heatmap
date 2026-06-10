@@ -17,9 +17,27 @@
 
 `output/analysis_YYYYMMDD.json`
 
-この工程では少なくとも `metadata`、`flow_columns`、`categories`、`heatmap_cells`、`matrix_tasks` を出力する。`top3` とAs-Isフロー構造は後続工程で追加する。
+この工程では少なくとも `metadata`、`category_flow_columns`、`heatmap_columns`、`flow_columns`、`categories`、`heatmap_cells`、`matrix_tasks` を出力する。`top3` とAs-Isフロー構造は後続工程で追加する。
 
-`heatmap_cells` は `業務分類 × 業務種別 × 共通ステップ` の粒度で生成する。ヒートマップの縦軸は業務整理マトリクスと同じ `業務分類 / 業務種別` の2段、横軸は `matrix_tasks[].共通ステップ` と同じ1段の共通ステップとする。
+`heatmap_cells` は `業務分類 × 業務種別 × ヒートマップグループ × ヒートマップステップ` の粒度で生成する。ヒートマップの縦軸は業務整理マトリクスと同じ `業務分類 / 業務種別` の2段、横軸は `heatmap_columns[].group / steps[]` の2段とする。
+
+## `summary.insights` 生成ルール
+
+`summary.insights` は分析結果の示唆として必ず3件出力する。1件あたり140〜240字程度を目安に、表示上は `Point 1` 〜 `Point 3` として読める内容にする。
+
+各Pointには、必ず以下の3観点を含める。
+
+- 現行業務分析を経て分かったこと: 業務分類名だけでなく、どのタスク単位に負荷、ばらつき、確認作業、転記作業、統制リスクが集まっているかを書く。
+- 今後AIへ提供できる余地: AIが担える処理を、根拠資料確認、差異検知、下書き生成、不備検知、入力データ整形、登録前チェックなどの具体機能で書く。
+- 横展開しやすい初期タスク: `計算・作成`、`情報収集・照合`、`内容確認`、`システム入力`、`記録・報告` など、ヒートマップ横軸のタスク単位から着手候補を書く。
+
+3件は、原則として以下のように役割を分ける。
+
+1. `計算・作成` を中心に、決算、年末調整、契約書作成などの作成・計算負荷と、根拠資料確認、差異検知、下書き生成の横展開余地を書く。
+2. `情報収集・照合` / `内容確認` を中心に、請求書、契約書、稟議書、台帳、証憑の突合負荷と、不備検知、必要項目抽出、根拠リンク提示の横展開余地を書く。
+3. `システム入力` / `記録・報告` を中心に、給与、会計、固定資産、報告業務の転記・入力・提出準備と、入力データ整形、CSV化、登録前チェック、報告コメント下書きの横展開余地を書く。
+
+表現は「AIを入れると効率化できる」のような一般論で終えず、「現行業務で何が分かったか」「AIに何を提供させるか」「どのタスクから着手すると他業務へ広げやすいか」が分かる内容にする。
 
 ## ヒアリング後CSVの優先ルール
 
@@ -29,11 +47,13 @@
 |---|---|
 | `1件あたり所要時間_分_ヒアリング後` | `time_reduction_score` の算出基準 |
 | `人手の負担_ヒアリング後` | `quality_impact_score` と `time_reduction_score` の補正 |
-| `月間件数` / `発生頻度` | `frequency_score` の算出基準 |
-| `AI導入余地_ヒアリング後` | `effect_level` の上書き判断 |
+| `月間件数` | `frequency_score` の算出基準 |
 | `クライアント回答` | `matrix_tasks`、`reason`、後続フロー設計への前提 |
+| `As-Isフロー更新内容_業務分類` | `analysis.as_is_category_updates[業務分類]`、確認事項回答とは別の業務分類単位の反映メモ |
 
 空欄のヒアリング後値は仮置き値を使う。
+旧CSVに `As-Isフロー更新内容` が存在する場合は、互換入力として業務分類単位の反映メモへ移行してよい。
+旧CSVに `発生頻度` や `AI導入余地_ヒアリング後` が存在する場合だけ任意で参照してよい。新規CSVではこの2列を要求しない。
 
 ## スコア計算式
 
@@ -62,7 +82,7 @@ AI導入効果スコア =
 | `medium` | 40〜69点 |
 | `low` | 39点以下 |
 
-ヒアリング後CSVの `AI導入余地_ヒアリング後` が入力されている場合は、`低` / `中` / `高` をそれぞれ `low` / `medium` / `high` に変換して上書きする。
+原則としてスコアから `effect_level` を決定する。旧CSVの任意列 `AI導入余地_ヒアリング後` が入力されている場合だけ、`低` / `中` / `高` をそれぞれ `low` / `medium` / `high` に変換して上書きしてよい。
 
 ## `heatmap_cells` スキーマ
 
@@ -70,7 +90,10 @@ AI導入効果スコア =
 {
   "category": "業務カテゴリー名",
   "business_type": "業務種別名",
-  "flow_step": "flow_columns[].steps[] と完全一致するステップ名",
+  "heatmap_group": "heatmap_columns[].group と完全一致するグループ名",
+  "flow_step": "heatmap_columns[].steps[] と完全一致する抽象ステップ名",
+  "task_ids": ["対象matrix_tasksのtask_id"],
+  "source_tasks": ["対象タスク名"],
   "score": 87,
   "time_reduction_score": 5,
   "frequency_score": 4,
@@ -79,12 +102,24 @@ AI導入効果スコア =
   "estimated_time_saved": "1件あたり5〜10分",
   "development_scale": "小",
   "ai_use_case": "AIで何をするか",
+  "to_be_tasks": [
+    {
+      "actor": "Human | AI | Human Review | System",
+      "to_be_task": "AI導入後のタスク名",
+      "ai_role": "AIが担う処理",
+      "human_review": "人が確認・判断する内容",
+      "expected_effect": "期待効果",
+      "prerequisite_or_risk": "前提・リスク"
+    }
+  ],
   "reason": "スコア根拠と前提条件",
   "source_reference": "根拠箇所の概要",
   "effect_level": "high",
   "is_top3": false
 }
 ```
+
+`to_be_tasks` は全 `heatmap_cells` に2〜5件作成する。AIに任せる作業、人がレビューする作業、既存システムが処理する作業を分け、表形式で読める粒度にする。TOP3以外も簡易To-Be案を必ず持たせるが、draw.ioフロー化は後続工程のTOP3に限定する。
 
 ## `matrix_tasks` のAs-Is紐づけフィールド
 
@@ -96,7 +131,7 @@ AI導入効果スコア =
   "as_is_category_flow_key": "業務分類全体図のキー",
   "as_is_business_type_flow_key": "業務種別部分図のキー",
   "as_is_node_id": "draw.io上のノードID",
-  "as_is_position_label": "業務分類 > 業務種別 > タスク順. タスク名 / 共通ステップ"
+  "as_is_position_label": "業務分類 > 業務種別 > タスク順. タスク名 / マトリクス横軸"
 }
 ```
 
@@ -104,12 +139,17 @@ AI導入効果スコア =
 
 ## 注意事項
 
-- `heatmap_cells` は必ず `matrix_tasks` に存在する `業務分類`、`業務種別`、`共通ステップ` の組み合わせだけで作る。
+- `matrix_tasks` には `マトリクス横軸`、`ヒートマップグループ`、`ヒートマップステップ` を必ず含める。
+- `heatmap_cells` は必ず `matrix_tasks` に存在する `業務分類`、`業務種別`、`ヒートマップグループ`、`ヒートマップステップ` の組み合わせだけで作る。
 - `heatmap_cells[].category` は `matrix_tasks[].業務分類` と完全一致させる。
 - `heatmap_cells[].business_type` は `matrix_tasks[].業務種別` と完全一致させる。
-- `flow_step` は必ず `flow_columns[].steps[]` および `matrix_tasks[].共通ステップ` と完全一致させる。
-- `matrix_tasks[].共通ステップ` はマトリクスまたはCSVからコピーし、必ず `flow_columns[].steps[]` と完全一致させる。
-- `heatmap_cells[].flow_step` と `matrix_tasks[].共通ステップ` が `flow_columns[].steps[]` に存在しない場合は、新しいステップ名を作らず、最も近い既存の共通ステップへ正規化する。
+- `heatmap_cells[].heatmap_group` は `matrix_tasks[].ヒートマップグループ` と完全一致させる。
+- `heatmap_cells[].flow_step` は `matrix_tasks[].ヒートマップステップ` と完全一致させる。
+- `matrix_tasks[].マトリクス横軸` はマトリクスまたはCSVからコピーし、必ず該当業務分類の `category_flow_columns` と完全一致させる。
+- `matrix_tasks[].ヒートマップグループ` と `matrix_tasks[].ヒートマップステップ` は必ず `heatmap_columns` と完全一致させる。
+- 旧形式の `共通ステップ` はフォールバック入力として扱い、`マトリクス横軸` と `ヒートマップステップ` に読み替えてよい。
+- `task_ids` または `source_tasks` に、セルの根拠となる元タスクを必ず記録する。
+- `to_be_tasks` は対象セルの `ai_use_case`、`reason`、元タスクの現状課題と矛盾しない内容にする。
 - 該当しないセルは `heatmap_cells` に含めない。
 - `none`、`n/a`、空スコアのセルは作らない。
 - スコア根拠と前提条件を `reason` に必ず書く。

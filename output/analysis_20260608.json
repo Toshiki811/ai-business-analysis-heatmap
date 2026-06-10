@@ -14,13 +14,17 @@
     "client_input": "",
     "updated_at": "2026-06-08",
     "suppressed_question_count": 0,
-    "restored_for_review_at": "2026-06-08"
+    "restored_for_review_at": "2026-06-08",
+    "to_be_tasks_generated_count": 0,
+    "to_be_tasks_cell_count": 51,
+    "schema_version": "2026-06-10",
+    "schema_normalized_at": "2026-06-08"
   },
   "summary": {
     "insights": [
-      "決算・給与・支払確認は、資料収集、照合、転記、下書き作成が多くAI支援の優先度が高い。",
-      "収納、固定資産、債権債務は会計システムや台帳との連携可否が効果を左右する。",
-      "承認・決裁を伴う業務はAI自動化よりも、差異検知と根拠付き下書きによる人手レビュー支援が現実的。"
+      "現行業務分析では、決算整理仕訳、月次試算表、年末調整、契約書作成などの「計算・作成」に、長い所要時間と品質確認の負荷が集中していることが分かりました。AIには根拠資料確認、差異検知、下書き生成を担わせ、まず決算整理仕訳、月次試算表、年末調整計算から着手すると、帳票・計算ルールを共通化して他の作成業務へ横展開しやすくなります。",
+      "請求書、契約書、稟議書、台帳、証憑の突合は、支払処理、契約事務、債権債務管理など複数業務に散在しており、現行業務では確認観点の属人化と不備見落としリスクが残っています。AIには必要項目抽出、不備検知、根拠リンク提示を提供させ、請求書確認、履行確認、残高確認から着手すると、判断ルールをスキル化して照合・内容確認タスク全体へ広げやすくなります。",
+      "給与、会計、固定資産、報告業務では、確認後の転記、システム入力、記録・提出準備が人手に残り、同じ情報を複数帳票やシステムへ移す負荷が見えました。AIには入力データ整形、CSV化、登録前チェック、報告コメント下書きを担わせ、給与計算入力、給与仕訳入力、固定資産台帳登録から着手すると、既存システム連携を前提に他の入力・記録業務へ展開しやすくなります。"
     ]
   },
   "flow_columns": [
@@ -86,7 +90,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 経理体制・帳簿管理 / 経理体制整備 / 経理担当者の任命 / 経理体制・帳簿管理 / 経理体制整備 / 受付・起案",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "経理体制整備"
+      "business_type": "経理体制整備",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "受付・起案のAI下書き・照合",
+          "ai_role": "経理担当者の任命の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "理事長が会計責任者、出納職員、予算管理責任者、固定資産管理責任者を任命する。 PDF上の手順をもとに、所要時間20分・負担中を仮置きして評価。 対象業務種別: 経理体制整備。対象タスク: 経理担当者の任命。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "経理担当者の任命の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "経理体制・帳簿管理",
@@ -103,7 +126,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 経理体制・帳簿管理 / 経理体制整備 / 職務分掌の確認 / 経理体制・帳簿管理 / 経理体制整備 / 内容確認",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "経理体制整備"
+      "business_type": "経理体制整備",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "内容確認のAI下書き・照合",
+          "ai_role": "職務分掌の確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり6分程度（仮）",
+          "prerequisite_or_risk": "会計責任者が出納職員を監督し、各サービス区分の担当範囲を確認する。 PDF上の手順をもとに、所要時間15分・負担中を仮置きして評価。 対象業務種別: 経理体制整備。対象タスク: 職務分掌の確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "職務分掌の確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "経理体制・帳簿管理",
@@ -120,7 +162,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 経理体制・帳簿管理 / 帳簿・帳票管理 / 帳簿一覧の整備 / 経理体制・帳簿管理 / 帳簿・帳票管理 / 記録・保管",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "帳簿・帳票管理"
+      "business_type": "帳簿・帳票管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "記録・保管のAI下書き・照合",
+          "ai_role": "帳簿一覧の整備の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "仕訳日記帳、総勘定元帳、小口現金出納帳、固定資産管理台帳等を整備する。 PDF上の手順をもとに、所要時間20分・負担中を仮置きして評価。 対象業務種別: 帳簿・帳票管理。対象タスク: 帳簿一覧の整備。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "帳簿一覧の整備の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     },
     {
       "category": "経理体制・帳簿管理",
@@ -137,7 +198,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 経理体制・帳簿管理 / 帳簿・帳票管理 / 会計システム設定確認 / 経理体制・帳簿管理 / 帳簿・帳票管理 / システム入力",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "帳簿・帳票管理"
+      "business_type": "帳簿・帳票管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "システム入力のAI下書き・照合",
+          "ai_role": "会計システム設定確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "導入済み会計システムの勘定科目、サービス区分、帳票出力設定を確認する。 PDF上の手順をもとに、所要時間30分・負担中を仮置きして評価。 対象業務種別: 帳簿・帳票管理。対象タスク: 会計システム設定確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "会計システム設定確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "予算管理",
@@ -154,7 +234,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 予算管理 / 当初予算編成 / 事業計画情報の収集 / 予算管理 / 当初予算編成 / 情報収集・照合",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "当初予算編成"
+      "business_type": "当初予算編成",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "情報収集・照合のAI下書き・照合",
+          "ai_role": "事業計画情報の収集の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり18分程度（仮）",
+          "prerequisite_or_risk": "次年度事業計画、現場ヒアリング、承認済み社会福祉充実計画を収集する。 PDF上の手順をもとに、所要時間45分・負担高を仮置きして評価。 対象業務種別: 当初予算編成。対象タスク: 事業計画情報の収集。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "事業計画情報の収集の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "予算管理",
@@ -171,7 +270,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 予算管理 / 当初予算編成 / 資金収支予算案作成 / 予算管理 / 当初予算編成 / 計算・作成",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "当初予算編成"
+      "business_type": "当初予算編成",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "計算・作成のAI下書き・照合",
+          "ai_role": "資金収支予算案作成の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり24分程度（仮）",
+          "prerequisite_or_risk": "勘定科目単位で収入予算・支出予算を積算し、法人全体またはサービス区分ごとに予算案を作成する。 PDF上の手順をもとに、所要時間60分・負担高を仮置きして評価。 対象業務種別: 当初予算編成。対象タスク: 資金収支予算案作成。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "資金収支予算案作成の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "予算管理",
@@ -188,7 +306,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 予算管理 / 当初予算編成 / 理事会承認 / 予算管理 / 当初予算編成 / 承認・決裁",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "当初予算編成"
+      "business_type": "当初予算編成",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "承認・決裁のAI下書き・照合",
+          "ai_role": "理事会承認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "理事長が編成した予算について理事会の承認を得て確定する。 PDF上の手順をもとに、所要時間30分・負担中を仮置きして評価。 対象業務種別: 当初予算編成。対象タスク: 理事会承認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "理事会承認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "予算管理",
@@ -205,7 +342,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 予算管理 / 補正予算管理 / 予算差異の確認 / 予算管理 / 補正予算管理 / 内容確認",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "補正予算管理"
+      "business_type": "補正予算管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "内容確認のAI下書き・照合",
+          "ai_role": "予算差異の確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "予算執行中に予算額との乖離や変更事由がないか確認する。 PDF上の手順をもとに、所要時間30分・負担中を仮置きして評価。 対象業務種別: 補正予算管理。対象タスク: 予算差異の確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "予算差異の確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "予算管理",
@@ -222,7 +378,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 予算管理 / 当初予算編成 / 資金収支予算案作成 / 予算管理 / 補正予算管理 / 計算・作成",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "補正予算管理"
+      "business_type": "補正予算管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "計算・作成のAI下書き・照合",
+          "ai_role": "資金収支予算案作成の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり24分程度（仮）",
+          "prerequisite_or_risk": "勘定科目単位で収入予算・支出予算を積算し、法人全体またはサービス区分ごとに予算案を作成する。 PDF上の手順をもとに、所要時間60分・負担高を仮置きして評価。 対象業務種別: 補正予算管理。対象タスク: 補正予算案作成。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "資金収支予算案作成の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "収納事務",
@@ -239,7 +414,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 請求・収納 / 請求データ作成 / 収納事務 / 請求・収納 / 計算・作成",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "請求・収納"
+      "business_type": "請求・収納",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "計算・作成のAI下書き・照合",
+          "ai_role": "請求データ作成の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "補助金、利用料、サービス報酬などの請求データを請求システム等で作成する。 PDF上の手順をもとに、所要時間30分・負担高を仮置きして評価。 対象業務種別: 請求・収納。対象タスク: 請求データ作成。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "請求データ作成の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "収納事務",
@@ -256,7 +450,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 請求・収納 / 請求内容確認 / 収納事務 / 請求・収納 / 内容確認",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "請求・収納"
+      "business_type": "請求・収納",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "内容確認のAI下書き・照合",
+          "ai_role": "請求内容確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "請求額、利用者負担、補助金等の内容を確認する。 PDF上の手順をもとに、所要時間20分・負担高を仮置きして評価。 対象業務種別: 請求・収納。対象タスク: 請求内容確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "請求内容確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "収納事務",
@@ -273,7 +486,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 現金収納 / 預入処理 / 収納事務 / 請求・収納 / 実行・支払",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "請求・収納"
+      "business_type": "請求・収納",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "実行・支払のAI下書き・照合",
+          "ai_role": "預入処理の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "収納した現金を経理規程の期日内に金融機関へ預け入れる。 PDF上の手順をもとに、所要時間20分・負担中を仮置きして評価。 対象業務種別: 請求・収納。対象タスク: 請求書発行。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "預入処理の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "収納事務",
@@ -290,7 +522,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 現金収納 / 現金受領 / 収納事務 / 現金収納 / 受付・起案",
       "effect_level": "low",
       "is_top3": false,
-      "business_type": "現金収納"
+      "business_type": "現金収納",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "受付・起案のAI下書き・照合",
+          "ai_role": "現金受領の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり5分程度（仮）",
+          "prerequisite_or_risk": "直接現金を受け取った場合に出納職員が収納内容を確認する。 PDF上の手順をもとに、所要時間10分・負担中を仮置きして評価。 対象業務種別: 現金収納。対象タスク: 現金受領。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "現金受領の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "収納事務",
@@ -307,7 +558,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 請求・収納 / 請求データ作成 / 収納事務 / 現金収納 / 計算・作成",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "現金収納"
+      "business_type": "現金収納",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "計算・作成のAI下書き・照合",
+          "ai_role": "請求データ作成の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "補助金、利用料、サービス報酬などの請求データを請求システム等で作成する。 PDF上の手順をもとに、所要時間30分・負担高を仮置きして評価。 対象業務種別: 現金収納。対象タスク: 領収書発行。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "請求データ作成の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "収納事務",
@@ -324,7 +594,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 現金収納 / 預入処理 / 収納事務 / 現金収納 / 実行・支払",
       "effect_level": "low",
       "is_top3": false,
-      "business_type": "現金収納"
+      "business_type": "現金収納",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "実行・支払のAI下書き・照合",
+          "ai_role": "預入処理の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "収納した現金を経理規程の期日内に金融機関へ預け入れる。 PDF上の手順をもとに、所要時間20分・負担中を仮置きして評価。 対象業務種別: 現金収納。対象タスク: 預入処理。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "預入処理の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "収納事務",
@@ -341,7 +630,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 会計伝票作成 / 収納伝票入力 / 収納事務 / 会計伝票作成 / システム入力",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "会計伝票作成"
+      "business_type": "会計伝票作成",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "システム入力のAI下書き・照合",
+          "ai_role": "収納伝票入力の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり6分程度（仮）",
+          "prerequisite_or_risk": "入金確認後、会計システムで収納に係る会計伝票を作成する。 PDF上の手順をもとに、所要時間15分・負担高を仮置きして評価。 対象業務種別: 会計伝票作成。対象タスク: 収納伝票入力。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "収納伝票入力の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "収納事務",
@@ -358,7 +666,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 収納事務 / 会計伝票作成 / 収納証憑保管 / 収納事務 / 会計伝票作成 / 記録・保管",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "会計伝票作成"
+      "business_type": "会計伝票作成",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "記録・保管のAI下書き・照合",
+          "ai_role": "収納証憑保管の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり5分程度（仮）",
+          "prerequisite_or_risk": "領収書控え、入金明細、会計伝票を整理して保管する。 PDF上の手順をもとに、所要時間10分・負担中を仮置きして評価。 対象業務種別: 会計伝票作成。対象タスク: 収納証憑保管。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "収納証憑保管の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     },
     {
       "category": "支払・契約事務",
@@ -375,7 +702,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 支払処理 / 購入・支払起案 / 支払・契約事務 / 支払処理 / 受付・起案",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "支払処理"
+      "business_type": "支払処理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "受付・起案のAI下書き・照合",
+          "ai_role": "購入・支払起案の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "物品購入や修繕工事などの発注前に稟議書・購入依頼書で起案する。 PDF上の手順をもとに、所要時間20分・負担中を仮置きして評価。 対象業務種別: 支払処理。対象タスク: 購入・支払起案。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "購入・支払起案の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "支払・契約事務",
@@ -392,7 +738,50 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 支払処理 / 請求書確認 / 支払・契約事務 / 支払処理 / 内容確認",
       "effect_level": "high",
       "is_top3": true,
-      "business_type": "支払処理"
+      "business_type": "支払処理",
+      "to_be_tasks": [
+        {
+          "actor": "System",
+          "to_be_task": "証憑取込",
+          "ai_role": "",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "請求書確認と支払伝票入力の作業を短縮し、過払い・二重払い・期限誤りを抑制する。",
+          "prerequisite_or_risk": "証憑スキャン品質、取引先名寄せ、承認済み証憑との紐づけ精度を検証する必要がある。"
+        },
+        {
+          "actor": "AI",
+          "to_be_task": "OCR・項目抽出",
+          "ai_role": "AIが取引先、金額、支払期限、明細を抽出する。",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "請求書確認と支払伝票入力の作業を短縮し、過払い・二重払い・期限誤りを抑制する。",
+          "prerequisite_or_risk": "証憑スキャン品質、取引先名寄せ、承認済み証憑との紐づけ精度を検証する必要がある。"
+        },
+        {
+          "actor": "AI",
+          "to_be_task": "差異チェック",
+          "ai_role": "契約・稟議・納品書との不一致や二重請求候補を検知する。",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "請求書確認と支払伝票入力の作業を短縮し、過払い・二重払い・期限誤りを抑制する。",
+          "prerequisite_or_risk": "証憑スキャン品質、取引先名寄せ、承認済み証憑との紐づけ精度を検証する必要がある。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "例外確認・修正",
+          "ai_role": "",
+          "human_review": "担当者が差異理由を確認し、証憑または支払情報を修正する。",
+          "expected_effect": "請求書確認と支払伝票入力の作業を短縮し、過払い・二重払い・期限誤りを抑制する。",
+          "prerequisite_or_risk": "証憑スキャン品質、取引先名寄せ、承認済み証憑との紐づけ精度を検証する必要がある。"
+        },
+        {
+          "actor": "System",
+          "to_be_task": "支払・仕訳連携",
+          "ai_role": "",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "請求書確認と支払伝票入力の作業を短縮し、過払い・二重払い・期限誤りを抑制する。",
+          "prerequisite_or_risk": "証憑スキャン品質、取引先名寄せ、承認済み証憑との紐づけ精度を検証する必要がある。"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "支払・契約事務",
@@ -409,7 +798,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 支払処理 / 支払情報承認 / 支払・契約事務 / 支払処理 / 承認・決裁",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "支払処理"
+      "business_type": "支払処理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "承認・決裁のAI下書き・照合",
+          "ai_role": "支払情報承認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり6分程度（仮）",
+          "prerequisite_or_risk": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する。 PDF上の手順をもとに、所要時間15分・負担中を仮置きして評価。 対象業務種別: 支払処理。対象タスク: 支払情報承認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "支払情報承認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "支払・契約事務",
@@ -426,7 +834,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 支払処理 / 振込実行 / 支払・契約事務 / 支払処理 / 実行・支払",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "支払処理"
+      "business_type": "支払処理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "実行・支払のAI下書き・照合",
+          "ai_role": "振込実行の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "承認済み支払情報をもとに総合振込またはインターネットバンキングで支払を実行する。 PDF上の手順をもとに、所要時間20分・負担高を仮置きして評価。 対象業務種別: 支払処理。対象タスク: 振込実行。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "振込実行の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "支払・契約事務",
@@ -443,7 +870,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 支払処理 / 支払伝票入力 / 支払・契約事務 / 支払処理 / システム入力",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "支払処理"
+      "business_type": "支払処理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "システム入力のAI下書き・照合",
+          "ai_role": "支払伝票入力の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり6分程度（仮）",
+          "prerequisite_or_risk": "会計システムで支払に係る会計伝票を作成する。 PDF上の手順をもとに、所要時間15分・負担高を仮置きして評価。 対象業務種別: 支払処理。対象タスク: 支払伝票入力。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "支払伝票入力の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "支払・契約事務",
@@ -460,7 +906,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 契約事務 / 見積徴取・比較 / 支払・契約事務 / 契約事務 / 見積・契約",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "契約事務"
+      "business_type": "契約事務",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "見積・契約のAI下書き・照合",
+          "ai_role": "見積徴取・比較の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり16分程度（仮）",
+          "prerequisite_or_risk": "随意契約では原則3社以上など必要社数の見積を徴取し比較する。 PDF上の手順をもとに、所要時間40分・負担高を仮置きして評価。 対象業務種別: 契約事務。対象タスク: 契約種類確認、見積徴取・比較。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "見積徴取・比較の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "支払・契約事務",
@@ -477,7 +942,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 契約事務 / 契約書作成 / 支払・契約事務 / 契約事務 / 計算・作成",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "契約事務"
+      "business_type": "契約事務",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "計算・作成のAI下書き・照合",
+          "ai_role": "契約書作成の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり18分程度（仮）",
+          "prerequisite_or_risk": "契約先決定後、標準契約書または業者指定様式で契約書を作成する。 PDF上の手順をもとに、所要時間45分・負担高を仮置きして評価。 対象業務種別: 契約事務。対象タスク: 契約書作成。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "契約書作成の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "支払・契約事務",
@@ -494,7 +978,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 支払・契約事務 / 支払処理 / 請求書確認 / 支払・契約事務 / 契約事務 / 内容確認",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "契約事務"
+      "business_type": "契約事務",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "内容確認のAI下書き・照合",
+          "ai_role": "請求書確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり10分程度（仮）",
+          "prerequisite_or_risk": "請求書、契約書、稟議書、購入依頼書、納品書等を照合し、必要事項を確認する。 PDF上の手順をもとに、所要時間25分・負担高を仮置きして評価。 対象業務種別: 契約事務。対象タスク: 履行確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "請求書確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "現金管理",
@@ -511,7 +1014,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 現金管理 / 小口現金支払 / 小口支払申請受付 / 現金管理 / 小口現金支払 / 受付・起案",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "小口現金支払"
+      "business_type": "小口現金支払",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "受付・起案のAI下書き・照合",
+          "ai_role": "小口支払申請受付の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり5分程度（仮）",
+          "prerequisite_or_risk": "小口現金から支払う申請や領収書を受け付ける。 PDF上の手順をもとに、所要時間10分・負担中を仮置きして評価。 対象業務種別: 小口現金支払。対象タスク: 小口支払申請受付。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "小口支払申請受付の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "現金管理",
@@ -528,7 +1050,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 現金管理 / 小口現金支払 / 証憑確認 / 現金管理 / 小口現金支払 / 内容確認",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "小口現金支払"
+      "business_type": "小口現金支払",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "内容確認のAI下書き・照合",
+          "ai_role": "証憑確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり5分程度（仮）",
+          "prerequisite_or_risk": "領収書、支払内容、承認有無を確認する。 PDF上の手順をもとに、所要時間10分・負担高を仮置きして評価。 対象業務種別: 小口現金支払。対象タスク: 証憑確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "証憑確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "現金管理",
@@ -545,7 +1086,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 現金管理 / 小口現金支払 / 小口現金出納帳記入 / 現金管理 / 小口現金支払 / 記録・保管",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "小口現金支払"
+      "business_type": "小口現金支払",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "記録・保管のAI下書き・照合",
+          "ai_role": "小口現金出納帳記入の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり5分程度（仮）",
+          "prerequisite_or_risk": "小口現金出納帳に支払内容を記録し証憑を保管する。 PDF上の手順をもとに、所要時間10分・負担中を仮置きして評価。 対象業務種別: 小口現金支払。対象タスク: 小口現金出納帳記入。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "小口現金出納帳記入の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     },
     {
       "category": "現金管理",
@@ -562,7 +1122,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 現金管理 / 現金残高確認 / 現金実査 / 現金管理 / 現金残高確認 / 情報収集・照合",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "現金残高確認"
+      "business_type": "現金残高確認",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "情報収集・照合のAI下書き・照合",
+          "ai_role": "現金実査の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "金庫内現金を数え、小口現金出納帳・会計帳簿と照合する。 PDF上の手順をもとに、所要時間20分・負担高を仮置きして評価。 対象業務種別: 現金残高確認。対象タスク: 現金実査。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "現金実査の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "現金管理",
@@ -579,7 +1158,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 現金管理 / 現金残高確認 / 差異報告 / 現金管理 / 現金残高確認 / 報告・提出",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "現金残高確認"
+      "business_type": "現金残高確認",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "報告・提出のAI下書き・照合",
+          "ai_role": "差異報告の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり6分程度（仮）",
+          "prerequisite_or_risk": "残高差異がある場合は原因を調査し会計責任者へ報告する。 PDF上の手順をもとに、所要時間15分・負担中を仮置きして評価。 対象業務種別: 現金残高確認。対象タスク: 差異報告。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "差異報告の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     },
     {
       "category": "人件費支払",
@@ -596,7 +1194,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 人件費支払 / 給与支払 / 勤怠情報収集 / 人件費支払 / 給与支払 / 情報収集・照合",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "給与支払"
+      "business_type": "給与支払",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "情報収集・照合のAI下書き・照合",
+          "ai_role": "勤怠情報収集の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり16分程度（仮）",
+          "prerequisite_or_risk": "日報や勤怠情報を収集し給与計算の元データを整える。 PDF上の手順をもとに、所要時間40分・負担高を仮置きして評価。 対象業務種別: 給与支払。対象タスク: 勤怠情報収集。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "勤怠情報収集の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "人件費支払",
@@ -613,7 +1230,50 @@
       "source_reference": "keirijimumanyuaru.pdf: 人件費支払 / 給与支払 / 給与計算入力 / 人件費支払 / 給与支払 / システム入力",
       "effect_level": "high",
       "is_top3": true,
-      "business_type": "給与支払"
+      "business_type": "給与支払",
+      "to_be_tasks": [
+        {
+          "actor": "System",
+          "to_be_task": "勤怠データ取込",
+          "ai_role": "",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "給与計算入力と給与仕訳入力の作業時間を削減し、転記ミスと差戻しを減らす。",
+          "prerequisite_or_risk": "個人情報を扱うため権限管理、ログ管理、マスキング、給与計算結果の人手承認が必須。"
+        },
+        {
+          "actor": "AI",
+          "to_be_task": "不備検知",
+          "ai_role": "AIが未入力、異常値、申請資料との不一致を検知する。",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "給与計算入力と給与仕訳入力の作業時間を削減し、転記ミスと差戻しを減らす。",
+          "prerequisite_or_risk": "個人情報を扱うため権限管理、ログ管理、マスキング、給与計算結果の人手承認が必須。"
+        },
+        {
+          "actor": "Human",
+          "to_be_task": "担当者修正",
+          "ai_role": "",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "給与計算入力と給与仕訳入力の作業時間を削減し、転記ミスと差戻しを減らす。",
+          "prerequisite_or_risk": "個人情報を扱うため権限管理、ログ管理、マスキング、給与計算結果の人手承認が必須。"
+        },
+        {
+          "actor": "AI",
+          "to_be_task": "給与取込CSV生成",
+          "ai_role": "AIが給与計算システム取込用CSVを生成する。",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "給与計算入力と給与仕訳入力の作業時間を削減し、転記ミスと差戻しを減らす。",
+          "prerequisite_or_risk": "個人情報を扱うため権限管理、ログ管理、マスキング、給与計算結果の人手承認が必須。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "給与結果レビュー",
+          "ai_role": "",
+          "human_review": "担当者が差異リストと給与結果を確認する。",
+          "expected_effect": "給与計算入力と給与仕訳入力の作業時間を削減し、転記ミスと差戻しを減らす。",
+          "prerequisite_or_risk": "個人情報を扱うため権限管理、ログ管理、マスキング、給与計算結果の人手承認が必須。"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "人件費支払",
@@ -630,7 +1290,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 人件費支払 / 給与支払 / 給与計算データ承認 / 人件費支払 / 給与支払 / 承認・決裁",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "給与支払"
+      "business_type": "給与支払",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "承認・決裁のAI下書き・照合",
+          "ai_role": "給与計算データ承認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "給料計算データについて会計責任者等が確認・承認する。 PDF上の手順をもとに、所要時間30分・負担高を仮置きして評価。 対象業務種別: 給与支払。対象タスク: 給与計算データ承認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "給与計算データ承認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "人件費支払",
@@ -647,7 +1326,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 人件費支払 / 給与支払 / 給与振込 / 人件費支払 / 給与支払 / 実行・支払",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "給与支払"
+      "business_type": "給与支払",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "実行・支払のAI下書き・照合",
+          "ai_role": "給与振込の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "承認済み給与データをもとに給与を支払う。 PDF上の手順をもとに、所要時間20分・負担中を仮置きして評価。 対象業務種別: 給与支払。対象タスク: 給与振込。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "給与振込の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "人件費支払",
@@ -664,7 +1362,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 人件費支払 / 賞与・年末調整 / 年末調整処理 / 人件費支払 / 賞与・年末調整 / 計算・作成",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "賞与・年末調整"
+      "business_type": "賞与・年末調整",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "計算・作成のAI下書き・照合",
+          "ai_role": "年末調整処理の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり36分程度（仮）",
+          "prerequisite_or_risk": "年末調整に必要な申告書・控除資料を確認し計算する。 PDF上の手順をもとに、所要時間90分・負担高を仮置きして評価。 対象業務種別: 賞与・年末調整。対象タスク: 賞与支給額計算、年末調整処理。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "年末調整処理の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "人件費支払",
@@ -681,7 +1398,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 人件費支払 / 社会保険・源泉 / 源泉徴収・社会保険届出 / 人件費支払 / 社会保険・源泉 / 報告・提出",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "社会保険・源泉"
+      "business_type": "社会保険・源泉",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "報告・提出のAI下書き・照合",
+          "ai_role": "源泉徴収・社会保険届出の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり24分程度（仮）",
+          "prerequisite_or_risk": "源泉徴収事務、算定基礎届、賞与支払届等を作成・提出する。 PDF上の手順をもとに、所要時間60分・負担高を仮置きして評価。 対象業務種別: 社会保険・源泉。対象タスク: 源泉徴収・社会保険届出。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "源泉徴収・社会保険届出の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     },
     {
       "category": "資産・負債管理",
@@ -698,7 +1434,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 固定資産管理 / 固定資産現物確認 / 資産・負債管理 / 債権債務管理 / 情報収集・照合",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "債権債務管理"
+      "business_type": "債権債務管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "情報収集・照合のAI下書き・照合",
+          "ai_role": "固定資産現物確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり24分程度（仮）",
+          "prerequisite_or_risk": "年度末に固定資産台帳と現物の存在・使用状況を確認する。 PDF上の手順をもとに、所要時間60分・負担高を仮置きして評価。 対象業務種別: 債権債務管理。対象タスク: 残高内訳調査。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "固定資産現物確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "資産・負債管理",
@@ -715,7 +1470,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 債権債務管理 / 取引先残高確認 / 資産・負債管理 / 債権債務管理 / 内容確認",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "債権債務管理"
+      "business_type": "債権債務管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "内容確認のAI下書き・照合",
+          "ai_role": "取引先残高確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "必要に応じて取引先との残高確認を行い差異を調査する。 PDF上の手順をもとに、所要時間30分・負担高を仮置きして評価。 対象業務種別: 債権債務管理。対象タスク: 取引先残高確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "取引先残高確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "資産・負債管理",
@@ -732,7 +1506,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 債権債務管理 / 報告・措置 / 資産・負債管理 / 債権債務管理 / 報告・提出",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "債権債務管理"
+      "business_type": "債権債務管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "報告・提出のAI下書き・照合",
+          "ai_role": "報告・措置の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり8分程度（仮）",
+          "prerequisite_or_risk": "残高差異や不明残高について会計責任者が報告し必要な措置を行う。 PDF上の手順をもとに、所要時間20分・負担中を仮置きして評価。 対象業務種別: 債権債務管理。対象タスク: 報告・措置。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "報告・措置の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     },
     {
       "category": "資産・負債管理",
@@ -749,7 +1542,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 実地棚卸 / 棚卸表整備 / 資産・負債管理 / 実地棚卸 / 受付・起案",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "実地棚卸"
+      "business_type": "実地棚卸",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "受付・起案のAI下書き・照合",
+          "ai_role": "棚卸表整備の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "棚卸方法を周知し、棚卸表を担当職員に回付する。 PDF上の手順をもとに、所要時間30分・負担中を仮置きして評価。 対象業務種別: 実地棚卸。対象タスク: 棚卸表整備。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "棚卸表整備の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "準備・受付"
     },
     {
       "category": "資産・負債管理",
@@ -766,7 +1578,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 固定資産管理 / 固定資産現物確認 / 資産・負債管理 / 実地棚卸 / 情報収集・照合",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "実地棚卸"
+      "business_type": "実地棚卸",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "情報収集・照合のAI下書き・照合",
+          "ai_role": "固定資産現物確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり24分程度（仮）",
+          "prerequisite_or_risk": "年度末に固定資産台帳と現物の存在・使用状況を確認する。 PDF上の手順をもとに、所要時間60分・負担高を仮置きして評価。 対象業務種別: 実地棚卸。対象タスク: 実地棚卸実施。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "固定資産現物確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "資産・負債管理",
@@ -783,7 +1614,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 固定資産管理 / 除却承認 / 資産・負債管理 / 実地棚卸 / 承認・決裁",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "実地棚卸"
+      "business_type": "実地棚卸",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "承認・決裁のAI下書き・照合",
+          "ai_role": "除却承認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり10分程度（仮）",
+          "prerequisite_or_risk": "固定資産の廃棄・売却時に所定の承認を得て台帳へ反映する。 PDF上の手順をもとに、所要時間25分・負担中を仮置きして評価。 対象業務種別: 実地棚卸。対象タスク: 棚卸表承認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "除却承認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "資産・負債管理",
@@ -800,7 +1650,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 固定資産管理 / 固定資産台帳登録 / 資産・負債管理 / 固定資産管理 / システム入力",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "固定資産管理"
+      "business_type": "固定資産管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "システム入力のAI下書き・照合",
+          "ai_role": "固定資産台帳登録の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり12分程度（仮）",
+          "prerequisite_or_risk": "取得した固定資産を固定資産管理台帳へ登録する。 PDF上の手順をもとに、所要時間30分・負担高を仮置きして評価。 対象業務種別: 固定資産管理。対象タスク: 固定資産台帳登録。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "固定資産台帳登録の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "資産・負債管理",
@@ -817,7 +1686,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 固定資産管理 / 固定資産現物確認 / 資産・負債管理 / 固定資産管理 / 情報収集・照合",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "固定資産管理"
+      "business_type": "固定資産管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "情報収集・照合のAI下書き・照合",
+          "ai_role": "固定資産現物確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり24分程度（仮）",
+          "prerequisite_or_risk": "年度末に固定資産台帳と現物の存在・使用状況を確認する。 PDF上の手順をもとに、所要時間60分・負担高を仮置きして評価。 対象業務種別: 固定資産管理。対象タスク: 固定資産現物確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "固定資産現物確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "資産・負債管理",
@@ -834,7 +1722,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 資産・負債管理 / 固定資産管理 / 除却承認 / 資産・負債管理 / 固定資産管理 / 承認・決裁",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "固定資産管理"
+      "business_type": "固定資産管理",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "承認・決裁のAI下書き・照合",
+          "ai_role": "除却承認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり10分程度（仮）",
+          "prerequisite_or_risk": "固定資産の廃棄・売却時に所定の承認を得て台帳へ反映する。 PDF上の手順をもとに、所要時間25分・負担中を仮置きして評価。 対象業務種別: 固定資産管理。対象タスク: 除却承認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "除却承認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "決算・報告",
@@ -851,7 +1758,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 決算・報告 / 月次報告 / 現預金残高確認 / 決算・報告 / 月次報告 / 情報収集・照合",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "月次報告"
+      "business_type": "月次報告",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "情報収集・照合のAI下書き・照合",
+          "ai_role": "現預金残高確認の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり16分程度（仮）",
+          "prerequisite_or_risk": "現金、預金、仮払金、仮受金など月次処理に必要な残高を確認する。 PDF上の手順をもとに、所要時間40分・負担高を仮置きして評価。 対象業務種別: 月次報告。対象タスク: 現預金残高確認。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "現預金残高確認の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "確認・判断"
     },
     {
       "category": "決算・報告",
@@ -868,7 +1794,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 決算・報告 / 年次決算 / 決算整理仕訳作成 / 決算・報告 / 月次報告 / 計算・作成",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "月次報告"
+      "business_type": "月次報告",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "計算・作成のAI下書き・照合",
+          "ai_role": "決算整理仕訳作成の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり48分程度（仮）",
+          "prerequisite_or_risk": "未収・未払、棚卸、減価償却、引当金、見越繰延など決算整理仕訳を作成する。 PDF上の手順をもとに、所要時間120分・負担高を仮置きして評価。 対象業務種別: 月次報告。対象タスク: 月次試算表作成。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "決算整理仕訳作成の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "決算・報告",
@@ -885,7 +1830,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 決算・報告 / 年次決算 / 申告・納税 / 決算・報告 / 月次報告 / 報告・提出",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "月次報告"
+      "business_type": "月次報告",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "報告・提出のAI下書き・照合",
+          "ai_role": "申告・納税の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり36分程度（仮）",
+          "prerequisite_or_risk": "収益事業や消費税課税がある場合、申告書作成・申告・納税を行う。 PDF上の手順をもとに、所要時間90分・負担高を仮置きして評価。 対象業務種別: 月次報告。対象タスク: 月次報告。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "申告・納税の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     },
     {
       "category": "決算・報告",
@@ -902,7 +1866,50 @@
       "source_reference": "keirijimumanyuaru.pdf: 決算・報告 / 年次決算 / 決算整理仕訳作成 / 決算・報告 / 年次決算 / 計算・作成",
       "effect_level": "high",
       "is_top3": true,
-      "business_type": "年次決算"
+      "business_type": "年次決算",
+      "to_be_tasks": [
+        {
+          "actor": "System",
+          "to_be_task": "データ取込",
+          "ai_role": "",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "決算資料の初稿作成と整合チェックの時間を削減し、確認漏れを抑制する。",
+          "prerequisite_or_risk": "法定様式・会計基準の最終判断は会計責任者または外部専門家が行う。根拠資料との照合ログを残す必要がある。"
+        },
+        {
+          "actor": "AI",
+          "to_be_task": "整理仕訳候補生成",
+          "ai_role": "AIが未収未払、減価償却、引当金等の候補と根拠を提示する。",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "決算資料の初稿作成と整合チェックの時間を削減し、確認漏れを抑制する。",
+          "prerequisite_or_risk": "法定様式・会計基準の最終判断は会計責任者または外部専門家が行う。根拠資料との照合ログを残す必要がある。"
+        },
+        {
+          "actor": "AI",
+          "to_be_task": "書類ドラフト生成",
+          "ai_role": "計算書類、注記、附属明細書の初稿とチェック結果を生成する。",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "決算資料の初稿作成と整合チェックの時間を削減し、確認漏れを抑制する。",
+          "prerequisite_or_risk": "法定様式・会計基準の最終判断は会計責任者または外部専門家が行う。根拠資料との照合ログを残す必要がある。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "会計責任者レビュー",
+          "ai_role": "",
+          "human_review": "根拠資料とAI提案を確認し、必要な修正を承認する。",
+          "expected_effect": "決算資料の初稿作成と整合チェックの時間を削減し、確認漏れを抑制する。",
+          "prerequisite_or_risk": "法定様式・会計基準の最終判断は会計責任者または外部専門家が行う。根拠資料との照合ログを残す必要がある。"
+        },
+        {
+          "actor": "System",
+          "to_be_task": "確定・保管",
+          "ai_role": "",
+          "human_review": "AI出力の根拠、例外、承認要否を人が確認する。",
+          "expected_effect": "決算資料の初稿作成と整合チェックの時間を削減し、確認漏れを抑制する。",
+          "prerequisite_or_risk": "法定様式・会計基準の最終判断は会計責任者または外部専門家が行う。根拠資料との照合ログを残す必要がある。"
+        }
+      ],
+      "heatmap_group": "作成・承認"
     },
     {
       "category": "決算・報告",
@@ -919,7 +1926,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 決算・報告 / 年次決算 / 決算整理仕訳入力 / 決算・報告 / 年次決算 / システム入力",
       "effect_level": "high",
       "is_top3": false,
-      "business_type": "年次決算"
+      "business_type": "年次決算",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "システム入力のAI下書き・照合",
+          "ai_role": "決算整理仕訳入力の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり24分程度（仮）",
+          "prerequisite_or_risk": "作成した決算整理仕訳を会計システムへ入力する。 PDF上の手順をもとに、所要時間60分・負担高を仮置きして評価。 対象業務種別: 年次決算。対象タスク: 決算整理仕訳入力。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "決算整理仕訳入力の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 中"
+        }
+      ],
+      "heatmap_group": "入力・実行"
     },
     {
       "category": "決算・報告",
@@ -936,7 +1962,26 @@
       "source_reference": "keirijimumanyuaru.pdf: 決算・報告 / 年次決算 / 申告・納税 / 決算・報告 / 年次決算 / 報告・提出",
       "effect_level": "medium",
       "is_top3": false,
-      "business_type": "年次決算"
+      "business_type": "年次決算",
+      "to_be_tasks": [
+        {
+          "actor": "AI",
+          "to_be_task": "報告・提出のAI下書き・照合",
+          "ai_role": "申告・納税の内容確認・転記・資料作成をAIで支援",
+          "human_review": "担当者がAIの出力、根拠、例外候補を確認する。",
+          "expected_effect": "1件あたり36分程度（仮）",
+          "prerequisite_or_risk": "収益事業や消費税課税がある場合、申告書作成・申告・納税を行う。 PDF上の手順をもとに、所要時間90分・負担高を仮置きして評価。 対象業務種別: 年次決算。対象タスク: 申告・納税。"
+        },
+        {
+          "actor": "Human Review",
+          "to_be_task": "結果確認・承認判断",
+          "ai_role": "確認観点、差異、注意点を一覧化する。",
+          "human_review": "担当者または承認者が最終判断し、必要に応じて修正・差戻しを行う。",
+          "expected_effect": "申告・納税の内容確認・転記・資料作成をAIで支援",
+          "prerequisite_or_risk": "想定開発規模: 小"
+        }
+      ],
+      "heatmap_group": "記録・報告"
     }
   ],
   "matrix_tasks": [
@@ -958,7 +2003,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "経理体制・帳簿管理 > 経理体制整備 > 1. 経理担当者の任命 / 受付・起案",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260608"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260608",
+      "マトリクス横軸": "受付・起案",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "受付・起案"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -978,7 +2026,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "経理体制・帳簿管理 > 経理体制整備 > 2. 職務分掌の確認 / 内容確認",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260608"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260608",
+      "マトリクス横軸": "内容確認",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "内容確認"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -998,7 +2049,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "経理体制・帳簿管理 > 帳簿・帳票管理 > 1. 帳簿一覧の整備 / 記録・保管",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260608"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260608",
+      "マトリクス横軸": "記録・保管",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "記録・保管"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -1018,7 +2072,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "経理体制・帳簿管理 > 帳簿・帳票管理 > 2. 会計システム設定確認 / システム入力",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260608"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260608",
+      "マトリクス横軸": "システム入力",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "システム入力"
     },
     {
       "業務分類": "予算管理",
@@ -1038,7 +2095,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "予算管理 > 当初予算編成 > 1. 事業計画情報の収集 / 情報収集・照合",
-      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260608"
+      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260608",
+      "マトリクス横軸": "情報収集・照合",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "情報収集・照合"
     },
     {
       "業務分類": "予算管理",
@@ -1058,7 +2118,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "予算管理 > 当初予算編成 > 2. 資金収支予算案作成 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260608"
+      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "予算管理",
@@ -1078,7 +2141,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "予算管理 > 当初予算編成 > 3. 理事会承認 / 承認・決裁",
-      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260608"
+      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260608",
+      "マトリクス横軸": "承認・決裁",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "承認・決裁"
     },
     {
       "業務分類": "予算管理",
@@ -1098,7 +2164,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "予算管理 > 補正予算管理 > 1. 予算差異の確認 / 内容確認",
-      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260608"
+      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260608",
+      "マトリクス横軸": "内容確認",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "内容確認"
     },
     {
       "業務分類": "予算管理",
@@ -1118,7 +2187,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260608",
       "as_is_node_id": "process-005",
       "as_is_position_label": "予算管理 > 補正予算管理 > 2. 補正予算案作成 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260608"
+      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "収納事務",
@@ -1138,7 +2210,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "収納事務 > 請求・収納 > 1. 請求データ作成 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "収納事務",
@@ -1158,7 +2233,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "収納事務 > 請求・収納 > 2. 請求内容確認 / 内容確認",
-      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260608",
+      "マトリクス横軸": "内容確認",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "内容確認"
     },
     {
       "業務分類": "収納事務",
@@ -1178,7 +2256,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "収納事務 > 請求・収納 > 3. 請求書発行 / 実行・支払",
-      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260608",
+      "マトリクス横軸": "実行・支払",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "実行・支払"
     },
     {
       "業務分類": "収納事務",
@@ -1198,7 +2279,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "収納事務 > 現金収納 > 1. 現金受領 / 受付・起案",
-      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260608",
+      "マトリクス横軸": "受付・起案",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "受付・起案"
     },
     {
       "業務分類": "収納事務",
@@ -1218,7 +2302,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-005",
       "as_is_position_label": "収納事務 > 現金収納 > 2. 領収書発行 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "収納事務",
@@ -1238,7 +2325,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-006",
       "as_is_position_label": "収納事務 > 現金収納 > 3. 預入処理 / 実行・支払",
-      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260608",
+      "マトリクス横軸": "実行・支払",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "実行・支払"
     },
     {
       "業務分類": "収納事務",
@@ -1258,7 +2348,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-007",
       "as_is_position_label": "収納事務 > 会計伝票作成 > 1. 収納伝票入力 / システム入力",
-      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260608",
+      "マトリクス横軸": "システム入力",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "システム入力"
     },
     {
       "業務分類": "収納事務",
@@ -1278,7 +2371,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260608",
       "as_is_node_id": "process-008",
       "as_is_position_label": "収納事務 > 会計伝票作成 > 2. 収納証憑保管 / 記録・保管",
-      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260608"
+      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260608",
+      "マトリクス横軸": "記録・保管",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "記録・保管"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1298,7 +2394,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 1. 購入・支払起案 / 受付・起案",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608",
+      "マトリクス横軸": "受付・起案",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "受付・起案"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1318,7 +2417,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 2. 請求書確認 / 内容確認",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608",
+      "マトリクス横軸": "内容確認",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "内容確認"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1338,7 +2440,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 3. 支払情報承認 / 承認・決裁",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608",
+      "マトリクス横軸": "承認・決裁",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "承認・決裁"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1358,7 +2463,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 4. 振込実行 / 実行・支払",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608",
+      "マトリクス横軸": "実行・支払",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "実行・支払"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1378,7 +2486,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-005",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 5. 支払伝票入力 / システム入力",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260608",
+      "マトリクス横軸": "システム入力",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "システム入力"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1398,7 +2509,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-006",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 1. 契約種類確認 / 見積・契約",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608",
+      "マトリクス横軸": "見積・契約",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "見積・契約"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1418,7 +2532,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-007",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 2. 見積徴取・比較 / 見積・契約",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608",
+      "マトリクス横軸": "見積・契約",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "見積・契約"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1438,7 +2555,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-008",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 3. 契約書作成 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "支払・契約事務",
@@ -1458,7 +2578,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260608",
       "as_is_node_id": "process-009",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 4. 履行確認 / 内容確認",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260608",
+      "マトリクス横軸": "内容確認",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "内容確認"
     },
     {
       "業務分類": "現金管理",
@@ -1478,7 +2601,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "現金管理 > 小口現金支払 > 1. 小口支払申請受付 / 受付・起案",
-      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260608"
+      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260608",
+      "マトリクス横軸": "受付・起案",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "受付・起案"
     },
     {
       "業務分類": "現金管理",
@@ -1498,7 +2624,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "現金管理 > 小口現金支払 > 2. 証憑確認 / 内容確認",
-      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260608"
+      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260608",
+      "マトリクス横軸": "内容確認",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "内容確認"
     },
     {
       "業務分類": "現金管理",
@@ -1518,7 +2647,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "現金管理 > 小口現金支払 > 3. 小口現金出納帳記入 / 記録・保管",
-      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260608"
+      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260608",
+      "マトリクス横軸": "記録・保管",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "記録・保管"
     },
     {
       "業務分類": "現金管理",
@@ -1538,7 +2670,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "現金管理 > 現金残高確認 > 1. 現金実査 / 情報収集・照合",
-      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260608"
+      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260608",
+      "マトリクス横軸": "情報収集・照合",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "情報収集・照合"
     },
     {
       "業務分類": "現金管理",
@@ -1558,7 +2693,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260608",
       "as_is_node_id": "process-005",
       "as_is_position_label": "現金管理 > 現金残高確認 > 2. 差異報告 / 報告・提出",
-      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260608"
+      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260608",
+      "マトリクス横軸": "報告・提出",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "報告・提出"
     },
     {
       "業務分類": "人件費支払",
@@ -1578,7 +2716,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "人件費支払 > 給与支払 > 1. 勤怠情報収集 / 情報収集・照合",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608",
+      "マトリクス横軸": "情報収集・照合",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "情報収集・照合"
     },
     {
       "業務分類": "人件費支払",
@@ -1598,7 +2739,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "人件費支払 > 給与支払 > 2. 給与計算入力 / システム入力",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608",
+      "マトリクス横軸": "システム入力",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "システム入力"
     },
     {
       "業務分類": "人件費支払",
@@ -1618,7 +2762,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "人件費支払 > 給与支払 > 3. 給与計算データ承認 / 承認・決裁",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608",
+      "マトリクス横軸": "承認・決裁",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "承認・決裁"
     },
     {
       "業務分類": "人件費支払",
@@ -1638,7 +2785,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "人件費支払 > 給与支払 > 4. 給与振込 / 実行・支払",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608",
+      "マトリクス横軸": "実行・支払",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "実行・支払"
     },
     {
       "業務分類": "人件費支払",
@@ -1658,7 +2808,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-005",
       "as_is_position_label": "人件費支払 > 給与支払 > 5. 給与仕訳入力 / システム入力",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260608",
+      "マトリクス横軸": "システム入力",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "システム入力"
     },
     {
       "業務分類": "人件費支払",
@@ -1678,7 +2831,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-006",
       "as_is_position_label": "人件費支払 > 賞与・年末調整 > 1. 賞与支給額計算 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_人件費支払__賞与_年末調整_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__賞与_年末調整_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "人件費支払",
@@ -1698,7 +2854,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-007",
       "as_is_position_label": "人件費支払 > 賞与・年末調整 > 2. 年末調整処理 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_人件費支払__賞与_年末調整_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__賞与_年末調整_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "人件費支払",
@@ -1718,7 +2877,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260608",
       "as_is_node_id": "process-008",
       "as_is_position_label": "人件費支払 > 社会保険・源泉 > 1. 源泉徴収・社会保険届出 / 報告・提出",
-      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260608"
+      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260608",
+      "マトリクス横軸": "報告・提出",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "報告・提出"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1738,7 +2900,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "資産・負債管理 > 債権債務管理 > 1. 残高内訳調査 / 情報収集・照合",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260608",
+      "マトリクス横軸": "情報収集・照合",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "情報収集・照合"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1758,7 +2923,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "資産・負債管理 > 債権債務管理 > 2. 取引先残高確認 / 内容確認",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260608",
+      "マトリクス横軸": "内容確認",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "内容確認"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1778,7 +2946,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "資産・負債管理 > 債権債務管理 > 3. 報告・措置 / 報告・提出",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260608",
+      "マトリクス横軸": "報告・提出",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "報告・提出"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1798,7 +2969,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "資産・負債管理 > 実地棚卸 > 1. 棚卸表整備 / 受付・起案",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260608",
+      "マトリクス横軸": "受付・起案",
+      "ヒートマップグループ": "準備・受付",
+      "ヒートマップステップ": "受付・起案"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1818,7 +2992,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-005",
       "as_is_position_label": "資産・負債管理 > 実地棚卸 > 2. 実地棚卸実施 / 情報収集・照合",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260608",
+      "マトリクス横軸": "情報収集・照合",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "情報収集・照合"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1838,7 +3015,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-006",
       "as_is_position_label": "資産・負債管理 > 実地棚卸 > 3. 棚卸表承認 / 承認・決裁",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260608",
+      "マトリクス横軸": "承認・決裁",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "承認・決裁"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1858,7 +3038,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-007",
       "as_is_position_label": "資産・負債管理 > 固定資産管理 > 1. 固定資産台帳登録 / システム入力",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260608",
+      "マトリクス横軸": "システム入力",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "システム入力"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1878,7 +3061,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-008",
       "as_is_position_label": "資産・負債管理 > 固定資産管理 > 2. 固定資産現物確認 / 情報収集・照合",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260608",
+      "マトリクス横軸": "情報収集・照合",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "情報収集・照合"
     },
     {
       "業務分類": "資産・負債管理",
@@ -1898,7 +3084,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260608",
       "as_is_node_id": "process-009",
       "as_is_position_label": "資産・負債管理 > 固定資産管理 > 3. 除却承認 / 承認・決裁",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260608"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260608",
+      "マトリクス横軸": "承認・決裁",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "承認・決裁"
     },
     {
       "業務分類": "決算・報告",
@@ -1918,7 +3107,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260608",
       "as_is_node_id": "process-001",
       "as_is_position_label": "決算・報告 > 月次報告 > 1. 現預金残高確認 / 情報収集・照合",
-      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260608"
+      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260608",
+      "マトリクス横軸": "情報収集・照合",
+      "ヒートマップグループ": "確認・判断",
+      "ヒートマップステップ": "情報収集・照合"
     },
     {
       "業務分類": "決算・報告",
@@ -1938,7 +3130,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260608",
       "as_is_node_id": "process-002",
       "as_is_position_label": "決算・報告 > 月次報告 > 2. 月次試算表作成 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260608"
+      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "決算・報告",
@@ -1958,7 +3153,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260608",
       "as_is_node_id": "process-003",
       "as_is_position_label": "決算・報告 > 月次報告 > 3. 月次報告 / 報告・提出",
-      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260608"
+      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260608",
+      "マトリクス横軸": "報告・提出",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "報告・提出"
     },
     {
       "業務分類": "決算・報告",
@@ -1978,7 +3176,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260608",
       "as_is_node_id": "process-004",
       "as_is_position_label": "決算・報告 > 年次決算 > 1. 決算整理仕訳作成 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608"
+      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "決算・報告",
@@ -1998,7 +3199,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260608",
       "as_is_node_id": "process-005",
       "as_is_position_label": "決算・報告 > 年次決算 > 2. 決算整理仕訳入力 / システム入力",
-      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608"
+      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608",
+      "マトリクス横軸": "システム入力",
+      "ヒートマップグループ": "入力・実行",
+      "ヒートマップステップ": "システム入力"
     },
     {
       "業務分類": "決算・報告",
@@ -2018,7 +3222,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260608",
       "as_is_node_id": "process-006",
       "as_is_position_label": "決算・報告 > 年次決算 > 3. 計算書類作成 / 計算・作成",
-      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608"
+      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608",
+      "マトリクス横軸": "計算・作成",
+      "ヒートマップグループ": "作成・承認",
+      "ヒートマップステップ": "計算・作成"
     },
     {
       "業務分類": "決算・報告",
@@ -2038,7 +3245,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260608",
       "as_is_node_id": "process-007",
       "as_is_position_label": "決算・報告 > 年次決算 > 4. 申告・納税 / 報告・提出",
-      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608"
+      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260608",
+      "マトリクス横軸": "報告・提出",
+      "ヒートマップグループ": "記録・報告",
+      "ヒートマップステップ": "報告・提出"
     }
   ],
   "top3": [
@@ -2065,61 +3275,82 @@
       "frequency_reason": "年次中心だが月次処理にも波及し、繁忙期集中の影響が大きい。",
       "implementation_ease_reason": "会計システム出力と台帳CSVを前提にRAG・ルールチェックで実装可能。",
       "quality_impact_reason": "仕訳漏れ、注記漏れ、様式整合の確認に品質改善余地がある。",
-      "as_is_flow": [
-        {
-          "step": "残高・台帳収集",
-          "actor": "Human",
-          "description": "会計責任者が残高試算表、固定資産台帳、棚卸表、未収未払明細を集める。"
-        },
-        {
-          "step": "決算整理仕訳作成",
-          "actor": "Human",
-          "description": "根拠資料を確認しながら整理仕訳を作成する。"
-        },
-        {
-          "step": "会計システム入力",
-          "actor": "System",
-          "description": "会計システムへ仕訳を入力し決算整理後残高試算表を出力する。"
-        },
-        {
-          "step": "計算書類作成",
-          "actor": "Human",
-          "description": "貸借対照表、資金収支計算書、事業活動計算書、注記、附属明細書を作成する。"
-        },
-        {
-          "step": "確認・報告",
-          "actor": "Human Review",
-          "description": "会計責任者が整合を確認し理事長等へ報告する。"
-        }
-      ],
       "to_be_flow": [
         {
+          "id": "data-import",
           "step": "データ取込",
+          "node_type": "process",
           "actor": "System",
           "description": "会計データ、台帳、明細を所定フォーマットで取り込む。"
         },
         {
+          "id": "journal-draft",
           "step": "整理仕訳候補生成",
+          "node_type": "process",
           "actor": "AI",
           "description": "AIが未収未払、減価償却、引当金等の候補と根拠を提示する。"
         },
         {
+          "id": "document-draft",
           "step": "書類ドラフト生成",
+          "node_type": "process",
           "actor": "AI",
           "description": "計算書類、注記、附属明細書の初稿とチェック結果を生成する。"
         },
         {
+          "id": "consistency-check",
+          "step": "整合性判定",
+          "node_type": "decision",
+          "actor": "AI",
+          "condition": "AIチェックで残高・台帳・注記に不整合があるか",
+          "branches": [
+            {
+              "label": "不整合なし",
+              "target": "accounting-review"
+            },
+            {
+              "label": "不整合あり",
+              "target": "journal-draft"
+            }
+          ]
+        },
+        {
+          "id": "accounting-review",
           "step": "会計責任者レビュー",
+          "node_type": "process",
           "actor": "Human Review",
           "description": "根拠資料とAI提案を確認し、必要な修正を承認する。"
         },
         {
+          "id": "approval-check",
+          "step": "承認判定",
+          "node_type": "decision",
+          "actor": "Human Review",
+          "condition": "会計責任者が確定可能と判断したか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "finalize-store"
+            },
+            {
+              "label": "差戻し",
+              "target": "journal-draft"
+            }
+          ]
+        },
+        {
+          "id": "finalize-store",
           "step": "確定・保管",
+          "node_type": "process",
           "actor": "System",
           "description": "確定版と根拠ログを保存し報告用ファイルを出力する。"
         }
       ],
-      "target_business_type": "年次決算"
+      "target_business_type": "年次決算",
+      "flow_files": {
+        "to_be_drawio": "output/flows/top1_to_be.drawio"
+      },
+      "target_heatmap_group": "作成・承認"
     },
     {
       "rank": 2,
@@ -2144,61 +3375,97 @@
       "frequency_reason": "給与支払は毎月、賞与・年末調整・届出も定期的に発生する。",
       "implementation_ease_reason": "CSV取込や帳票読取が使えれば段階導入しやすい。",
       "quality_impact_reason": "振込額、控除額、仕訳転記の誤りを抑制できる。",
-      "as_is_flow": [
-        {
-          "step": "勤怠情報収集",
-          "actor": "Human",
-          "description": "日報・勤怠情報を集め、不備を確認する。"
-        },
-        {
-          "step": "給与計算入力",
-          "actor": "Human",
-          "description": "給与計算システムに勤怠・手当・控除情報を入力する。"
-        },
-        {
-          "step": "承認",
-          "actor": "Human Review",
-          "description": "会計責任者等が給与計算データを確認・承認する。"
-        },
-        {
-          "step": "振込実行",
-          "actor": "System",
-          "description": "承認済みデータをもとに給与を支払う。"
-        },
-        {
-          "step": "給与仕訳入力",
-          "actor": "Human",
-          "description": "給与支払時の会計仕訳を会計システムへ入力する。"
-        }
-      ],
       "to_be_flow": [
         {
+          "id": "attendance-import",
           "step": "勤怠データ取込",
+          "node_type": "process",
           "actor": "System",
           "description": "勤怠データと申請資料を取り込む。"
         },
         {
-          "step": "不備検知・CSV生成",
+          "id": "defect-detect",
+          "step": "不備検知",
+          "node_type": "process",
           "actor": "AI",
-          "description": "AIが未入力・異常値を検知し給与計算取込CSVを作る。"
+          "description": "AIが未入力、異常値、申請資料との不一致を検知する。"
         },
         {
+          "id": "defect-check",
+          "step": "不備有無判定",
+          "node_type": "decision",
+          "actor": "AI",
+          "condition": "給与計算前に修正すべき不備があるか",
+          "branches": [
+            {
+              "label": "不備なし",
+              "target": "payroll-csv"
+            },
+            {
+              "label": "不備あり",
+              "target": "human-correction"
+            }
+          ]
+        },
+        {
+          "id": "human-correction",
+          "step": "担当者修正",
+          "node_type": "process",
+          "actor": "Human",
+          "description": "担当者が勤怠・手当・控除情報を確認し、不備を修正する。",
+          "next": "defect-detect"
+        },
+        {
+          "id": "payroll-csv",
+          "step": "給与取込CSV生成",
+          "node_type": "process",
+          "actor": "AI",
+          "description": "AIが給与計算システム取込用CSVを生成する。"
+        },
+        {
+          "id": "payroll-review",
           "step": "給与結果レビュー",
+          "node_type": "process",
           "actor": "Human Review",
           "description": "担当者が差異リストと給与結果を確認する。"
         },
         {
+          "id": "journal-draft",
           "step": "仕訳案生成",
+          "node_type": "process",
           "actor": "AI",
           "description": "給与計算結果から会計仕訳案を生成する。"
         },
         {
-          "step": "承認・連携",
+          "id": "approval-check",
+          "step": "承認判定",
+          "node_type": "decision",
           "actor": "Human Review",
-          "description": "会計責任者が承認し、給与・会計システムへ連携する。"
+          "condition": "会計責任者が給与結果と仕訳案を承認したか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "system-link"
+            },
+            {
+              "label": "差戻し",
+              "target": "human-correction"
+            }
+          ]
+        },
+        {
+          "id": "system-link",
+          "step": "承認・連携",
+          "node_type": "process",
+          "actor": "System",
+          "description": "承認済みデータを給与・会計システムへ連携する。"
         }
       ],
-      "target_business_type": "給与支払"
+      "target_business_type": "給与支払",
+      "flow_files": {
+        "to_be_drawio": "output/flows/top2_to_be.drawio"
+      },
+      "target_heatmap_group": "入力・実行"
     },
     {
       "rank": 3,
@@ -2223,61 +3490,83 @@
       "frequency_reason": "支払事務は随時発生し、月次の債務支払準備にも関係する。",
       "implementation_ease_reason": "請求書OCRとルールチェックから小さく始められる。",
       "quality_impact_reason": "支払先・金額・期限・承認漏れのミス削減効果が高い。",
-      "as_is_flow": [
-        {
-          "step": "請求書受領",
-          "actor": "Human",
-          "description": "取引先から請求書を受け取る。"
-        },
-        {
-          "step": "証憑照合",
-          "actor": "Human",
-          "description": "契約書、稟議書、納品書等と請求書を照合する。"
-        },
-        {
-          "step": "支払情報作成",
-          "actor": "Human",
-          "description": "確認済み請求書をもとに支払情報を作成する。"
-        },
-        {
-          "step": "会計責任者承認",
-          "actor": "Human Review",
-          "description": "会計責任者が請求書と支払情報を照合し承認する。"
-        },
-        {
-          "step": "支払実行・伝票入力",
-          "actor": "System",
-          "description": "承認後に振込し、会計伝票を作成する。"
-        }
-      ],
       "to_be_flow": [
         {
+          "id": "evidence-import",
           "step": "証憑取込",
+          "node_type": "process",
           "actor": "System",
           "description": "請求書と関連証憑を取り込む。"
         },
         {
+          "id": "ocr-extract",
           "step": "OCR・項目抽出",
+          "node_type": "process",
           "actor": "AI",
           "description": "AIが取引先、金額、支払期限、明細を抽出する。"
         },
         {
+          "id": "difference-check",
           "step": "差異チェック",
+          "node_type": "process",
           "actor": "AI",
           "description": "契約・稟議・納品書との不一致や二重請求候補を検知する。"
         },
         {
-          "step": "人手承認",
-          "actor": "Human Review",
-          "description": "担当者と会計責任者が差異リストを確認し承認する。"
+          "id": "difference-decision",
+          "step": "差異有無判定",
+          "node_type": "decision",
+          "actor": "AI",
+          "condition": "差異または二重請求候補があるか",
+          "branches": [
+            {
+              "label": "問題なし",
+              "target": "human-approval"
+            },
+            {
+              "label": "差異あり",
+              "target": "exception-review"
+            }
+          ]
         },
         {
+          "id": "exception-review",
+          "step": "例外確認・修正",
+          "node_type": "process",
+          "actor": "Human Review",
+          "description": "担当者が差異理由を確認し、証憑または支払情報を修正する。",
+          "next": "difference-check"
+        },
+        {
+          "id": "human-approval",
+          "step": "人手承認",
+          "node_type": "decision",
+          "actor": "Human Review",
+          "condition": "担当者と会計責任者が支払を承認したか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "payment-link"
+            },
+            {
+              "label": "差戻し",
+              "target": "exception-review"
+            }
+          ]
+        },
+        {
+          "id": "payment-link",
           "step": "支払・仕訳連携",
+          "node_type": "process",
           "actor": "System",
           "description": "承認済みデータから支払情報と会計仕訳案を出力する。"
         }
       ],
-      "target_business_type": "支払処理"
+      "target_business_type": "支払処理",
+      "flow_files": {
+        "to_be_drawio": "output/flows/top3_to_be.drawio"
+      },
+      "target_heatmap_group": "準備・受付"
     }
   ],
   "category_flows": [
@@ -2289,6 +3578,7 @@
         "asis_経理体制_帳簿管理__経理体制整備_20260608",
         "asis_経理体制_帳簿管理__帳簿_帳票管理_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_3c8c8e48ed",
         "task_4cc6fd70a7",
@@ -2302,12 +3592,15 @@
           "section": "経理体制整備",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "経理担当者の任命",
           "actor": "担当者・業務部門",
           "description": "理事長が会計責任者、出納職員、予算管理責任者、固定資産管理責任者を任命する。",
           "issue": "兼務時の職務分掌・牽制が曖昧になりやすい。",
           "question": "質問: 兼務している役割と承認権限の分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -2318,12 +3611,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "職務分掌の確認",
           "actor": "担当者・業務部門",
           "description": "会計責任者が出納職員を監督し、各サービス区分の担当範囲を確認する。",
           "issue": "小規模法人では担当者集中によりチェック漏れが起きやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -2334,12 +3630,15 @@
           "section": "帳簿・帳票管理",
           "task_order": 1,
           "common_step": "記録・保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・保管",
           "task_name": "帳簿一覧の整備",
           "actor": "担当者・業務部門",
           "description": "仕訳日記帳、総勘定元帳、小口現金出納帳、固定資産管理台帳等を整備する。",
           "issue": "帳票の所在や更新タイミングが属人化しやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -2350,12 +3649,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "会計システム設定確認",
           "actor": "システム",
           "description": "導入済み会計システムの勘定科目、サービス区分、帳票出力設定を確認する。",
           "issue": "初期設定ミスが後続の月次・決算に波及する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -2370,6 +3672,7 @@
         "asis_予算管理__当初予算編成_20260608",
         "asis_予算管理__補正予算管理_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_0a90c73e99",
         "task_73de01a8c8",
@@ -2384,12 +3687,15 @@
           "section": "当初予算編成",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "事業計画情報の収集",
           "actor": "担当者・業務部門",
           "description": "次年度事業計画、現場ヒアリング、承認済み社会福祉充実計画を収集する。",
           "issue": "現場情報の収集・整理が手作業で時間を要する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -2400,12 +3706,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "資金収支予算案作成",
           "actor": "担当者・業務部門",
           "description": "勘定科目単位で収入予算・支出予算を積算し、法人全体またはサービス区分ごとに予算案を作成する。",
           "issue": "過年度実績との比較や科目別積算の転記が多い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -2416,12 +3725,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "理事会承認",
           "actor": "上長・管理者・承認者",
           "description": "理事長が編成した予算について理事会の承認を得て確定する。",
           "issue": "承認資料の差替えや説明資料作成が発生する。",
           "question": "質問: 理事会提出前のレビュー者と差戻しルールを確認したい。 / 回答例: 事務長がレビューし、不備がある場合は担当者へ差戻す",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -2432,12 +3744,15 @@
           "section": "補正予算管理",
           "task_order": 1,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "予算差異の確認",
           "actor": "担当者・業務部門",
           "description": "予算執行中に予算額との乖離や変更事由がないか確認する。",
           "issue": "差異発見が担当者の経験に依存しやすい。",
           "question": "質問: 補正予算作成の基準額や乖離率を確認したい。 / 回答例: 基準外の場合は担当者が原因確認し、上長確認後に修正する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -2448,12 +3763,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "補正予算案作成",
           "actor": "担当者・業務部門",
           "description": "変更事由がある場合に補正予算を作成し理事会へ提出する。",
           "issue": "修繕・設備投資など臨時要因の説明資料作成が重い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -2469,6 +3787,7 @@
         "asis_収納事務__現金収納_20260608",
         "asis_収納事務__会計伝票作成_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_bec138b16a",
         "task_167914ffc9",
@@ -2486,12 +3805,15 @@
           "section": "請求・収納",
           "task_order": 1,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "請求データ作成",
           "actor": "システム",
           "description": "補助金、利用料、サービス報酬などの請求データを請求システム等で作成する。",
           "issue": "請求条件や対象者確認の手作業が多い。",
           "question": "質問: 請求対象データの元資料とシステム取込可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -2502,12 +3824,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "請求内容確認",
           "actor": "担当者・業務部門",
           "description": "請求額、利用者負担、補助金等の内容を確認する。",
           "issue": "請求額の誤りが債権管理や入金消込に影響する。",
           "question": "質問: 請求内容の二重チェック担当と承認有無を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -2518,12 +3843,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "請求書発行",
           "actor": "担当者・業務部門",
           "description": "請求書または請求書兼領収書を発行し、利用者・関係機関へ送付する。",
           "issue": "印刷・封入・送付など定型処理が残る。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -2534,12 +3862,15 @@
           "section": "現金収納",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "現金受領",
           "actor": "担当者・業務部門",
           "description": "直接現金を受け取った場合に出納職員が収納内容を確認する。",
           "issue": "現金取扱いは紛失・盗難リスクがある。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -2550,12 +3881,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "領収書発行",
           "actor": "担当者・業務部門",
           "description": "福祉サービス利用者負担金の収納時に領収書を発行する。",
           "issue": "手書き領収書の場合、控え管理や番号管理が必要。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -2566,12 +3900,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "預入処理",
           "actor": "担当者・業務部門",
           "description": "収納した現金を経理規程の期日内に金融機関へ預け入れる。",
           "issue": "日々入金の預入が移動・窓口対応を伴う。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -2582,12 +3919,15 @@
           "section": "会計伝票作成",
           "task_order": 1,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "収納伝票入力",
           "actor": "システム",
           "description": "入金確認後、会計システムで収納に係る会計伝票を作成する。",
           "issue": "入金明細と請求データの照合・転記が発生する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 15
@@ -2598,12 +3938,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "記録・保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・保管",
           "task_name": "収納証憑保管",
           "actor": "システム",
           "description": "領収書控え、入金明細、会計伝票を整理して保管する。",
           "issue": "紙証憑とシステムデータの紐づけが手作業になりやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -2618,6 +3961,7 @@
         "asis_支払_契約事務__支払処理_20260608",
         "asis_支払_契約事務__契約事務_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_bce7aae0a8",
         "task_d6eb261125",
@@ -2636,12 +3980,15 @@
           "section": "支払処理",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "購入・支払起案",
           "actor": "上長・管理者・承認者",
           "description": "物品購入や修繕工事などの発注前に稟議書・購入依頼書で起案する。",
           "issue": "事前承認の記録確認が支払時にも必要。",
           "question": "質問: 少額支払の事前承認省略ルールを確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -2652,12 +3999,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "請求書確認",
           "actor": "担当者・業務部門",
           "description": "請求書、契約書、稟議書、購入依頼書、納品書等を照合し、必要事項を確認する。",
           "issue": "証憑照合が多く、支払先・金額・期限の誤りが起きやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 25
@@ -2668,12 +4018,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "支払情報承認",
           "actor": "上長・管理者・承認者",
           "description": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する。",
           "issue": "承認前後の差替え・再確認が発生しやすい。",
           "question": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -2684,12 +4037,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "振込実行",
           "actor": "担当者・業務部門",
           "description": "承認済み支払情報をもとに総合振込またはインターネットバンキングで支払を実行する。",
           "issue": "振込先・金額誤りの影響が大きい。",
           "question": "質問: 振込実行後の結果確認と再振込時の承認手順を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -2700,12 +4056,15 @@
           "section": "",
           "task_order": 5,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "支払伝票入力",
           "actor": "システム",
           "description": "会計システムで支払に係る会計伝票を作成する。",
           "issue": "請求書情報の転記入力が多い。",
           "question": "質問: 支払データと会計伝票の連携可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 15
@@ -2716,12 +4075,15 @@
           "section": "契約事務",
           "task_order": 1,
           "common_step": "見積・契約",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "見積・契約",
           "task_name": "契約種類確認",
           "actor": "担当者・業務部門",
           "description": "入札契約か随意契約か、契約金額・内容に応じた手続きを確認する。",
           "issue": "適用基準の判断誤りが不正・指摘リスクにつながる。",
           "question": "質問: 契約金額別の判断基準表が整備されているか確認したい。 / 回答例: 担当者が処理し、必要に応じて上長または会計責任者が確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -2732,12 +4094,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "見積・契約",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "見積・契約",
           "task_name": "見積徴取・比較",
           "actor": "担当者・業務部門",
           "description": "随意契約では原則3社以上など必要社数の見積を徴取し比較する。",
           "issue": "見積依頼、回収、比較表作成が手作業になりやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -2748,12 +4113,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "契約書作成",
           "actor": "担当者・業務部門",
           "description": "契約先決定後、標準契約書または業者指定様式で契約書を作成する。",
           "issue": "条項確認と契約書ドラフト作成に専門性が必要。",
           "question": "質問: 契約書レビューの担当者と外部専門家利用状況を確認したい。 / 回答例: 事務長がレビューし、不備がある場合は担当者へ差戻す",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -2764,12 +4132,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "履行確認",
           "actor": "システム",
           "description": "納品書、納品物、業務報告書等で契約履行を確認する。",
           "issue": "検査記録と支払処理の連携が弱いと支払漏れ・過払いが起きる。",
           "question": "質問: 履行確認者と支払担当者の分離状況を確認したい。 / 回答例: 担当者が一次対応し、確認者が内容をチェックする",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -2784,6 +4155,7 @@
         "asis_現金管理__小口現金支払_20260608",
         "asis_現金管理__現金残高確認_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_e44a7ffc7d",
         "task_63a173a8f6",
@@ -2798,12 +4170,15 @@
           "section": "小口現金支払",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "小口支払申請受付",
           "actor": "担当者・業務部門",
           "description": "小口現金から支払う申請や領収書を受け付ける。",
           "issue": "少額でも証憑不備が発生しやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -2814,12 +4189,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "証憑確認",
           "actor": "上長・管理者・承認者",
           "description": "領収書、支払内容、承認有無を確認する。",
           "issue": "現金支払は証憑紛失・重複精算のリスクがある。",
           "question": "質問: 小口支払時の承認者と領収書原本管理を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 10
@@ -2830,12 +4208,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "記録・保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・保管",
           "task_name": "小口現金出納帳記入",
           "actor": "担当者・業務部門",
           "description": "小口現金出納帳に支払内容を記録し証憑を保管する。",
           "issue": "手書き・Excel管理の場合、残高差異の追跡が難しい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -2846,12 +4227,15 @@
           "section": "現金残高確認",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "現金実査",
           "actor": "担当者・業務部門",
           "description": "金庫内現金を数え、小口現金出納帳・会計帳簿と照合する。",
           "issue": "差異発生時の原因調査に時間がかかる。",
           "question": "質問: 現金実査の頻度と立会者を確認したい。 / 回答例: 翌営業日までに担当者が処理し、月次で上長が確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -2862,12 +4246,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "差異報告",
           "actor": "担当者・業務部門",
           "description": "残高差異がある場合は原因を調査し会計責任者へ報告する。",
           "issue": "差異原因の記録が属人化しやすい。",
           "question": "質問: 差異発生時の報告様式と承認フローを確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -2883,6 +4270,7 @@
         "asis_人件費支払__賞与_年末調整_20260608",
         "asis_人件費支払__社会保険_源泉_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_df7e27289c",
         "task_32389e3796",
@@ -2900,12 +4288,15 @@
           "section": "給与支払",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "勤怠情報収集",
           "actor": "システム",
           "description": "日報や勤怠情報を収集し給与計算の元データを整える。",
           "issue": "勤怠データの不備確認が毎月発生する。",
           "question": "質問: 勤怠システムと給与計算ソフトの連携可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -2916,12 +4307,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "給与計算入力",
           "actor": "システム",
           "description": "給与計算システムに勤怠・手当・控除情報を入力する。",
           "issue": "手入力項目が多いと計算誤りにつながる。",
           "question": "質問: 給与計算ソフトへのCSV取込可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -2932,12 +4326,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "給与計算データ承認",
           "actor": "システム",
           "description": "給料計算データについて会計責任者等が確認・承認する。",
           "issue": "差戻し時の修正履歴管理が重要。",
           "question": "質問: 給与データ承認者と差戻し時の再承認手順を確認したい。 / 回答例: 事務長がレビューし、不備がある場合は担当者へ差戻す",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -2948,12 +4345,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "給与振込",
           "actor": "システム",
           "description": "承認済み給与データをもとに給与を支払う。",
           "issue": "振込額や控除額誤りの影響が大きい。",
           "question": "質問: 給与振込データの作成・承認者分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -2964,12 +4364,15 @@
           "section": "",
           "task_order": 5,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "給与仕訳入力",
           "actor": "システム",
           "description": "給与支払時の会計仕訳を会計システムに入力する。",
           "issue": "給与計算結果から会計仕訳への転記が発生する。",
           "question": "質問: 給与計算ソフトから会計システムへ仕訳連携できるか確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -2980,12 +4383,15 @@
           "section": "賞与・年末調整",
           "task_order": 1,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "賞与支給額計算",
           "actor": "システム",
           "description": "賞与支給金額を計算し、給与計算システムへ入力する。",
           "issue": "支給額計算と社会保険料確認が複雑。",
           "question": "質問: 賞与計算の基準・承認資料を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -2996,12 +4402,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "年末調整処理",
           "actor": "上長・管理者・承認者",
           "description": "年末調整に必要な申告書・控除資料を確認し計算する。",
           "issue": "書類確認・差戻し・再計算が集中する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 90
@@ -3012,12 +4421,15 @@
           "section": "社会保険・源泉",
           "task_order": 1,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "源泉徴収・社会保険届出",
           "actor": "担当者・業務部門",
           "description": "源泉徴収事務、算定基礎届、賞与支払届等を作成・提出する。",
           "issue": "期限管理と様式転記が多い。",
           "question": "質問: 電子申請の利用範囲と提出前確認者を確認したい。 / 回答例: 電子保管し、月次で担当者が台帳との突合を行う",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -3033,6 +4445,7 @@
         "asis_資産_負債管理__実地棚卸_20260608",
         "asis_資産_負債管理__固定資産管理_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_37dc206e99",
         "task_0f7610a01a",
@@ -3051,12 +4464,15 @@
           "section": "債権債務管理",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "残高内訳調査",
           "actor": "担当者・業務部門",
           "description": "毎月末日の未収金・未払金など債権債務の残高内訳を調査する。",
           "issue": "不明内訳の調査に時間を要する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -3067,12 +4483,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "取引先残高確認",
           "actor": "担当者・業務部門",
           "description": "必要に応じて取引先との残高確認を行い差異を調査する。",
           "issue": "取引先照会と差異原因調査が手作業になりやすい。",
           "question": "質問: 取引先残高確認の対象基準を確認したい。 / 回答例: 担当者が処理し、必要に応じて上長または会計責任者が確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -3083,12 +4502,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "報告・措置",
           "actor": "担当者・業務部門",
           "description": "残高差異や不明残高について会計責任者が報告し必要な措置を行う。",
           "issue": "措置判断の記録が不足すると監査対応に弱い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3099,12 +4521,15 @@
           "section": "実地棚卸",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "棚卸表整備",
           "actor": "担当者・業務部門",
           "description": "棚卸方法を周知し、棚卸表を担当職員に回付する。",
           "issue": "棚卸表の配布・回収管理が煩雑。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -3115,12 +4540,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "実地棚卸実施",
           "actor": "担当者・業務部門",
           "description": "品名、品番、数量を棚卸表に記入し、帳簿にない棚卸資産も確認する。",
           "issue": "現物確認と帳簿照合に時間を要する。",
           "question": "質問: 棚卸実施日と担当者割当を確認したい。 / 回答例: 担当者が一次対応し、確認者が内容をチェックする",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -3131,12 +4559,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "棚卸表承認",
           "actor": "上長・管理者・承認者",
           "description": "棚卸表を回収・集計し、会計責任者の承認を得る。",
           "issue": "書き損じ・未回収の管理が必要。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3147,12 +4578,15 @@
           "section": "固定資産管理",
           "task_order": 1,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "固定資産台帳登録",
           "actor": "システム",
           "description": "取得した固定資産を固定資産管理台帳へ登録する。",
           "issue": "取得価額・耐用年数・補助金情報など入力項目が多い。",
           "question": "質問: 固定資産台帳と会計システムの連携可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -3163,12 +4597,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "固定資産現物確認",
           "actor": "担当者・業務部門",
           "description": "年度末に固定資産台帳と現物の存在・使用状況を確認する。",
           "issue": "現物確認結果の回収・突合が手作業になりやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -3179,12 +4616,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "除却承認",
           "actor": "上長・管理者・承認者",
           "description": "固定資産の廃棄・売却時に所定の承認を得て台帳へ反映する。",
           "issue": "除却情報の伝達漏れで台帳差異が発生する。",
           "question": "質問: 除却時の稟議・台帳更新フローを確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 25
@@ -3199,6 +4639,7 @@
         "asis_決算_報告__月次報告_20260608",
         "asis_決算_報告__年次決算_20260608"
       ],
+      "update_note": "",
       "source_task_ids": [
         "task_7a578e5e3c",
         "task_c99ab46bba",
@@ -3215,12 +4656,15 @@
           "section": "月次報告",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "現預金残高確認",
           "actor": "担当者・業務部門",
           "description": "現金、預金、仮払金、仮受金など月次処理に必要な残高を確認する。",
           "issue": "帳簿残高と実残高の差異確認に時間を要する。",
           "question": "質問: 銀行明細データの自動取込可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -3231,12 +4675,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "月次試算表作成",
           "actor": "システム",
           "description": "会計システムで月次試算表を作成し内容を確認する。",
           "issue": "仕訳漏れ・科目誤りの確認が属人化しやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -3247,12 +4694,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "月次報告",
           "actor": "担当者・業務部門",
           "description": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する。",
           "issue": "報告コメント作成や差異説明に時間がかかる。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -3263,12 +4713,15 @@
           "section": "年次決算",
           "task_order": 1,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "決算整理仕訳作成",
           "actor": "担当者・業務部門",
           "description": "未収・未払、棚卸、減価償却、引当金、見越繰延など決算整理仕訳を作成する。",
           "issue": "多種類の整理仕訳と根拠資料確認が集中する。",
           "question": "質問: 決算整理仕訳のチェック担当と根拠資料保管方法を確認したい。 / 回答例: 担当者が一次対応し、確認者が内容をチェックする",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 120
@@ -3279,12 +4732,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "決算整理仕訳入力",
           "actor": "システム",
           "description": "作成した決算整理仕訳を会計システムへ入力する。",
           "issue": "仕訳入力・修正・再出力が反復する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -3295,12 +4751,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "計算書類作成",
           "actor": "システム",
           "description": "貸借対照表、資金収支計算書、事業活動計算書、注記、附属明細書等を作成する。",
           "issue": "法定様式への出力・注記作成・整合確認が重い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 180
@@ -3311,12 +4770,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "申告・納税",
           "actor": "担当者・業務部門",
           "description": "収益事業や消費税課税がある場合、申告書作成・申告・納税を行う。",
           "issue": "税率・課税区分の確認が必要。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 90
@@ -3331,6 +4793,7 @@
       "flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260608",
       "flow_file": "output/flows/asis_経理体制_帳簿管理__経理体制整備_20260608.drawio",
       "category_flow_key": "asis_経理体制_帳簿管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_3c8c8e48ed",
         "task_4cc6fd70a7"
@@ -3342,12 +4805,15 @@
           "section": "経理体制整備",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "経理担当者の任命",
           "actor": "担当者・業務部門",
           "description": "理事長が会計責任者、出納職員、予算管理責任者、固定資産管理責任者を任命する。",
           "issue": "兼務時の職務分掌・牽制が曖昧になりやすい。",
           "question": "質問: 兼務している役割と承認権限の分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3358,12 +4824,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "職務分掌の確認",
           "actor": "担当者・業務部門",
           "description": "会計責任者が出納職員を監督し、各サービス区分の担当範囲を確認する。",
           "issue": "小規模法人では担当者集中によりチェック漏れが起きやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -3376,6 +4845,7 @@
       "flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260608",
       "flow_file": "output/flows/asis_経理体制_帳簿管理__帳簿_帳票管理_20260608.drawio",
       "category_flow_key": "asis_経理体制_帳簿管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_cd7204241b",
         "task_d2e43fa870"
@@ -3387,12 +4857,15 @@
           "section": "帳簿・帳票管理",
           "task_order": 1,
           "common_step": "記録・保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・保管",
           "task_name": "帳簿一覧の整備",
           "actor": "担当者・業務部門",
           "description": "仕訳日記帳、総勘定元帳、小口現金出納帳、固定資産管理台帳等を整備する。",
           "issue": "帳票の所在や更新タイミングが属人化しやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3403,12 +4876,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "会計システム設定確認",
           "actor": "システム",
           "description": "導入済み会計システムの勘定科目、サービス区分、帳票出力設定を確認する。",
           "issue": "初期設定ミスが後続の月次・決算に波及する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -3421,6 +4897,7 @@
       "flow_key": "asis_予算管理__当初予算編成_20260608",
       "flow_file": "output/flows/asis_予算管理__当初予算編成_20260608.drawio",
       "category_flow_key": "asis_予算管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_0a90c73e99",
         "task_73de01a8c8",
@@ -3433,12 +4910,15 @@
           "section": "当初予算編成",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "事業計画情報の収集",
           "actor": "担当者・業務部門",
           "description": "次年度事業計画、現場ヒアリング、承認済み社会福祉充実計画を収集する。",
           "issue": "現場情報の収集・整理が手作業で時間を要する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -3449,12 +4929,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "資金収支予算案作成",
           "actor": "担当者・業務部門",
           "description": "勘定科目単位で収入予算・支出予算を積算し、法人全体またはサービス区分ごとに予算案を作成する。",
           "issue": "過年度実績との比較や科目別積算の転記が多い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -3465,12 +4948,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "理事会承認",
           "actor": "上長・管理者・承認者",
           "description": "理事長が編成した予算について理事会の承認を得て確定する。",
           "issue": "承認資料の差替えや説明資料作成が発生する。",
           "question": "質問: 理事会提出前のレビュー者と差戻しルールを確認したい。 / 回答例: 事務長がレビューし、不備がある場合は担当者へ差戻す",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -3483,6 +4969,7 @@
       "flow_key": "asis_予算管理__補正予算管理_20260608",
       "flow_file": "output/flows/asis_予算管理__補正予算管理_20260608.drawio",
       "category_flow_key": "asis_予算管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_4d0a270dc2",
         "task_87816e16f9"
@@ -3494,12 +4981,15 @@
           "section": "補正予算管理",
           "task_order": 1,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "予算差異の確認",
           "actor": "担当者・業務部門",
           "description": "予算執行中に予算額との乖離や変更事由がないか確認する。",
           "issue": "差異発見が担当者の経験に依存しやすい。",
           "question": "質問: 補正予算作成の基準額や乖離率を確認したい。 / 回答例: 基準外の場合は担当者が原因確認し、上長確認後に修正する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -3510,12 +5000,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "補正予算案作成",
           "actor": "担当者・業務部門",
           "description": "変更事由がある場合に補正予算を作成し理事会へ提出する。",
           "issue": "修繕・設備投資など臨時要因の説明資料作成が重い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -3528,6 +5021,7 @@
       "flow_key": "asis_収納事務__請求_収納_20260608",
       "flow_file": "output/flows/asis_収納事務__請求_収納_20260608.drawio",
       "category_flow_key": "asis_収納事務_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_bec138b16a",
         "task_167914ffc9",
@@ -3540,12 +5034,15 @@
           "section": "請求・収納",
           "task_order": 1,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "請求データ作成",
           "actor": "システム",
           "description": "補助金、利用料、サービス報酬などの請求データを請求システム等で作成する。",
           "issue": "請求条件や対象者確認の手作業が多い。",
           "question": "質問: 請求対象データの元資料とシステム取込可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -3556,12 +5053,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "請求内容確認",
           "actor": "担当者・業務部門",
           "description": "請求額、利用者負担、補助金等の内容を確認する。",
           "issue": "請求額の誤りが債権管理や入金消込に影響する。",
           "question": "質問: 請求内容の二重チェック担当と承認有無を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -3572,12 +5072,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "請求書発行",
           "actor": "担当者・業務部門",
           "description": "請求書または請求書兼領収書を発行し、利用者・関係機関へ送付する。",
           "issue": "印刷・封入・送付など定型処理が残る。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -3590,6 +5093,7 @@
       "flow_key": "asis_収納事務__現金収納_20260608",
       "flow_file": "output/flows/asis_収納事務__現金収納_20260608.drawio",
       "category_flow_key": "asis_収納事務_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_bd2a8d4dec",
         "task_598fed440a",
@@ -3602,12 +5106,15 @@
           "section": "現金収納",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "現金受領",
           "actor": "担当者・業務部門",
           "description": "直接現金を受け取った場合に出納職員が収納内容を確認する。",
           "issue": "現金取扱いは紛失・盗難リスクがある。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -3618,12 +5125,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "領収書発行",
           "actor": "担当者・業務部門",
           "description": "福祉サービス利用者負担金の収納時に領収書を発行する。",
           "issue": "手書き領収書の場合、控え管理や番号管理が必要。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -3634,12 +5144,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "預入処理",
           "actor": "担当者・業務部門",
           "description": "収納した現金を経理規程の期日内に金融機関へ預け入れる。",
           "issue": "日々入金の預入が移動・窓口対応を伴う。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3652,6 +5165,7 @@
       "flow_key": "asis_収納事務__会計伝票作成_20260608",
       "flow_file": "output/flows/asis_収納事務__会計伝票作成_20260608.drawio",
       "category_flow_key": "asis_収納事務_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_574ea5f5f4",
         "task_fc20397da1"
@@ -3663,12 +5177,15 @@
           "section": "会計伝票作成",
           "task_order": 1,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "収納伝票入力",
           "actor": "システム",
           "description": "入金確認後、会計システムで収納に係る会計伝票を作成する。",
           "issue": "入金明細と請求データの照合・転記が発生する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 15
@@ -3679,12 +5196,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "記録・保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・保管",
           "task_name": "収納証憑保管",
           "actor": "システム",
           "description": "領収書控え、入金明細、会計伝票を整理して保管する。",
           "issue": "紙証憑とシステムデータの紐づけが手作業になりやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -3697,6 +5217,7 @@
       "flow_key": "asis_支払_契約事務__支払処理_20260608",
       "flow_file": "output/flows/asis_支払_契約事務__支払処理_20260608.drawio",
       "category_flow_key": "asis_支払_契約事務_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_bce7aae0a8",
         "task_d6eb261125",
@@ -3711,12 +5232,15 @@
           "section": "支払処理",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "購入・支払起案",
           "actor": "上長・管理者・承認者",
           "description": "物品購入や修繕工事などの発注前に稟議書・購入依頼書で起案する。",
           "issue": "事前承認の記録確認が支払時にも必要。",
           "question": "質問: 少額支払の事前承認省略ルールを確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3727,12 +5251,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "請求書確認",
           "actor": "担当者・業務部門",
           "description": "請求書、契約書、稟議書、購入依頼書、納品書等を照合し、必要事項を確認する。",
           "issue": "証憑照合が多く、支払先・金額・期限の誤りが起きやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 25
@@ -3743,12 +5270,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "支払情報承認",
           "actor": "上長・管理者・承認者",
           "description": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する。",
           "issue": "承認前後の差替え・再確認が発生しやすい。",
           "question": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -3759,12 +5289,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "振込実行",
           "actor": "担当者・業務部門",
           "description": "承認済み支払情報をもとに総合振込またはインターネットバンキングで支払を実行する。",
           "issue": "振込先・金額誤りの影響が大きい。",
           "question": "質問: 振込実行後の結果確認と再振込時の承認手順を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -3775,12 +5308,15 @@
           "section": "",
           "task_order": 5,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "支払伝票入力",
           "actor": "システム",
           "description": "会計システムで支払に係る会計伝票を作成する。",
           "issue": "請求書情報の転記入力が多い。",
           "question": "質問: 支払データと会計伝票の連携可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 15
@@ -3793,6 +5329,7 @@
       "flow_key": "asis_支払_契約事務__契約事務_20260608",
       "flow_file": "output/flows/asis_支払_契約事務__契約事務_20260608.drawio",
       "category_flow_key": "asis_支払_契約事務_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_79c1d3cde3",
         "task_42d02d4028",
@@ -3806,12 +5343,15 @@
           "section": "契約事務",
           "task_order": 1,
           "common_step": "見積・契約",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "見積・契約",
           "task_name": "契約種類確認",
           "actor": "担当者・業務部門",
           "description": "入札契約か随意契約か、契約金額・内容に応じた手続きを確認する。",
           "issue": "適用基準の判断誤りが不正・指摘リスクにつながる。",
           "question": "質問: 契約金額別の判断基準表が整備されているか確認したい。 / 回答例: 担当者が処理し、必要に応じて上長または会計責任者が確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3822,12 +5362,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "見積・契約",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "見積・契約",
           "task_name": "見積徴取・比較",
           "actor": "担当者・業務部門",
           "description": "随意契約では原則3社以上など必要社数の見積を徴取し比較する。",
           "issue": "見積依頼、回収、比較表作成が手作業になりやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -3838,12 +5381,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "契約書作成",
           "actor": "担当者・業務部門",
           "description": "契約先決定後、標準契約書または業者指定様式で契約書を作成する。",
           "issue": "条項確認と契約書ドラフト作成に専門性が必要。",
           "question": "質問: 契約書レビューの担当者と外部専門家利用状況を確認したい。 / 回答例: 事務長がレビューし、不備がある場合は担当者へ差戻す",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -3854,12 +5400,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "履行確認",
           "actor": "システム",
           "description": "納品書、納品物、業務報告書等で契約履行を確認する。",
           "issue": "検査記録と支払処理の連携が弱いと支払漏れ・過払いが起きる。",
           "question": "質問: 履行確認者と支払担当者の分離状況を確認したい。 / 回答例: 担当者が一次対応し、確認者が内容をチェックする",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -3872,6 +5421,7 @@
       "flow_key": "asis_現金管理__小口現金支払_20260608",
       "flow_file": "output/flows/asis_現金管理__小口現金支払_20260608.drawio",
       "category_flow_key": "asis_現金管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_e44a7ffc7d",
         "task_63a173a8f6",
@@ -3884,12 +5434,15 @@
           "section": "小口現金支払",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "小口支払申請受付",
           "actor": "担当者・業務部門",
           "description": "小口現金から支払う申請や領収書を受け付ける。",
           "issue": "少額でも証憑不備が発生しやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -3900,12 +5453,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "証憑確認",
           "actor": "上長・管理者・承認者",
           "description": "領収書、支払内容、承認有無を確認する。",
           "issue": "現金支払は証憑紛失・重複精算のリスクがある。",
           "question": "質問: 小口支払時の承認者と領収書原本管理を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 10
@@ -3916,12 +5472,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "記録・保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・保管",
           "task_name": "小口現金出納帳記入",
           "actor": "担当者・業務部門",
           "description": "小口現金出納帳に支払内容を記録し証憑を保管する。",
           "issue": "手書き・Excel管理の場合、残高差異の追跡が難しい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 10
@@ -3934,6 +5493,7 @@
       "flow_key": "asis_現金管理__現金残高確認_20260608",
       "flow_file": "output/flows/asis_現金管理__現金残高確認_20260608.drawio",
       "category_flow_key": "asis_現金管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_d3e24895e6",
         "task_ea36498d26"
@@ -3945,12 +5505,15 @@
           "section": "現金残高確認",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "現金実査",
           "actor": "担当者・業務部門",
           "description": "金庫内現金を数え、小口現金出納帳・会計帳簿と照合する。",
           "issue": "差異発生時の原因調査に時間がかかる。",
           "question": "質問: 現金実査の頻度と立会者を確認したい。 / 回答例: 翌営業日までに担当者が処理し、月次で上長が確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -3961,12 +5524,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "差異報告",
           "actor": "担当者・業務部門",
           "description": "残高差異がある場合は原因を調査し会計責任者へ報告する。",
           "issue": "差異原因の記録が属人化しやすい。",
           "question": "質問: 差異発生時の報告様式と承認フローを確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 15
@@ -3979,6 +5545,7 @@
       "flow_key": "asis_人件費支払__給与支払_20260608",
       "flow_file": "output/flows/asis_人件費支払__給与支払_20260608.drawio",
       "category_flow_key": "asis_人件費支払_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_df7e27289c",
         "task_32389e3796",
@@ -3993,12 +5560,15 @@
           "section": "給与支払",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "勤怠情報収集",
           "actor": "システム",
           "description": "日報や勤怠情報を収集し給与計算の元データを整える。",
           "issue": "勤怠データの不備確認が毎月発生する。",
           "question": "質問: 勤怠システムと給与計算ソフトの連携可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -4009,12 +5579,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "給与計算入力",
           "actor": "システム",
           "description": "給与計算システムに勤怠・手当・控除情報を入力する。",
           "issue": "手入力項目が多いと計算誤りにつながる。",
           "question": "質問: 給与計算ソフトへのCSV取込可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -4025,12 +5598,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "給与計算データ承認",
           "actor": "システム",
           "description": "給料計算データについて会計責任者等が確認・承認する。",
           "issue": "差戻し時の修正履歴管理が重要。",
           "question": "質問: 給与データ承認者と差戻し時の再承認手順を確認したい。 / 回答例: 事務長がレビューし、不備がある場合は担当者へ差戻す",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -4041,12 +5617,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
           "task_name": "給与振込",
           "actor": "システム",
           "description": "承認済み給与データをもとに給与を支払う。",
           "issue": "振込額や控除額誤りの影響が大きい。",
           "question": "質問: 給与振込データの作成・承認者分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -4057,12 +5636,15 @@
           "section": "",
           "task_order": 5,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "給与仕訳入力",
           "actor": "システム",
           "description": "給与支払時の会計仕訳を会計システムに入力する。",
           "issue": "給与計算結果から会計仕訳への転記が発生する。",
           "question": "質問: 給与計算ソフトから会計システムへ仕訳連携できるか確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 20
@@ -4075,6 +5657,7 @@
       "flow_key": "asis_人件費支払__賞与_年末調整_20260608",
       "flow_file": "output/flows/asis_人件費支払__賞与_年末調整_20260608.drawio",
       "category_flow_key": "asis_人件費支払_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_be778eee5e",
         "task_8a76aaff61"
@@ -4086,12 +5669,15 @@
           "section": "賞与・年末調整",
           "task_order": 1,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "賞与支給額計算",
           "actor": "システム",
           "description": "賞与支給金額を計算し、給与計算システムへ入力する。",
           "issue": "支給額計算と社会保険料確認が複雑。",
           "question": "質問: 賞与計算の基準・承認資料を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 45
@@ -4102,12 +5688,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "年末調整処理",
           "actor": "上長・管理者・承認者",
           "description": "年末調整に必要な申告書・控除資料を確認し計算する。",
           "issue": "書類確認・差戻し・再計算が集中する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 90
@@ -4120,6 +5709,7 @@
       "flow_key": "asis_人件費支払__社会保険_源泉_20260608",
       "flow_file": "output/flows/asis_人件費支払__社会保険_源泉_20260608.drawio",
       "category_flow_key": "asis_人件費支払_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_116ab67f2d"
       ],
@@ -4130,12 +5720,15 @@
           "section": "社会保険・源泉",
           "task_order": 1,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "源泉徴収・社会保険届出",
           "actor": "担当者・業務部門",
           "description": "源泉徴収事務、算定基礎届、賞与支払届等を作成・提出する。",
           "issue": "期限管理と様式転記が多い。",
           "question": "質問: 電子申請の利用範囲と提出前確認者を確認したい。 / 回答例: 電子保管し、月次で担当者が台帳との突合を行う",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -4148,6 +5741,7 @@
       "flow_key": "asis_資産_負債管理__債権債務管理_20260608",
       "flow_file": "output/flows/asis_資産_負債管理__債権債務管理_20260608.drawio",
       "category_flow_key": "asis_資産_負債管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_37dc206e99",
         "task_0f7610a01a",
@@ -4160,12 +5754,15 @@
           "section": "債権債務管理",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "残高内訳調査",
           "actor": "担当者・業務部門",
           "description": "毎月末日の未収金・未払金など債権債務の残高内訳を調査する。",
           "issue": "不明内訳の調査に時間を要する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -4176,12 +5773,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
           "task_name": "取引先残高確認",
           "actor": "担当者・業務部門",
           "description": "必要に応じて取引先との残高確認を行い差異を調査する。",
           "issue": "取引先照会と差異原因調査が手作業になりやすい。",
           "question": "質問: 取引先残高確認の対象基準を確認したい。 / 回答例: 担当者が処理し、必要に応じて上長または会計責任者が確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -4192,12 +5792,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "報告・措置",
           "actor": "担当者・業務部門",
           "description": "残高差異や不明残高について会計責任者が報告し必要な措置を行う。",
           "issue": "措置判断の記録が不足すると監査対応に弱い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -4210,6 +5813,7 @@
       "flow_key": "asis_資産_負債管理__実地棚卸_20260608",
       "flow_file": "output/flows/asis_資産_負債管理__実地棚卸_20260608.drawio",
       "category_flow_key": "asis_資産_負債管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_91b6e55884",
         "task_5f0c4a839e",
@@ -4222,12 +5826,15 @@
           "section": "実地棚卸",
           "task_order": 1,
           "common_step": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
           "task_name": "棚卸表整備",
           "actor": "担当者・業務部門",
           "description": "棚卸方法を周知し、棚卸表を担当職員に回付する。",
           "issue": "棚卸表の配布・回収管理が煩雑。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -4238,12 +5845,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "実地棚卸実施",
           "actor": "担当者・業務部門",
           "description": "品名、品番、数量を棚卸表に記入し、帳簿にない棚卸資産も確認する。",
           "issue": "現物確認と帳簿照合に時間を要する。",
           "question": "質問: 棚卸実施日と担当者割当を確認したい。 / 回答例: 担当者が一次対応し、確認者が内容をチェックする",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -4254,12 +5864,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "棚卸表承認",
           "actor": "上長・管理者・承認者",
           "description": "棚卸表を回収・集計し、会計責任者の承認を得る。",
           "issue": "書き損じ・未回収の管理が必要。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 20
@@ -4272,6 +5885,7 @@
       "flow_key": "asis_資産_負債管理__固定資産管理_20260608",
       "flow_file": "output/flows/asis_資産_負債管理__固定資産管理_20260608.drawio",
       "category_flow_key": "asis_資産_負債管理_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_293d373267",
         "task_6ca3315b9a",
@@ -4284,12 +5898,15 @@
           "section": "固定資産管理",
           "task_order": 1,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "固定資産台帳登録",
           "actor": "システム",
           "description": "取得した固定資産を固定資産管理台帳へ登録する。",
           "issue": "取得価額・耐用年数・補助金情報など入力項目が多い。",
           "question": "質問: 固定資産台帳と会計システムの連携可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 30
@@ -4300,12 +5917,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "固定資産現物確認",
           "actor": "担当者・業務部門",
           "description": "年度末に固定資産台帳と現物の存在・使用状況を確認する。",
           "issue": "現物確認結果の回収・突合が手作業になりやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -4316,12 +5936,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
           "task_name": "除却承認",
           "actor": "上長・管理者・承認者",
           "description": "固定資産の廃棄・売却時に所定の承認を得て台帳へ反映する。",
           "issue": "除却情報の伝達漏れで台帳差異が発生する。",
           "question": "質問: 除却時の稟議・台帳更新フローを確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 25
@@ -4334,6 +5957,7 @@
       "flow_key": "asis_決算_報告__月次報告_20260608",
       "flow_file": "output/flows/asis_決算_報告__月次報告_20260608.drawio",
       "category_flow_key": "asis_決算_報告_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_7a578e5e3c",
         "task_c99ab46bba",
@@ -4346,12 +5970,15 @@
           "section": "月次報告",
           "task_order": 1,
           "common_step": "情報収集・照合",
+          "heatmap_group": "確認・判断",
+          "heatmap_step": "情報収集・照合",
           "task_name": "現預金残高確認",
           "actor": "担当者・業務部門",
           "description": "現金、預金、仮払金、仮受金など月次処理に必要な残高を確認する。",
           "issue": "帳簿残高と実残高の差異確認に時間を要する。",
           "question": "質問: 銀行明細データの自動取込可否を確認したい。 / 回答例: CSVで出力し、会計システムへ取込後に担当者が結果を確認する",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 40
@@ -4362,12 +5989,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "月次試算表作成",
           "actor": "システム",
           "description": "会計システムで月次試算表を作成し内容を確認する。",
           "issue": "仕訳漏れ・科目誤りの確認が属人化しやすい。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -4378,12 +6008,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "月次報告",
           "actor": "担当者・業務部門",
           "description": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する。",
           "issue": "報告コメント作成や差異説明に時間がかかる。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "中",
           "minutes": 30
@@ -4396,6 +6029,7 @@
       "flow_key": "asis_決算_報告__年次決算_20260608",
       "flow_file": "output/flows/asis_決算_報告__年次決算_20260608.drawio",
       "category_flow_key": "asis_決算_報告_20260608",
+      "category_update_note": "",
       "source_task_ids": [
         "task_bf2442c396",
         "task_6a6745fb8a",
@@ -4409,12 +6043,15 @@
           "section": "年次決算",
           "task_order": 1,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "決算整理仕訳作成",
           "actor": "担当者・業務部門",
           "description": "未収・未払、棚卸、減価償却、引当金、見越繰延など決算整理仕訳を作成する。",
           "issue": "多種類の整理仕訳と根拠資料確認が集中する。",
           "question": "質問: 決算整理仕訳のチェック担当と根拠資料保管方法を確認したい。 / 回答例: 担当者が一次対応し、確認者が内容をチェックする",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 120
@@ -4425,12 +6062,15 @@
           "section": "",
           "task_order": 2,
           "common_step": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
           "task_name": "決算整理仕訳入力",
           "actor": "システム",
           "description": "作成した決算整理仕訳を会計システムへ入力する。",
           "issue": "仕訳入力・修正・再出力が反復する。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 60
@@ -4441,12 +6081,15 @@
           "section": "",
           "task_order": 3,
           "common_step": "計算・作成",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "計算・作成",
           "task_name": "計算書類作成",
           "actor": "システム",
           "description": "貸借対照表、資金収支計算書、事業活動計算書、注記、附属明細書等を作成する。",
           "issue": "法定様式への出力・注記作成・整合確認が重い。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 180
@@ -4457,12 +6100,15 @@
           "section": "",
           "task_order": 4,
           "common_step": "報告・提出",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "報告・提出",
           "task_name": "申告・納税",
           "actor": "担当者・業務部門",
           "description": "収益事業や消費税課税がある場合、申告書作成・申告・納税を行う。",
           "issue": "税率・課税区分の確認が必要。",
           "question": "",
           "resolved_note": "",
+          "update_note": "",
           "answer_impact": "",
           "burden": "高",
           "minutes": 90
@@ -4531,5 +6177,253 @@
       ]
     }
   },
-  "resolved_questions": []
+  "resolved_questions": [],
+  "heatmap_columns": [
+    {
+      "group": "準備・受付",
+      "steps": [
+        "受付・起案",
+        "内容確認"
+      ]
+    },
+    {
+      "group": "確認・判断",
+      "steps": [
+        "情報収集・照合",
+        "見積・契約"
+      ]
+    },
+    {
+      "group": "作成・承認",
+      "steps": [
+        "計算・作成",
+        "承認・決裁"
+      ]
+    },
+    {
+      "group": "入力・実行",
+      "steps": [
+        "システム入力",
+        "実行・支払"
+      ]
+    },
+    {
+      "group": "記録・報告",
+      "steps": [
+        "記録・保管",
+        "報告・提出"
+      ]
+    }
+  ],
+  "category_flow_columns": {
+    "経理体制・帳簿管理": [
+      {
+        "group": "準備・受付",
+        "steps": [
+          "受付・起案",
+          "内容確認"
+        ]
+      },
+      {
+        "group": "記録・報告",
+        "steps": [
+          "記録・保管"
+        ]
+      },
+      {
+        "group": "入力・実行",
+        "steps": [
+          "システム入力"
+        ]
+      }
+    ],
+    "予算管理": [
+      {
+        "group": "確認・判断",
+        "steps": [
+          "情報収集・照合"
+        ]
+      },
+      {
+        "group": "作成・承認",
+        "steps": [
+          "計算・作成",
+          "承認・決裁"
+        ]
+      },
+      {
+        "group": "準備・受付",
+        "steps": [
+          "内容確認"
+        ]
+      }
+    ],
+    "収納事務": [
+      {
+        "group": "作成・承認",
+        "steps": [
+          "計算・作成"
+        ]
+      },
+      {
+        "group": "準備・受付",
+        "steps": [
+          "内容確認",
+          "受付・起案"
+        ]
+      },
+      {
+        "group": "入力・実行",
+        "steps": [
+          "実行・支払",
+          "システム入力"
+        ]
+      },
+      {
+        "group": "記録・報告",
+        "steps": [
+          "記録・保管"
+        ]
+      }
+    ],
+    "支払・契約事務": [
+      {
+        "group": "準備・受付",
+        "steps": [
+          "受付・起案",
+          "内容確認"
+        ]
+      },
+      {
+        "group": "作成・承認",
+        "steps": [
+          "承認・決裁",
+          "計算・作成"
+        ]
+      },
+      {
+        "group": "入力・実行",
+        "steps": [
+          "実行・支払",
+          "システム入力"
+        ]
+      },
+      {
+        "group": "確認・判断",
+        "steps": [
+          "見積・契約"
+        ]
+      }
+    ],
+    "現金管理": [
+      {
+        "group": "準備・受付",
+        "steps": [
+          "受付・起案",
+          "内容確認"
+        ]
+      },
+      {
+        "group": "記録・報告",
+        "steps": [
+          "記録・保管",
+          "報告・提出"
+        ]
+      },
+      {
+        "group": "確認・判断",
+        "steps": [
+          "情報収集・照合"
+        ]
+      }
+    ],
+    "人件費支払": [
+      {
+        "group": "確認・判断",
+        "steps": [
+          "情報収集・照合"
+        ]
+      },
+      {
+        "group": "入力・実行",
+        "steps": [
+          "システム入力",
+          "実行・支払"
+        ]
+      },
+      {
+        "group": "作成・承認",
+        "steps": [
+          "承認・決裁",
+          "計算・作成"
+        ]
+      },
+      {
+        "group": "記録・報告",
+        "steps": [
+          "報告・提出"
+        ]
+      }
+    ],
+    "資産・負債管理": [
+      {
+        "group": "確認・判断",
+        "steps": [
+          "情報収集・照合"
+        ]
+      },
+      {
+        "group": "準備・受付",
+        "steps": [
+          "内容確認",
+          "受付・起案"
+        ]
+      },
+      {
+        "group": "記録・報告",
+        "steps": [
+          "報告・提出"
+        ]
+      },
+      {
+        "group": "作成・承認",
+        "steps": [
+          "承認・決裁"
+        ]
+      },
+      {
+        "group": "入力・実行",
+        "steps": [
+          "システム入力"
+        ]
+      }
+    ],
+    "決算・報告": [
+      {
+        "group": "確認・判断",
+        "steps": [
+          "情報収集・照合"
+        ]
+      },
+      {
+        "group": "作成・承認",
+        "steps": [
+          "計算・作成"
+        ]
+      },
+      {
+        "group": "記録・報告",
+        "steps": [
+          "報告・提出"
+        ]
+      },
+      {
+        "group": "入力・実行",
+        "steps": [
+          "システム入力"
+        ]
+      }
+    ]
+  },
+  "as_is_category_updates": {}
 }

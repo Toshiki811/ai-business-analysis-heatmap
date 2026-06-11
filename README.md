@@ -100,7 +100,7 @@ node scripts/verify_outputs.mjs --date YYYYMMDD
 │   └── lib/
 ├── templates/
 │   ├── heatmap_template.html
-│   └── flow_template.drawio
+│   └── 業務フロー図_テンプレート.drawio
 ├── output/
 │   └── flows/
 ├── AGENTS.md

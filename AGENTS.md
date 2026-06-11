@@ -145,7 +145,7 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 │   └── lib/
 ├── templates/
 │   ├── heatmap_template.html
-│   └── flow_template.drawio
+│   └── 業務フロー図_テンプレート.drawio
 ├── output/
 │   ├── flow_axes_YYYYMMDD.json
 │   ├── matrix_YYYYMMDD.md

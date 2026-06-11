@@ -15,7 +15,7 @@
 
 - `output/analysis_YYYYMMDD.json`
 - `input/source/client_input_filled.csv` または `input/source/client_input_filled_YYYYMMDD.csv`（存在する場合）
-- `templates/flow_template.drawio`
+- `templates/業務フロー図_テンプレート.drawio`
 
 ## 出力
 

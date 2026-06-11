@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-06-10T14:38:50.784Z" agent="5.0" version="24.0.0">
+<mxfile host="app.diagrams.net" modified="2026-06-11T02:50:02.257Z" agent="5.0" version="24.0.0">
   <diagram name="As-Is 部分: 収納事務 / 会計伝票作成" id="As-Is------------------">
     <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1040" pageHeight="700" math="0" shadow="0">
       <root>
@@ -9,8 +9,8 @@
         <mxCell id="asis-lane-0" value="担当者・業務部門" style="swimlane;horizontal=1;startSize=32;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;opacity=80;" vertex="1" parent="1"><mxGeometry x="80" y="80" width="280" height="520" as="geometry" /></mxCell>
         <mxCell id="asis-lane-1" value="上長・管理者・承認者" style="swimlane;horizontal=1;startSize=32;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;opacity=80;" vertex="1" parent="1"><mxGeometry x="390" y="80" width="280" height="520" as="geometry" /></mxCell>
         <mxCell id="asis-lane-2" value="システム" style="swimlane;horizontal=1;startSize=32;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;opacity=80;" vertex="1" parent="1"><mxGeometry x="700" y="80" width="280" height="520" as="geometry" /></mxCell>
-        <mxCell id="process-007" value="1. 収納伝票入力&#xa;共通: システム入力&#xa;15分 / 負担: 高" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#dc2626;strokeWidth=3;fontSize=11;fontColor=#000000;" vertex="1" parent="1"><mxGeometry x="738" y="140" width="205" height="86" as="geometry" /></mxCell>
-        <mxCell id="process-008" value="2. 収納証憑保管&#xa;共通: 記録・保管&#xa;10分 / 負担: 中" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;fontSize=11;fontColor=#000000;" vertex="1" parent="1"><mxGeometry x="738" y="262" width="205" height="86" as="geometry" /></mxCell>
+        <mxCell id="process-007" value="1. 収納伝票入力&#xa;共通: システム入力&#xa;15分 / 負担: 高" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#dc2626;strokeWidth=3;fontSize=11;fontColor=#000000;" vertex="1" parent="1"><mxGeometry x="118" y="140" width="205" height="86" as="geometry" /></mxCell>
+        <mxCell id="process-008" value="2. 収納証憑保管&#xa;共通: 記録・保管&#xa;10分 / 負担: 中" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=1;fontSize=11;fontColor=#000000;" vertex="1" parent="1"><mxGeometry x="118" y="262" width="205" height="86" as="geometry" /></mxCell>
         <mxCell id="edge-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;strokeWidth=2;endArrow=block;endFill=1;fontSize=11;fontColor=#1f2937;" edge="1" parent="1" source="process-007" target="process-008"><mxGeometry relative="1" as="geometry" /></mxCell>
       </root>
     </mxGraphModel>

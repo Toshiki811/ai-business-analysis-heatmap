@@ -104,11 +104,6 @@ function questionAnsweredByTaskText(task) {
   const needsRoleDetail = /差戻|再承認|分離状況|承認手順|承認フロー|承認者ID|作成者ID|レビュー者|二重チェック|立会者|担当者割当/.test(question);
   if (asksRole && roleKnown && !needsRoleDetail) return true;
 
-  const asksSystem = /システム|取込|入力|出力|連携|電子/.test(question);
-  const systemKnown = /会計システム|給与計算システム|給与計算ソフト|請求システム|インターネットバンキング|総合振込/.test(detail);
-  const needsSystemDetail = /連携可否|取込可否|自動取込|仕訳連携|システム連携/.test(question);
-  if (asksSystem && systemKnown && !needsSystemDetail) return true;
-
   const asksOrder = /順序|期限|期日|前後/.test(question);
   const orderKnown = /後|前|期日|月末|年度末|承認済み.*もとに|場合/.test(detail);
   return asksOrder && orderKnown;
@@ -122,7 +117,7 @@ function shouldKeepQuestion(task) {
   if (questionAnsweredByTaskText(task)) return false;
   if (hasFlowChangingQuestion(question)) return true;
   if (hasNonFlowQuestion(question)) return false;
-  return false;
+  return true;
 }
 
 export function suppressNonFlowQuestions(analysis) {

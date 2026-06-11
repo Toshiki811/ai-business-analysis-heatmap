@@ -4614,10 +4614,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
 
       function renderMatrixAxisRow(cat, businessType, businessColumns, businessTotalCols) {
         let row = '<tr class="matrix-axis-row">';
-        row += `<th class="matrix-section-axis" colspan="2">` +
-          `<div class="matrix-section-cat">${escapeHtml(businessType)}</div>` +
-          `<div class="matrix-section-label">業務フロー工程</div>` +
-          `</th>`;
+        row += `<th class="matrix-section-axis" colspan="2"></th>`;
         businessColumns.forEach(col => {
           row += `<th class="tl-step-header axis-clickable" onclick='openMatrixAxisPanel(${jsAttrString(cat)}, ${jsAttrString(col.key)}, ${jsAttrString(businessType)})'>` +
             `<div style="color:#cbd5e1;font-size:12px;font-weight:800;">${escapeHtml(col.label)}</div>` +

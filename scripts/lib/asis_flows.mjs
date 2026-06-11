@@ -21,20 +21,28 @@ function hashId(value, prefix = 'task') {
 }
 
 function inferAsIsActor(task) {
-  const text = [
-    task['タスク名'],
-    task['業務内容詳細'],
-    task['現状課題'],
-    task['クライアント回答'],
-    task.as_is_resolved_answer,
-    task.as_is_update_note
-  ].filter(Boolean).join(' ').replace(/承認済み/g, '');
-  if (/システム|入力|登録|取込|連携|出力|自動|データ|CSV|アップロード|ダウンロード/.test(text)) {
-    return 'システム';
-  }
-  if (/承認|決裁|上長|管理者|確認者|レビュー|差戻|再承認/.test(text)) {
+  const taskName = String(task['タスク名'] || '');
+  // 明示的な更新メモ・確定回答がある場合のみ詳細テキストを参照
+  const explicitText = [task.as_is_update_note, task['As-Isフロー更新内容'], task.as_is_resolved_answer]
+    .filter(Boolean).join(' ');
+
+  // タスク名が承認・決裁主体のケース → 上長レーン
+  if (/^承認|^決裁|承認依頼|承認・決裁|上長確認|上長レビュー|差戻/.test(taskName)) {
     return '上長・管理者・承認者';
   }
+  if (/承認|決裁|上長|管理者|確認者|レビュー|差戻|再承認/.test(explicitText)) {
+    return '上長・管理者・承認者';
+  }
+
+  // タスク名がシステム主体の自動処理ケース → システムレーン
+  if (/自動取込|自動連携|自動処理|システム自動|自動計算|自動生成/.test(taskName)) {
+    return 'システム';
+  }
+  if (/システム|連携|自動/.test(explicitText)) {
+    return 'システム';
+  }
+
+  // デフォルト → 担当者レーン
   return '担当者・業務部門';
 }
 

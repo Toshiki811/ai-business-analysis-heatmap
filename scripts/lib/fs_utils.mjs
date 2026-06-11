@@ -40,6 +40,21 @@ export function findLatestAnalysis(root) {
   return path.join(outputDir, files[0].name);
 }
 
+export function resolveAnalysisPath(root, args) {
+  if (args.analysis) return path.resolve(root, args.analysis);
+  if (args.date) return path.join(root, 'output', `analysis_${resolveDateKey(args.date)}.json`);
+  return findLatestAnalysis(root);
+}
+
+export function resolveAnalysisDate(analysisPath, args, analysis) {
+  const fromFileName = path.basename(analysisPath).match(/analysis_(\d{8})\.json$/)?.[1];
+  const dateKey = args.date
+    ? resolveDateKey(args.date)
+    : resolveDateKey(analysis.metadata?.created_at || fromFileName);
+  const createdAt = args.date ? dateKeyToIso(dateKey) : (analysis.metadata?.created_at || dateKeyToIso(dateKey));
+  return { dateKey, createdAt };
+}
+
 export function parseArgs(argv) {
   const args = {};
   for (let i = 0; i < argv.length; i += 1) {

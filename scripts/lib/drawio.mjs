@@ -13,14 +13,6 @@ const AS_IS_LANES = [
   { actor: 'システム', x: 700, color: '#f5f5f5', stroke: '#666666', label: 'システム' }
 ];
 
-function actorLane(actor) {
-  return LANES.find((lane) => lane.actor === actor) || LANES[0];
-}
-
-function asIsActorLane(actor) {
-  return AS_IS_LANES.find((lane) => lane.actor === actor) || AS_IS_LANES[0];
-}
-
 function compactLine(value, maxLength = 42) {
   const text = String(value || '').replace(/\s+/g, ' ').trim();
   if (text.length <= maxLength) return text;

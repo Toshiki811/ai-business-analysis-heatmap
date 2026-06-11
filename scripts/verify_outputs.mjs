@@ -2,10 +2,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {
-  findLatestAnalysis,
   parseArgs,
   readJson,
-  resolveDateKey
+  resolveAnalysisDate,
+  resolveAnalysisPath
 } from './lib/fs_utils.mjs';
 import {
   normalizeAnalysisSchema,
@@ -219,20 +219,14 @@ if (args.help || args.h) {
   process.exit(0);
 }
 
-const analysisPath = args.analysis
-  ? path.resolve(root, args.analysis)
-  : (args.date
-    ? path.join(root, 'output', `analysis_${resolveDateKey(args.date)}.json`)
-    : findLatestAnalysis(root));
+const analysisPath = resolveAnalysisPath(root, args);
 
 if (!analysisPath) {
   throw new Error(`No analysis JSON found.\n${usage()}`);
 }
 
 const analysis = readJson(analysisPath);
-const dateKey = args.date
-  ? resolveDateKey(args.date)
-  : resolveDateKey(analysis.metadata?.created_at || path.basename(analysisPath).match(/analysis_(\d{8})\.json$/)?.[1]);
+const { dateKey } = resolveAnalysisDate(analysisPath, args, analysis);
 const htmlPath = path.join(root, 'output', `analysis_${dateKey}.html`);
 
 const analysisResult = verifyAnalysis(analysis, analysisPath);

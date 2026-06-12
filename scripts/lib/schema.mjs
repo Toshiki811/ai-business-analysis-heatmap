@@ -21,14 +21,30 @@ const AUTOMATION_TYPE_ALIASES = new Map([
   ['人手', 'manual']
 ]);
 
+// 表示は「AI / RPA（ルールベース） / 人」の3軸に集約する(内部キーは6分類を維持)
 const AUTOMATION_TYPE_LABELS = {
-  rule_based: 'ルールベース',
-  system_config: '既存システム設定',
-  rpa: 'RPA/連携',
-  generative_ai: '生成AI',
-  ai_agent: 'AIエージェント',
-  manual: '人手維持'
+  rule_based: 'RPA（ルールベース）',
+  system_config: 'RPA（ルールベース）',
+  rpa: 'RPA（ルールベース）',
+  generative_ai: 'AI',
+  ai_agent: 'AI',
+  manual: '人'
 };
+
+// 3軸に対応するAI適合度: AI=5 / RPA（ルールベース）=3 / 人=1
+const AI_FIT_SCORE_BY_AUTOMATION_TYPE = {
+  ai_agent: 5,
+  generative_ai: 5,
+  rpa: 3,
+  system_config: 3,
+  rule_based: 3,
+  manual: 1
+};
+
+export function aiFitScoreForAutomationType(value) {
+  const key = normalizeAutomationType(value);
+  return AI_FIT_SCORE_BY_AUTOMATION_TYPE[key] ?? null;
+}
 
 export function normalizeAutomationType(value) {
   const raw = String(value || '').trim();
@@ -133,6 +149,24 @@ export function top3BusinessType(item) {
   return item.target_business_type || item.target_business || item.business_type || '';
 }
 
+export function computeTop3TotalScore(scores) {
+  if (!scores || typeof scores !== 'object') return null;
+  const num = (value) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  };
+  const tr = num(scores.time_reduction);
+  const fr = num(scores.frequency);
+  const ie = num(scores.implementation_ease);
+  const qi = num(scores.quality_impact);
+  const af = num(scores.ai_fit);
+  if (tr === null || fr === null || ie === null || qi === null) return null;
+  const weighted = af === null
+    ? tr * 0.45 + fr * 0.25 + ie * 0.20 + qi * 0.10
+    : tr * 0.40 + fr * 0.20 + ie * 0.15 + qi * 0.10 + af * 0.15;
+  return Math.round(weighted * 20);
+}
+
 export function normalizeAnalysisSchema(analysis) {
   const stats = {
     matrix_tasks_normalized: 0,
@@ -179,20 +213,43 @@ export function normalizeAnalysisSchema(analysis) {
   }
 
   for (const cell of analysis.heatmap_cells) {
-    const before = [cell.heatmap_group, cell.effect_level, cell.automation_type].join('|');
+    const before = [cell.heatmap_group, cell.effect_level, cell.automation_type, cell.ai_fit_score, cell.score].join('|');
     cell.category = cell.category || cell['業務分類'] || '';
     cell.business_type = cell.business_type || cell['業務種別'] || '';
     cell.flow_step = cell.flow_step || cell['ヒートマップステップ'] || cell.common_step || '';
     cell.heatmap_group = cell.heatmap_group || inferHeatmapGroup(analysis, cell.flow_step);
     cell.effect_level = normalizeEffectLevel(cell.effect_level);
     if (cell.automation_type) cell.automation_type = normalizeAutomationType(cell.automation_type);
-    const after = [cell.heatmap_group, cell.effect_level, cell.automation_type].join('|');
+    const aiFit = aiFitScoreForAutomationType(cell.automation_type);
+    if (aiFit !== null) {
+      cell.ai_fit_score = aiFit;
+      const total = computeTop3TotalScore({
+        time_reduction: cell.time_reduction_score,
+        frequency: cell.frequency_score,
+        implementation_ease: cell.implementation_ease_score,
+        quality_impact: cell.quality_impact_score,
+        ai_fit: aiFit
+      });
+      if (total !== null) {
+        cell.score = total;
+        cell.effect_level = total >= 70 ? 'high' : total >= 40 ? 'medium' : 'low';
+      }
+    }
+    const after = [cell.heatmap_group, cell.effect_level, cell.automation_type, cell.ai_fit_score, cell.score].join('|');
     if (before !== after) stats.heatmap_cells_normalized += 1;
   }
 
   for (const item of analysis.top3) {
     item.target_business_type = top3BusinessType(item);
     item.target_heatmap_group = item.target_heatmap_group || inferHeatmapGroup(analysis, item.target_flow_step);
+    if (item.scores) {
+      const aiFit = aiFitScoreForAutomationType(item.automation_type);
+      if (aiFit !== null && item.scores.ai_fit !== undefined && item.scores.ai_fit !== null && item.scores.ai_fit !== '') {
+        item.scores.ai_fit = aiFit;
+      }
+      const total = computeTop3TotalScore(item.scores);
+      if (total !== null) item.scores.total = total;
+    }
   }
 
   if (!Array.isArray(analysis.categories) || analysis.categories.length === 0) {

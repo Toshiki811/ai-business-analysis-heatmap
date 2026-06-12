@@ -1279,10 +1279,6 @@
     .burden-medium { display:inline-block;background:#f59e0b;color:#78350f;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
     .burden-low    { display:inline-block;background:#22c55e;color:#052e16;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
 
-    .ai-high   { display:inline-block;background:#3b82f6;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
-    .ai-medium { display:inline-block;background:#6366f1;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
-    .ai-low    { display:inline-block;background:#475569;color:#e2e8f0;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap; }
-
     .kubun-badge { display:inline-block;background:#334155;color:#94a3b8;border:1px solid #475569;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap; }
 
     .matrix-filter-btn {
@@ -1387,21 +1383,6 @@
       font-weight: 700;
       line-height: 1.4;
     }
-    .tl-cell-ai-label {
-      display: inline-flex;
-      align-items: center;
-      min-height: 18px;
-      padding: 1px 6px;
-      border-radius: 5px;
-      background: rgba(15,23,42,0.56);
-      font-size: 10px;
-      font-weight: 700;
-      line-height: 1.4;
-    }
-    .tl-cell-ai-label.ai-high { color: #bfdbfe; border: 1px solid rgba(59,130,246,0.35); }
-    .tl-cell-ai-label.ai-medium { color: #c4b5fd; border: 1px solid rgba(99,102,241,0.35); }
-    .tl-cell-ai-label.ai-low { color: #cbd5e1; border: 1px solid rgba(100,116,139,0.35); }
-
     /* 業務分類グループ行 */
     .tl-group-row td {
       background: #08111f;
@@ -3196,7 +3177,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         ['所要時間_分', 'estimated_minutes'],
         ['人手の負担', 'burden'],
         ['現状課題', 'issue'],
-        ['AI導入余地', 'ai_potential'],
         ['確認事項', 'question'],
         ['クライアント回答', 'client_answer'],
         ['区分', 'status']
@@ -3923,7 +3903,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         ['現状課題', task['現状課題']]
       ];
       const aiRows = [
-        ['AI導入余地', task['AI導入余地']],
         ['AI活用余地', task['AI活用余地']],
         ['区分', task['区分']]
       ];
@@ -4036,15 +4015,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         task['業務種別'] === businessType &&
         taskMatrixAxis(task) === matrixAxis
       );
-      const aiLevels = tasks.map(task => task['AI導入余地']).filter(Boolean);
-      const highAiCount = aiLevels.filter(level => level === '高').length;
-      const aiRank = {高: 3, 中: 2, 低: 1};
-      const maxAiLevel = aiLevels.reduce((best, level) =>
-        (aiRank[level] || 0) > (aiRank[best] || 0) ? level : best, ''
-      );
-      const aiSummary = highAiCount
-        ? `高 ${highAiCount}件 / 全${tasks.length}件`
-        : (maxAiLevel ? `最大 ${maxAiLevel}` : '-');
       openAxisDetailPanel({
         mode: 'As-Is',
         title: `${category} / ${businessType} / ${matrixAxis}`,
@@ -4052,8 +4022,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         countText: tasks.length ? `${tasks.length}タスク` : '',
         summaryHtml: tasks.length ? [
           summaryCard('対象タスク', `${tasks.length}件`),
-          summaryCard('最大負担', maxBurdenLabel(tasks)),
-          summaryCard('AI導入余地', aiSummary)
+          summaryCard('最大負担', maxBurdenLabel(tasks))
         ].join('') : '',
         contentHtml: tasks.length
           ? tasks.map(renderAsIsTaskDetail).join('')
@@ -4582,9 +4551,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     function burdenClass(v) {
       return ({高: 'high', 中: 'medium', 低: 'low'})[v] || 'medium';
     }
-    function aiClass(v) {
-      return ({高: 'high', 中: 'medium', 低: 'low'})[v] || 'low';
-    }
 
     function matrixFallbackColumns(tasks) {
       const maxStep = Math.max(...tasks.map(t => Number(t['タスク順']) || 0));
@@ -4633,10 +4599,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return `負担 ${task['人手の負担'] || '-'}`;
     }
 
-    function matrixAiLabel(task) {
-      return `AI ${task['AI導入余地'] || '-'}`;
-    }
-
     function businessTypeSummary(category, businessType, tasks) {
       const known = {
         '経理体制・帳簿管理|||経理体制整備': '権限・職務分掌・承認体制',
@@ -4675,7 +4637,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         '<div class="tl-cell-badges">',
         `<span class="tl-cell-time">${escapeHtml(matrixMinutesLabel(task))}</span>`,
         `<span class="tl-cell-burden-label burden-${burdenClass(task['人手の負担'])}">${escapeHtml(matrixBurdenLabel(task))}</span>`,
-        `<span class="tl-cell-ai-label ai-${aiClass(task['AI導入余地'])}">${escapeHtml(matrixAiLabel(task))}</span>`,
         '</div>',
         '</div>'
       ].join('');
@@ -5200,7 +5161,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           '人手の負担_仮案','人手の負担_ヒアリング後',
           '月間件数',
           '現状課題','確認したいこと','クライアント回答',
-          'AI導入余地_仮案','As-Isフロー更新内容_業務分類','備考'
+          'As-Isフロー更新内容_業務分類','備考'
         ];
         const rows = allTasks.map(t => {
           const k = taskKey(t);
@@ -5226,7 +5187,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             t['現状課題'] || '',
             question,
             answer,
-            t['AI導入余地'] || '',
             flowUpdate,
             ''
           ].map(v => '"' + String(v).replace(/"/g, '""') + '"');

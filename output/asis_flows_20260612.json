@@ -1,14 +1,1762 @@
 {
   "metadata": {
     "created_at": "2026-06-12",
-    "source_documents": ["keirijimumanyuaru.md"],
+    "source_documents": [
+      "keirijimumanyuaru.md"
+    ],
     "schema": "asis_flow_detail_v1"
   },
   "flows": [
     {
+      "category": "経理体制・帳簿管理",
+      "business_type": "経理体制整備",
+      "actors": [
+        "理事長",
+        "会計責任者",
+        "出納職員"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "経理体制整備 開始",
+          "actor": "理事長",
+          "description": "年度初めまたは人事異動時に経理体制の整備を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "任命対象者の人選",
+          "actor": "理事長",
+          "description": "理事長が会計責任者・出納職員・予算管理責任者・固定資産管理責任者の任命対象者を検討する",
+          "inputs": [
+            "職務分掌規程"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 1,
+            "タスク名": "経理担当者任命"
+          },
+          "source_quote": "理事長が会計責任者、出納職員、予算管理責任者、固定資産管理責任者を任命する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "辞令・任命記録の作成",
+          "actor": "理事長",
+          "description": "任命結果を辞令または理事会議事録に記録し、職務分掌規程へ反映する",
+          "outputs": [
+            "辞令",
+            "理事会議事録"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 1,
+            "タスク名": "経理担当者任命"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "担当範囲・権限境界の確認",
+          "actor": "会計責任者",
+          "description": "会計責任者が各サービス区分の担当範囲と権限委譲の境界（金額上限等）を職務分掌規程と照らして確認する",
+          "inputs": [
+            "職務分掌規程",
+            "経理規程"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 2,
+            "タスク名": "職務分掌範囲確認"
+          },
+          "source_quote": "会計責任者が出納職員を監督し、各サービス区分の担当範囲を確認する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "decision",
+          "label": "規程と実態の一致確認",
+          "actor": "会計責任者",
+          "description": "職務分掌規程の記載と実際の担当・兼務状況が一致しているか確認する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 2,
+            "タスク名": "職務分掌範囲確認"
+          },
+          "confidence": "inferred",
+          "condition": "規程の担当区分と実際の業務分担が一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n07"
+            },
+            {
+              "label": "不一致",
+              "target": "n06",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "職務分掌規程と実際の担当が異なる場合（兼務等）の取り扱い・規程改定の手順を教えてください",
+          "hearing_answer_example": "兼務はやむを得ない場合のみ理事長承認とし、年度末に規程を見直す"
+        },
+        {
+          "id": "n06",
+          "node_type": "exception",
+          "label": "規程改定・分担調整",
+          "actor": "会計責任者",
+          "description": "不一致がある場合、規程改定案の作成または業務分担の調整を行い理事長へ報告する",
+          "outputs": [
+            "規程改定案"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 2,
+            "タスク名": "職務分掌範囲確認"
+          },
+          "confidence": "inferred",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "出納業務の定期照合",
+          "actor": "会計責任者",
+          "description": "会計責任者が出納職員の業務遂行状況（出納記録・試算表等）を定期的に照合し確認する",
+          "inputs": [
+            "仕訳日記帳",
+            "月次試算表"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 3,
+            "タスク名": "監督体制定期確認"
+          },
+          "source_quote": "会計責任者が出納職員の業務遂行状況を定期的に確認し",
+          "confidence": "explicit",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "decision",
+          "label": "業務逸脱の有無判定",
+          "actor": "会計責任者",
+          "description": "出納記録の照合結果から、規程からの逸脱や処理誤りがないか判定する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 3,
+            "タスク名": "監督体制定期確認"
+          },
+          "confidence": "inferred",
+          "condition": "出納記録と帳簿・規程の照合結果が一致するか",
+          "branches": [
+            {
+              "label": "逸脱なし",
+              "target": "n10"
+            },
+            {
+              "label": "逸脱あり",
+              "target": "n09",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "内部牽制チェックで逸脱が見つかった場合の是正指示・記録の手順を教えてください",
+          "hearing_answer_example": "会計責任者が是正指示を文書で出し、対応結果を翌月のチェックで確認する"
+        },
+        {
+          "id": "n09",
+          "node_type": "exception",
+          "label": "是正指示・対応確認",
+          "actor": "会計責任者",
+          "description": "逸脱があった場合に出納職員へ是正を指示し、対応結果を確認する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 3,
+            "タスク名": "監督体制定期確認"
+          },
+          "confidence": "inferred",
+          "next": "n07"
+        },
+        {
+          "id": "n10",
+          "node_type": "end",
+          "label": "経理体制整備 完了",
+          "actor": "会計責任者",
+          "description": "経理体制の確認・整備を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n03",
+          "question_type": "reality_check",
+          "question": "経理担当者の任命は実際には辞令等の文書で記録していますか。口頭・慣例のみになっていませんか",
+          "answer_example": "理事会議事録に記録しているが、辞令は発行していない",
+          "reason": "マニュアルに任命記録の方法の記載がなく、実態の確認が必要"
+        },
+        {
+          "node_id": "n05",
+          "question_type": "branch_confirmation",
+          "question": "職務分掌規程と実際の担当が異なる場合（兼務等）の取り扱い・規程改定の手順を教えてください",
+          "answer_example": "兼務はやむを得ない場合のみ理事長承認とし、年度末に規程を見直す",
+          "reason": "マニュアルに規程と実態の不一致時の扱いの記載がない"
+        },
+        {
+          "node_id": "n08",
+          "question_type": "branch_confirmation",
+          "question": "内部牽制チェックで逸脱が見つかった場合の是正指示・記録の手順を教えてください",
+          "answer_example": "会計責任者が是正指示を文書で出し、対応結果を翌月のチェックで確認する",
+          "reason": "マニュアルに逸脱発見時の対応手順の記載がない"
+        }
+      ],
+      "unmodeled_notes": [
+        "監事監査・行政監査への対応はマニュアルに記載がないためフロー化していない"
+      ]
+    },
+    {
+      "category": "経理体制・帳簿管理",
+      "business_type": "帳簿・帳票管理",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "帳簿・帳票管理 開始",
+          "actor": "出納職員",
+          "description": "年度初めまたは設定変更時に帳簿・帳票の整備を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "必要帳簿の洗い出し",
+          "actor": "出納職員",
+          "description": "仕訳日記帳・総勘定元帳・小口現金出納帳・固定資産管理台帳など必要な帳簿を経理規程に照らして洗い出す",
+          "inputs": [
+            "経理規程"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 1,
+            "タスク名": "帳簿一覧整備"
+          },
+          "source_quote": "仕訳日記帳、総勘定元帳、小口現金出納帳、固定資産管理台帳等を整備する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "帳簿一覧表の作成・更新",
+          "actor": "出納職員",
+          "description": "洗い出した帳簿を一覧表に整理し、保管場所・更新頻度を記録する",
+          "outputs": [
+            "帳簿一覧表"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 1,
+            "タスク名": "帳簿一覧整備"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "勘定科目・サービス区分設定の確認",
+          "actor": "出納職員",
+          "description": "会計システムの勘定科目・サービス区分の設定内容を年度の事業内容と照らして確認する",
+          "inputs": [
+            "勘定科目一覧"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 2,
+            "タスク名": "会計システム設定確認"
+          },
+          "source_quote": "導入済み会計システムの勘定科目、サービス区分、帳票出力設定を確認する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "decision",
+          "label": "設定変更の要否判定",
+          "actor": "出納職員",
+          "description": "科目追加・区分変更など設定変更の必要があるか判定する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 2,
+            "タスク名": "会計システム設定確認"
+          },
+          "confidence": "inferred",
+          "condition": "現行設定と年度の事業内容が一致するか",
+          "branches": [
+            {
+              "label": "変更不要",
+              "target": "n09"
+            },
+            {
+              "label": "変更必要",
+              "target": "n06"
+            }
+          ],
+          "hearing_item": "会計システムの設定変更（科目追加・区分変更）の承認・反映手順を教えてください",
+          "hearing_answer_example": "担当者が変更案を作成し、会計責任者承認後にシステムへ反映する"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "設定変更案の作成",
+          "actor": "出納職員",
+          "description": "変更が必要な科目・区分・帳票出力の変更案を作成し会計責任者へ提出する",
+          "outputs": [
+            "設定変更案"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 2,
+            "タスク名": "会計システム設定確認"
+          },
+          "confidence": "inferred",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "設定変更の承認判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が設定変更案の内容を確認し承認可否を判定する",
+          "inputs": [
+            "設定変更案"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 2,
+            "タスク名": "会計システム設定確認"
+          },
+          "confidence": "inferred",
+          "condition": "変更内容が妥当か（科目体系・規程適合）",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n08"
+            },
+            {
+              "label": "差戻し",
+              "target": "n06",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "設定変更が差戻しになった場合の修正・再承認の手順を教えてください",
+          "hearing_answer_example": "出納職員が変更案を修正し、会計責任者が再確認のうえ承認する"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "会計システムへの設定反映",
+          "actor": "出納職員",
+          "description": "承認済みの変更内容を会計システムへ反映し、設定変更記録を残す",
+          "outputs": [
+            "設定変更記録"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 2,
+            "タスク名": "会計システム設定確認"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "帳票の出力テスト",
+          "actor": "会計責任者",
+          "description": "会計責任者が試算表・元帳等の帳票を会計システムから出力し、内容に誤りがないか確認する",
+          "inputs": [
+            "月次試算表",
+            "総勘定元帳"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 3,
+            "タスク名": "帳票出力テスト確認"
+          },
+          "source_quote": "帳票出力設定を確認する",
+          "confidence": "explicit",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "decision",
+          "label": "出力内容の確認判定",
+          "actor": "会計責任者",
+          "description": "出力された帳票の科目・区分・集計が正しいか判定する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 3,
+            "タスク名": "帳票出力テスト確認"
+          },
+          "confidence": "inferred",
+          "condition": "帳票の出力内容に誤りがないか",
+          "branches": [
+            {
+              "label": "問題なし",
+              "target": "n12"
+            },
+            {
+              "label": "誤りあり",
+              "target": "n11",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "帳票出力に誤りが見つかった場合の設定修正の担当と手順を教えてください",
+          "hearing_answer_example": "出納職員が設定を修正し、会計責任者が再出力で確認する"
+        },
+        {
+          "id": "n11",
+          "node_type": "exception",
+          "label": "設定の再修正",
+          "actor": "出納職員",
+          "description": "帳票出力の誤りの原因となった設定を修正し再出力する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 3,
+            "タスク名": "帳票出力テスト確認"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n12",
+          "node_type": "end",
+          "label": "帳簿・帳票管理 完了",
+          "actor": "会計責任者",
+          "description": "帳簿一覧とシステム設定の整備を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n05",
+          "question_type": "branch_confirmation",
+          "question": "会計システムの設定変更（科目追加・区分変更）の承認・反映手順を教えてください",
+          "answer_example": "担当者が変更案を作成し、会計責任者承認後にシステムへ反映する",
+          "reason": "マニュアルに設定変更の承認手順の記載がない"
+        },
+        {
+          "node_id": "n10",
+          "question_type": "branch_confirmation",
+          "question": "帳票出力に誤りが見つかった場合の設定修正の担当と手順を教えてください",
+          "answer_example": "出納職員が設定を修正し、会計責任者が再出力で確認する",
+          "reason": "マニュアルに出力誤り発見時の対応の記載がない"
+        },
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "帳簿の整備・設定確認は実際には年度初めの一度だけですか。年度途中の科目追加など随時変更も発生していますか",
+          "answer_example": "年度初めに一括確認するが、補助金の新設等で年2〜3回は途中変更がある",
+          "reason": "マニュアル記載の年次作業と実態の乖離を確認するため"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
+      "category": "予算管理",
+      "business_type": "当初予算編成",
+      "actors": [
+        "予算管理責任者",
+        "各部門担当者",
+        "理事長",
+        "理事会",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "当初予算編成 開始",
+          "actor": "予算管理責任者",
+          "description": "次年度予算の編成作業を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "予算要求様式の配布・依頼",
+          "actor": "予算管理責任者",
+          "description": "各部門へ予算要求の様式（Excel等）を配布し、提出期限を通知する",
+          "outputs": [
+            "予算要求様式"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 1,
+            "タスク名": "事業計画情報収集"
+          },
+          "confidence": "inferred",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "事業計画・充実計画の収集",
+          "actor": "予算管理責任者",
+          "description": "次年度事業計画・現場ヒアリング結果・承認済み社会福祉充実計画を収集する",
+          "inputs": [
+            "次年度事業計画",
+            "社会福祉充実計画"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 1,
+            "タスク名": "事業計画情報収集"
+          },
+          "source_quote": "次年度事業計画、現場ヒアリング、承認済み社会福祉充実計画を収集する",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "decision",
+          "label": "提出期限内の回収判定",
+          "actor": "予算管理責任者",
+          "description": "各部門の予算要求・事業計画情報が期限内に揃ったか確認する",
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 1,
+            "タスク名": "事業計画情報収集"
+          },
+          "confidence": "inferred",
+          "condition": "全部門の資料が提出期限内に揃ったか",
+          "branches": [
+            {
+              "label": "期限内",
+              "target": "n06"
+            },
+            {
+              "label": "期限超過",
+              "target": "n05",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "予算要求が期限までに提出されない部門への督促・対応手順を教えてください",
+          "hearing_answer_example": "予算管理責任者が期限翌日にリマインドし、1週間遅延で理事長へ報告する"
+        },
+        {
+          "id": "n05",
+          "node_type": "exception",
+          "label": "未提出部門への督促",
+          "actor": "予算管理責任者",
+          "description": "未提出の部門へ督促し、資料を回収する",
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 1,
+            "タスク名": "事業計画情報収集"
+          },
+          "confidence": "inferred",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "前年度実績データの抽出",
+          "actor": "予算管理責任者",
+          "description": "会計システムから前年度の試算表・実績データを出力し、予算積算の基礎とする",
+          "inputs": [
+            "前年度試算表"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 2,
+            "タスク名": "資金収支予算案作成"
+          },
+          "confidence": "inferred",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "収入・支出予算の積算",
+          "actor": "予算管理責任者",
+          "description": "勘定科目単位で収入予算・支出予算を積算し、法人全体またはサービス区分ごとに集計する。Excelまたは会計システムを使用",
+          "inputs": [
+            "予算要求様式",
+            "前年度試算表"
+          ],
+          "outputs": [
+            "予算積算表"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 2,
+            "タスク名": "資金収支予算案作成"
+          },
+          "source_quote": "勘定科目単位で収入予算・支出予算を積算し",
+          "confidence": "explicit",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "予算案資料の作成",
+          "actor": "予算管理責任者",
+          "description": "積算結果をもとに理事会提出用の資金収支予算案資料を作成する",
+          "outputs": [
+            "資金収支予算案"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 2,
+            "タスク名": "資金収支予算案作成"
+          },
+          "source_quote": "法人全体またはサービス区分ごとに予算案を作成する",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "decision",
+          "label": "理事長の事前確認",
+          "actor": "理事長",
+          "description": "理事長が予算案の内容を理事会提出前に確認し、修正要否を判定する",
+          "inputs": [
+            "資金収支予算案"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 3,
+            "タスク名": "予算理事会承認"
+          },
+          "confidence": "inferred",
+          "condition": "予算案の内容が理事会提出に足るか",
+          "branches": [
+            {
+              "label": "提出可",
+              "target": "n11"
+            },
+            {
+              "label": "修正指示",
+              "target": "n10",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "理事会提出前に予算案の修正が入る場合の修正・再確認の手順を教えてください",
+          "hearing_answer_example": "修正要求があれば予算管理責任者が修正し、理事長確認後に再提出する"
+        },
+        {
+          "id": "n10",
+          "node_type": "exception",
+          "label": "予算案の修正",
+          "actor": "予算管理責任者",
+          "description": "理事長の指摘を受けて予算案を修正する",
+          "outputs": [
+            "修正予算案"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 3,
+            "タスク名": "予算理事会承認"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "理事会への提出・審議",
+          "actor": "理事長",
+          "description": "理事長が予算案を理事会へ提出し審議を受ける",
+          "inputs": [
+            "資金収支予算案"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 3,
+            "タスク名": "予算理事会承認"
+          },
+          "source_quote": "理事長が編成した予算について理事会の承認を得て確定する",
+          "confidence": "explicit",
+          "next": "n12"
+        },
+        {
+          "id": "n12",
+          "node_type": "decision",
+          "label": "理事会の承認判定",
+          "actor": "理事会",
+          "description": "理事会が予算案を審議し承認可否を決定する。承認結果は議事録に記録する",
+          "outputs": [
+            "理事会議事録"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 3,
+            "タスク名": "予算理事会承認"
+          },
+          "confidence": "inferred",
+          "condition": "理事会が予算案を承認するか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n13"
+            },
+            {
+              "label": "差戻し",
+              "target": "n10",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "理事会で予算案が差戻しになった場合の修正・再上程の手順を教えてください",
+          "hearing_answer_example": "指摘事項を修正し、臨時理事会または書面決議で再承認を得る"
+        },
+        {
+          "id": "n13",
+          "node_type": "process",
+          "label": "確定予算のシステム登録",
+          "actor": "予算管理責任者",
+          "description": "承認済み予算を会計システムの予算管理機能へ入力する",
+          "inputs": [
+            "承認済み予算案"
+          ],
+          "outputs": [
+            "予算管理表"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 4,
+            "タスク名": "確定予算システム登録"
+          },
+          "source_quote": "承認済み予算を会計システムの予算管理機能へ入力する",
+          "confidence": "explicit",
+          "next": "n14"
+        },
+        {
+          "id": "n14",
+          "node_type": "end",
+          "label": "当初予算編成 完了",
+          "actor": "予算管理責任者",
+          "description": "予算の確定・登録を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n04",
+          "question_type": "branch_confirmation",
+          "question": "予算要求が期限までに提出されない部門への督促・対応手順を教えてください",
+          "answer_example": "予算管理責任者が期限翌日にリマインドし、1週間遅延で理事長へ報告する",
+          "reason": "マニュアルに提出遅延時の対応の記載がない"
+        },
+        {
+          "node_id": "n12",
+          "question_type": "branch_confirmation",
+          "question": "理事会で予算案が差戻しになった場合の修正・再上程の手順を教えてください",
+          "answer_example": "指摘事項を修正し、臨時理事会または書面決議で再承認を得る",
+          "reason": "マニュアルに理事会差戻し時の手順の記載がない"
+        },
+        {
+          "node_id": "n07",
+          "question_type": "reality_check",
+          "question": "予算の積算は実際には会計システム上で行っていますか。Excelで積算してからシステムへ転記していますか",
+          "answer_example": "Excelで積算し、確定後に会計システムへ手入力で転記している",
+          "reason": "マニュアルでは使用ツールが特定されておらず、転記作業の有無で改善余地が変わるため"
+        }
+      ],
+      "unmodeled_notes": [
+        "評議員会の同意手続はマニュアルに記載がないためフロー化していない"
+      ]
+    },
+    {
+      "category": "予算管理",
+      "business_type": "補正予算管理",
+      "actors": [
+        "予算管理責任者",
+        "理事長",
+        "理事会",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "補正予算管理 開始",
+          "actor": "予算管理責任者",
+          "description": "予算執行中の定例確認として補正予算管理を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "予算対実績の照合",
+          "actor": "予算管理責任者",
+          "description": "月次試算表と予算管理表を照合し、会計システムの予算対実績レポートで執行状況を確認する",
+          "inputs": [
+            "月次試算表",
+            "予算管理表"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 1,
+            "タスク名": "予算執行差異確認"
+          },
+          "source_quote": "予算執行中に予算額との乖離や変更事由がないか確認する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "decision",
+          "label": "乖離・変更事由の有無判定",
+          "actor": "予算管理責任者",
+          "description": "予算額との乖離や事業内容の変更事由があるか判定する",
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 1,
+            "タスク名": "予算執行差異確認"
+          },
+          "source_quote": "変更事由がある場合に補正予算を作成し理事会へ提出する",
+          "confidence": "explicit",
+          "condition": "予算額との乖離または変更事由があるか",
+          "branches": [
+            {
+              "label": "なし",
+              "target": "n10"
+            },
+            {
+              "label": "あり",
+              "target": "n04"
+            }
+          ]
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "乖離原因の調査",
+          "actor": "予算管理責任者",
+          "description": "乖離している科目の原因（単価変動・件数増減・新規事由等）を調査し整理する",
+          "outputs": [
+            "差異分析メモ"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 1,
+            "タスク名": "予算執行差異確認"
+          },
+          "confidence": "inferred",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "補正予算案の積算",
+          "actor": "予算管理責任者",
+          "description": "変更事由をもとに補正後の収入・支出予算を科目単位で積算する。Excelを使用",
+          "inputs": [
+            "差異分析メモ"
+          ],
+          "outputs": [
+            "補正積算表"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 2,
+            "タスク名": "補正予算案作成"
+          },
+          "source_quote": "変更事由がある場合に補正予算を作成し",
+          "confidence": "explicit",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "補正予算案資料の作成",
+          "actor": "予算管理責任者",
+          "description": "理事会提出用の補正予算案資料（補正理由・補正額一覧）を作成する",
+          "outputs": [
+            "補正予算案"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 2,
+            "タスク名": "補正予算案作成"
+          },
+          "confidence": "inferred",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "理事会への提出",
+          "actor": "予算管理責任者",
+          "description": "補正予算案を理事会へ提出し審議を受ける",
+          "inputs": [
+            "補正予算案"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 3,
+            "タスク名": "補正予算理事会承認"
+          },
+          "source_quote": "補正予算案を理事会へ提出し承認を得て確定する",
+          "confidence": "explicit",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "decision",
+          "label": "理事会の承認判定",
+          "actor": "理事会",
+          "description": "理事会が補正予算案を審議し承認可否を決定する",
+          "outputs": [
+            "理事会議事録"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 3,
+            "タスク名": "補正予算理事会承認"
+          },
+          "confidence": "inferred",
+          "condition": "理事会が補正予算案を承認するか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n09"
+            },
+            {
+              "label": "差戻し",
+              "target": "n06",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "補正予算が理事会で差戻しになった場合、または次回理事会まで承認が間に合わない場合の執行手順を教えてください",
+          "hearing_answer_example": "緊急時は理事長専決で先行執行し、直近の理事会で事後承認を得る"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "補正予算のシステム反映",
+          "actor": "予算管理責任者",
+          "description": "承認済み補正予算を会計システムの予算管理機能と予算管理表へ反映する",
+          "inputs": [
+            "承認済み補正予算案"
+          ],
+          "outputs": [
+            "予算管理表"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 3,
+            "タスク名": "補正予算理事会承認"
+          },
+          "confidence": "inferred",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "end",
+          "label": "補正予算管理 完了",
+          "actor": "予算管理責任者",
+          "description": "補正予算の確定または経過観察として完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n03",
+          "question_type": "branch_confirmation",
+          "question": "補正予算を検討する乖離のしきい値（例: 予算額の±10%）や判断基準は規程に定まっていますか",
+          "answer_example": "経理規程で予算額の10%以上の乖離が生じた場合に補正予算を検討する旨を定めている",
+          "reason": "マニュアルに補正要否の判断基準の記載がない"
+        },
+        {
+          "node_id": "n08",
+          "question_type": "branch_confirmation",
+          "question": "補正予算が理事会で差戻しになった場合、または次回理事会まで承認が間に合わない場合の執行手順を教えてください",
+          "answer_example": "緊急時は理事長専決で先行執行し、直近の理事会で事後承認を得る",
+          "reason": "マニュアルに承認が間に合わない場合の扱いの記載がない"
+        },
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "予算対実績の照合は実際には毎月行っていますか。四半期ごと等にまとめて確認していませんか",
+          "answer_example": "実際は四半期ごとに確認し、月次では大きな科目のみ見ている",
+          "reason": "マニュアル記載の執行中確認と実態の乖離を確認するため"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
+      "category": "収納事務",
+      "business_type": "請求・収納",
+      "actors": [
+        "出納職員",
+        "請求システム",
+        "利用者・関係機関"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "請求・収納 開始",
+          "actor": "出納職員",
+          "description": "月次の請求サイクルとして請求・収納業務を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "利用実績データの取得",
+          "actor": "出納職員",
+          "description": "補助金・利用料・サービス報酬の元となる利用実績データを取得する",
+          "inputs": [
+            "利用実績データ"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 1,
+            "タスク名": "請求データ作成"
+          },
+          "confidence": "inferred",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "請求システムへの実績反映",
+          "actor": "出納職員",
+          "description": "取得した利用実績を請求システムへ取込または入力する",
+          "inputs": [
+            "利用実績データ"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 1,
+            "タスク名": "請求データ作成"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "請求データの作成",
+          "actor": "出納職員",
+          "description": "請求システムで補助金・利用料・サービス報酬などの請求データを作成する",
+          "outputs": [
+            "請求データ"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 1,
+            "タスク名": "請求データ作成"
+          },
+          "source_quote": "請求データを請求システム等で作成する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "請求内容の確認",
+          "actor": "出納職員",
+          "description": "請求額・利用者負担・補助金等の内容を利用実績と照らして確認する",
+          "inputs": [
+            "請求データ",
+            "利用実績データ"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 2,
+            "タスク名": "請求内容確認"
+          },
+          "source_quote": "請求額、利用者負担、補助金等の内容を確認する",
+          "confidence": "explicit",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "decision",
+          "label": "請求内容の照合判定",
+          "actor": "出納職員",
+          "description": "請求内容と利用実績が一致するか判定する",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 2,
+            "タスク名": "請求内容確認"
+          },
+          "confidence": "inferred",
+          "condition": "請求額・対象者・補助金区分が利用実績と一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n08"
+            },
+            {
+              "label": "不一致",
+              "target": "n07",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "請求内容に誤りが見つかった場合の修正・再確認の手順を教えてください",
+          "hearing_answer_example": "出納職員が請求システム上で修正し、修正箇所を再確認してから発行する"
+        },
+        {
+          "id": "n07",
+          "node_type": "exception",
+          "label": "請求データの修正",
+          "actor": "出納職員",
+          "description": "誤りのあった請求データを修正し再確認する",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 2,
+            "タスク名": "請求内容確認"
+          },
+          "confidence": "inferred",
+          "next": "n05"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "請求書の出力",
+          "actor": "出納職員",
+          "description": "請求システムから請求書または請求書兼領収書を出力する",
+          "outputs": [
+            "請求書"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 3,
+            "タスク名": "請求書発行・送付"
+          },
+          "source_quote": "請求書または請求書兼領収書を発行し",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "利用者・関係機関への送付",
+          "actor": "出納職員",
+          "description": "請求書を利用者・関係機関へ郵送・手渡し・電子で送付する",
+          "inputs": [
+            "請求書"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 3,
+            "タスク名": "請求書発行・送付"
+          },
+          "source_quote": "利用者・関係機関へ送付する",
+          "confidence": "explicit",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "入金の確認",
+          "actor": "出納職員",
+          "description": "銀行口座の入金（通帳・インターネットバンキング明細）を確認する",
+          "inputs": [
+            "預金通帳",
+            "入金明細"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 4,
+            "タスク名": "入金確認・照合"
+          },
+          "confidence": "inferred",
+          "next": "n11"
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "請求リストとの照合・消込",
+          "actor": "出納職員",
+          "description": "入金額と請求リストを照合し、入金消込を行う",
+          "inputs": [
+            "請求リスト",
+            "入金明細"
+          ],
+          "outputs": [
+            "消込済み請求リスト"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 4,
+            "タスク名": "入金確認・照合"
+          },
+          "confidence": "inferred",
+          "next": "n12"
+        },
+        {
+          "id": "n12",
+          "node_type": "decision",
+          "label": "期日内入金の判定",
+          "actor": "出納職員",
+          "description": "請求した全件が期日内に入金されたか判定する",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 4,
+            "タスク名": "入金確認・照合"
+          },
+          "confidence": "inferred",
+          "condition": "請求全件が支払期日内に入金されたか",
+          "branches": [
+            {
+              "label": "全件入金",
+              "target": "n14"
+            },
+            {
+              "label": "未入金あり",
+              "target": "n13",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "未入金が発生した場合の督促手順（連絡方法・タイミング・記録）を教えてください",
+          "hearing_answer_example": "期日翌日に電話確認し、督促記録を請求リストの備考に残す"
+        },
+        {
+          "id": "n13",
+          "node_type": "exception",
+          "label": "未入金者への督促",
+          "actor": "出納職員",
+          "description": "未入金の利用者・機関へ連絡し入金を依頼する。督促後は入金確認に戻る",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 4,
+            "タスク名": "入金確認・照合"
+          },
+          "confidence": "inferred",
+          "next": "n10"
+        },
+        {
+          "id": "n14",
+          "node_type": "end",
+          "label": "請求・収納 完了",
+          "actor": "出納職員",
+          "description": "当月分の請求・収納を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "利用実績データは実際にはどのように請求システムへ反映していますか。自動連携ですか、CSV出力・手入力ですか",
+          "answer_example": "利用実績システムからCSVで出力し請求システムへ手動で取り込んでいる",
+          "reason": "マニュアルにデータ連携方法の記載がなく、転記作業の有無でフローが変わるため"
+        },
+        {
+          "node_id": "n06",
+          "question_type": "branch_confirmation",
+          "question": "請求内容に誤りが見つかった場合の修正・再確認の手順を教えてください",
+          "answer_example": "出納職員が請求システム上で修正し、修正箇所を再確認してから発行する",
+          "reason": "マニュアルに請求誤り時の対応の記載がない"
+        },
+        {
+          "node_id": "n12",
+          "question_type": "branch_confirmation",
+          "question": "未入金が発生した場合の督促手順（連絡方法・タイミング・記録）を教えてください",
+          "answer_example": "期日翌日に電話確認し、督促記録を請求リストの備考に残す",
+          "reason": "マニュアルに未入金時の対応の記載がない"
+        },
+        {
+          "node_id": "n08",
+          "question_type": "reality_check",
+          "question": "請求書の発行前に出納職員以外の確認・承認は実際にはありますか",
+          "answer_example": "金額の大きい行政請求のみ会計責任者が発行前に確認している",
+          "reason": "マニュアルに発行前承認の記載がなく、実態の確認が必要"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
+      "category": "収納事務",
+      "business_type": "現金収納",
+      "actors": [
+        "出納職員",
+        "利用者",
+        "金融機関"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "現金収納 開始",
+          "actor": "利用者",
+          "description": "利用者または関係者からの現金持参により収納業務を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "現金の受領",
+          "actor": "出納職員",
+          "description": "出納職員が利用者または関係者から直接現金を受け取る",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 1,
+            "タスク名": "現金受領・収納確認"
+          },
+          "source_quote": "直接現金を受け取った場合に出納職員が収納内容を確認する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "収納内容の確認",
+          "actor": "出納職員",
+          "description": "受領した現金の金額・収納名目（利用者負担金等）を請求内容と照らして確認する",
+          "inputs": [
+            "請求書控え"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 1,
+            "タスク名": "現金受領・収納確認"
+          },
+          "source_quote": "出納職員が収納内容を確認する",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "decision",
+          "label": "金額一致の判定",
+          "actor": "出納職員",
+          "description": "受領額と請求額・名目が一致するか判定する",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 1,
+            "タスク名": "現金受領・収納確認"
+          },
+          "confidence": "inferred",
+          "condition": "受領金額が請求額・収納名目と一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n06"
+            },
+            {
+              "label": "不一致",
+              "target": "n05",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "受領額が請求額と一致しない場合（過不足）の対応手順を教えてください",
+          "hearing_answer_example": "その場で本人へ確認し、不足分は後日受領、過剰分は即時返金する"
+        },
+        {
+          "id": "n05",
+          "node_type": "exception",
+          "label": "過不足の確認・調整",
+          "actor": "出納職員",
+          "description": "金額不一致の場合、本人へ確認し不足受領・返金等の調整を行う",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 1,
+            "タスク名": "現金受領・収納確認"
+          },
+          "confidence": "inferred",
+          "next": "n03"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "領収書の発行・手渡し",
+          "actor": "出納職員",
+          "description": "福祉サービス利用者負担金の収納時に領収書を発行し利用者へ手渡す",
+          "outputs": [
+            "領収書"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 2,
+            "タスク名": "領収書発行"
+          },
+          "source_quote": "福祉サービス利用者負担金の収納時に領収書を発行する",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "領収書控えの保管",
+          "actor": "出納職員",
+          "description": "領収書控えを連番管理で保管する",
+          "outputs": [
+            "領収書控え"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 2,
+            "タスク名": "領収書発行"
+          },
+          "confidence": "inferred",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "預入準備（金種確認・入金票作成）",
+          "actor": "出納職員",
+          "description": "収納現金の金種を確認し、金融機関への入金票を作成する",
+          "outputs": [
+            "入金票"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 3,
+            "タスク名": "収納現金預入"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "金融機関への預入",
+          "actor": "出納職員",
+          "description": "収納した現金を経理規程の期日内に金融機関へ預け入れる",
+          "inputs": [
+            "入金票"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 3,
+            "タスク名": "収納現金預入"
+          },
+          "source_quote": "収納した現金を経理規程の期日内に金融機関へ預け入れる",
+          "confidence": "explicit",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "入金明細の取得・保管",
+          "actor": "出納職員",
+          "description": "振込票・入金明細を取得し、領収書控えとともに保管する",
+          "outputs": [
+            "入金明細"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 3,
+            "タスク名": "収納現金預入"
+          },
+          "confidence": "inferred",
+          "next": "n11"
+        },
+        {
+          "id": "n11",
+          "node_type": "end",
+          "label": "現金収納 完了",
+          "actor": "出納職員",
+          "description": "現金の収納・預入を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "現金受領時は実際には二人立会い等の確認体制を取っていますか。出納職員一人で受領していますか",
+          "answer_example": "原則一人で受領し、金額の大きい場合のみ会計責任者が立ち会う",
+          "reason": "マニュアルに受領時の牽制体制の記載がなく、実態の確認が必要"
+        },
+        {
+          "node_id": "n04",
+          "question_type": "branch_confirmation",
+          "question": "受領額が請求額と一致しない場合（過不足）の対応手順を教えてください",
+          "answer_example": "その場で本人へ確認し、不足分は後日受領、過剰分は即時返金する",
+          "reason": "マニュアルに金額不一致時の対応の記載がない"
+        },
+        {
+          "node_id": "n09",
+          "question_type": "reality_check",
+          "question": "現金の預入は実際には経理規程の期日どおりに行えていますか。週次等でまとめて預け入れていませんか",
+          "answer_example": "規程上は翌営業日だが、実際は週2回まとめて預け入れている",
+          "reason": "規程上の期日と実際の運用の乖離を確認するため"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
+      "category": "収納事務",
+      "business_type": "会計伝票作成",
+      "actors": [
+        "出納職員",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "会計伝票作成 開始",
+          "actor": "出納職員",
+          "description": "入金確認の完了を受けて収納伝票の作成を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "入金情報の確認",
+          "actor": "出納職員",
+          "description": "入金明細・消込済み請求リストから伝票化対象の入金情報を確認する",
+          "inputs": [
+            "入金明細",
+            "消込済み請求リスト"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 1,
+            "タスク名": "収納伝票会計入力"
+          },
+          "confidence": "inferred",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "科目・補助科目の判定",
+          "actor": "出納職員",
+          "description": "収納の内容に応じて勘定科目・補助科目・サービス区分を判定する",
+          "inputs": [
+            "勘定科目一覧"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 1,
+            "タスク名": "収納伝票会計入力"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "収納伝票の入力",
+          "actor": "出納職員",
+          "description": "会計システムで収納に係る会計伝票（日付・科目・金額・摘要）を入力する",
+          "outputs": [
+            "収納伝票"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 1,
+            "タスク名": "収納伝票会計入力"
+          },
+          "source_quote": "入金確認後、会計システムで収納に係る会計伝票を作成する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "decision",
+          "label": "入力内容の登録前確認",
+          "actor": "出納職員",
+          "description": "入力した科目・金額・補助科目が入金明細と一致するか登録前に確認する",
+          "inputs": [
+            "入金明細"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 1,
+            "タスク名": "収納伝票会計入力"
+          },
+          "confidence": "inferred",
+          "condition": "伝票の科目・金額が入金明細と一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n07"
+            },
+            {
+              "label": "不一致",
+              "target": "n06",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "伝票入力の誤りに気づいた場合の訂正手順（訂正伝票・上書き等）を教えてください",
+          "hearing_answer_example": "登録前は修正入力、登録後は赤伝票で訂正し履歴を残す"
+        },
+        {
+          "id": "n06",
+          "node_type": "exception",
+          "label": "伝票の修正",
+          "actor": "出納職員",
+          "description": "不一致箇所を特定し伝票を修正のうえ再確認する",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 1,
+            "タスク名": "収納伝票会計入力"
+          },
+          "confidence": "inferred",
+          "next": "n05"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "伝票の登録・確定",
+          "actor": "出納職員",
+          "description": "確認済みの収納伝票を会計システムへ登録・確定する",
+          "outputs": [
+            "登録済み収納伝票"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 1,
+            "タスク名": "収納伝票会計入力"
+          },
+          "confidence": "inferred",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "証憑の整理",
+          "actor": "出納職員",
+          "description": "領収書控え・入金明細・会計伝票を突合し整理する",
+          "inputs": [
+            "領収書控え",
+            "入金明細"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 2,
+            "タスク名": "収納証憑整理・保管"
+          },
+          "source_quote": "領収書控え、入金明細、会計伝票を整理して保管する",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "月別ファイルへの保管",
+          "actor": "出納職員",
+          "description": "整理した証憑一式を月別ファイルに綴り込み保管する",
+          "outputs": [
+            "月別証憑ファイル"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 2,
+            "タスク名": "収納証憑整理・保管"
+          },
+          "confidence": "inferred",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "end",
+          "label": "会計伝票作成 完了",
+          "actor": "出納職員",
+          "description": "収納伝票の登録と証憑保管を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n04",
+          "question_type": "reality_check",
+          "question": "収納伝票の入力は実際には入金の都度行っていますか。週次等でまとめて入力していますか",
+          "answer_example": "実際は週1回まとめて入力している",
+          "reason": "マニュアルの「入金確認後」と実際の入力タイミングの乖離を確認するため"
+        },
+        {
+          "node_id": "n05",
+          "question_type": "branch_confirmation",
+          "question": "伝票入力の誤りに気づいた場合の訂正手順（訂正伝票・上書き等）を教えてください",
+          "answer_example": "登録前は修正入力、登録後は赤伝票で訂正し履歴を残す",
+          "reason": "マニュアルに伝票訂正の手順の記載がない"
+        },
+        {
+          "node_id": "n07",
+          "question_type": "branch_confirmation",
+          "question": "収納伝票の登録後に出納職員以外による承認・確認ステップは実際にはありますか",
+          "answer_example": "月次で会計責任者が仕訳日記帳を確認しており、伝票単位の承認はない",
+          "reason": "マニュアルに伝票承認の記載がなく、承認ステップの有無でフローが変わるため"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
       "category": "支払・契約事務",
       "business_type": "支払処理",
-      "actors": ["担当者", "会計責任者", "出納職員", "会計システム"],
+      "actors": [
+        "担当者",
+        "会計責任者",
+        "出納職員",
+        "会計システム"
+      ],
       "nodes": [
         {
           "id": "n01",
@@ -23,8 +1771,14 @@
           "label": "稟議書・購入依頼書の作成",
           "actor": "担当者",
           "description": "担当者が物品購入や修繕工事の内容・金額・理由を記載した稟議書または購入依頼書を作成する",
-          "inputs": ["購入仕様書", "見積書"],
-          "outputs": ["稟議書", "購入依頼書"],
+          "inputs": [
+            "購入仕様書",
+            "見積書"
+          ],
+          "outputs": [
+            "稟議書",
+            "購入依頼書"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -41,7 +1795,10 @@
           "label": "起案承認判定",
           "actor": "会計責任者",
           "description": "会計責任者が稟議書・購入依頼書の内容と金額を確認し承認可否を判定する",
-          "inputs": ["稟議書", "購入依頼書"],
+          "inputs": [
+            "稟議書",
+            "購入依頼書"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -51,8 +1808,15 @@
           "confidence": "inferred",
           "condition": "起案内容が妥当か（金額・目的・規程適合）",
           "branches": [
-            { "label": "承認", "target": "n05" },
-            { "label": "差戻し", "target": "n02", "edge_type": "return" }
+            {
+              "label": "承認",
+              "target": "n05"
+            },
+            {
+              "label": "差戻し",
+              "target": "n02",
+              "edge_type": "return"
+            }
           ],
           "hearing_item": "起案承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
           "hearing_answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する"
@@ -63,7 +1827,9 @@
           "label": "起案修正対応",
           "actor": "担当者",
           "description": "差戻しを受けた担当者が稟議書・購入依頼書の内容を修正する",
-          "outputs": ["修正稟議書"],
+          "outputs": [
+            "修正稟議書"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -79,7 +1845,12 @@
           "label": "請求書・証憑の受領",
           "actor": "出納職員",
           "description": "出納職員が納品後に取引先から請求書を受領し、契約書・稟議書・購入依頼書・納品書と一緒に照合する準備をする",
-          "inputs": ["請求書", "納品書", "契約書", "稟議書"],
+          "inputs": [
+            "請求書",
+            "納品書",
+            "契約書",
+            "稟議書"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -96,7 +1867,13 @@
           "label": "請求書・納品書・稟議書の照合",
           "actor": "出納職員",
           "description": "出納職員が請求書の金額・品目・支払先と、納品書・稟議書・契約書の内容を照合し必要事項（振込先口座・支払期日等）を確認する",
-          "inputs": ["請求書", "納品書", "稟議書", "契約書", "購入依頼書"],
+          "inputs": [
+            "請求書",
+            "納品書",
+            "稟議書",
+            "契約書",
+            "購入依頼書"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -122,8 +1899,15 @@
           "confidence": "inferred",
           "condition": "請求書と稟議書・納品書の金額・品目・支払先が一致しているか",
           "branches": [
-            { "label": "一致", "target": "n09" },
-            { "label": "不一致", "target": "n08", "edge_type": "exception" }
+            {
+              "label": "一致",
+              "target": "n09"
+            },
+            {
+              "label": "不一致",
+              "target": "n08",
+              "edge_type": "exception"
+            }
           ],
           "hearing_item": "請求書と稟議書・納品書の内容が一致しない場合の確認先（担当者・取引先）と対応手順を教えてください",
           "hearing_answer_example": "出納職員が担当者または取引先に問い合わせ、修正請求書または稟議書の差替えで対応する"
@@ -149,8 +1933,12 @@
           "label": "支払情報の作成",
           "actor": "出納職員",
           "description": "出納職員が照合済みの請求書をもとに支払情報（支払先・口座・金額・支払日）を支払一覧表に作成する",
-          "inputs": ["照合済み請求書"],
-          "outputs": ["支払一覧表"],
+          "inputs": [
+            "照合済み請求書"
+          ],
+          "outputs": [
+            "支払一覧表"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -167,7 +1955,10 @@
           "label": "支払情報の承認依頼",
           "actor": "会計責任者",
           "description": "会計責任者が支払一覧表と請求書を再照合し、支払内容・金額・振込先口座の最終確認を行う",
-          "inputs": ["支払一覧表", "請求書"],
+          "inputs": [
+            "支払一覧表",
+            "請求書"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -193,8 +1984,15 @@
           "confidence": "inferred",
           "condition": "支払情報の内容が正確で承認要件を満たしているか",
           "branches": [
-            { "label": "承認", "target": "n12" },
-            { "label": "差戻し", "target": "n09", "edge_type": "return" }
+            {
+              "label": "承認",
+              "target": "n12"
+            },
+            {
+              "label": "差戻し",
+              "target": "n09",
+              "edge_type": "return"
+            }
           ],
           "hearing_item": "支払承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
           "hearing_answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する"
@@ -205,8 +2003,12 @@
           "label": "振込実行",
           "actor": "出納職員",
           "description": "出納職員が承認済み支払一覧表をもとに総合振込またはインターネットバンキングで振込を実行する。振込控えを取得する。",
-          "inputs": ["承認済み支払一覧表"],
-          "outputs": ["振込控え"],
+          "inputs": [
+            "承認済み支払一覧表"
+          ],
+          "outputs": [
+            "振込控え"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -223,8 +2025,13 @@
           "label": "支払伝票の会計システム入力",
           "actor": "出納職員",
           "description": "出納職員が振込実行後、会計システムで支払に係る会計伝票（支払金額・勘定科目・補助科目）を作成・入力する",
-          "inputs": ["振込控え", "請求書"],
-          "outputs": ["支払伝票"],
+          "inputs": [
+            "振込控え",
+            "請求書"
+          ],
+          "outputs": [
+            "支払伝票"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -241,7 +2048,11 @@
           "label": "証憑の整理・保管",
           "actor": "出納職員",
           "description": "出納職員が請求書・振込控え・稟議書・支払伝票を一括してファイルに綴じ保管する",
-          "inputs": ["請求書", "振込控え", "稟議書"],
+          "inputs": [
+            "請求書",
+            "振込控え",
+            "稟議書"
+          ],
           "source_task": {
             "業務分類": "支払・契約事務",
             "業務種別": "支払処理",
@@ -264,13 +2075,22 @@
           "node_id": "n03",
           "question": "購入・支払起案の承認フロー（金額別の承認者・決裁権限）を教えてください",
           "answer_example": "5万円未満は会計責任者承認、5万円以上は理事長承認が必要",
-          "reason": "マニュアルに金額別の承認権限の記述がない"
+          "reason": "マニュアルに金額別の承認権限の記述がない",
+          "question_type": "branch_confirmation"
         },
         {
           "node_id": "n11",
           "question": "支払承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
           "answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する",
-          "reason": "マニュアルに承認却下時の処理フローの記述がない"
+          "reason": "マニュアルに承認却下時の処理フローの記述がない",
+          "question_type": "branch_confirmation"
+        },
+        {
+          "node_id": "n12",
+          "question_type": "reality_check",
+          "question": "振込は実際には承認の都度実行していますか。月内の支払日にまとめて実行していますか",
+          "answer_example": "月2回の支払日にまとめて実行している",
+          "reason": "実際の振込サイクルによりフロー構造が変わるため"
         }
       ],
       "unmodeled_notes": [
@@ -278,518 +2098,369 @@
       ]
     },
     {
-      "category": "人件費支払",
-      "business_type": "給与支払",
-      "actors": ["出納職員", "会計責任者", "各部門担当者", "給与計算システム", "会計システム"],
+      "category": "支払・契約事務",
+      "business_type": "契約事務",
+      "actors": [
+        "契約担当者",
+        "会計責任者",
+        "理事長",
+        "取引先"
+      ],
       "nodes": [
         {
           "id": "n01",
           "node_type": "start",
-          "label": "給与支払処理 開始",
-          "actor": "出納職員",
-          "description": "給与支払月次処理を開始する（月次定例）"
+          "label": "契約事務 開始",
+          "actor": "契約担当者",
+          "description": "物品調達・業務委託等の契約案件発生により契約事務を開始する"
         },
         {
           "id": "n02",
           "node_type": "process",
-          "label": "勤怠記録の収集",
-          "actor": "出納職員",
-          "description": "出納職員が各部門から日報・勤怠記録（紙）を収集し、出勤日数・残業時間・有休使用などを確認する",
-          "inputs": ["日報", "勤怠記録"],
+          "label": "契約案件の内容整理",
+          "actor": "契約担当者",
+          "description": "契約の金額・内容・期間を整理し、経理規程・契約規程の該当条文を確認する",
+          "inputs": [
+            "経理規程",
+            "契約規程"
+          ],
           "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
             "タスク順": 1,
-            "タスク名": "勤怠情報収集"
+            "タスク名": "契約方式確認"
           },
-          "source_quote": "日報や勤怠情報を収集し給与計算の元データを整える",
+          "source_quote": "契約金額・内容に応じた手続きを確認する",
           "confidence": "explicit",
           "next": "n03"
         },
         {
           "id": "n03",
-          "node_type": "process",
-          "label": "勤怠データのExcel集計",
-          "actor": "出納職員",
-          "description": "出納職員が収集した紙の勤怠記録を集計してExcelに手入力し、人員別の勤務時間一覧を作成する",
-          "inputs": ["日報", "勤怠記録"],
-          "outputs": ["勤怠集計表"],
+          "node_type": "decision",
+          "label": "契約方式の判定",
+          "actor": "契約担当者",
+          "description": "入札契約か随意契約か、契約金額・内容に応じて契約方式を判定する",
           "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
             "タスク順": 1,
-            "タスク名": "勤怠情報収集"
+            "タスク名": "契約方式確認"
           },
-          "source_quote": "給与計算の元データを整える",
+          "source_quote": "入札契約か随意契約か、契約金額・内容に応じた手続きを確認する",
           "confidence": "explicit",
-          "next": "n04"
+          "condition": "契約金額・内容が随意契約の基準内か",
+          "branches": [
+            {
+              "label": "随意契約",
+              "target": "n05"
+            },
+            {
+              "label": "入札契約",
+              "target": "n04",
+              "edge_type": "exception"
+            }
+          ]
         },
         {
           "id": "n04",
-          "node_type": "process",
-          "label": "給与計算システムへの勤怠入力",
-          "actor": "出納職員",
-          "description": "出納職員が勤怠集計表を参照しながら給与計算システムに出勤日数・残業時間・各種手当・控除情報を入力する",
-          "inputs": ["勤怠集計表"],
+          "node_type": "exception",
+          "label": "入札手続の実施",
+          "actor": "契約担当者",
+          "description": "入札契約に該当する場合、公告・入札・開札の手続を実施する（詳細手順はマニュアル記載なし）",
           "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
-            "タスク順": 2,
-            "タスク名": "給与計算入力"
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 1,
+            "タスク名": "契約方式確認"
           },
-          "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
-          "confidence": "explicit",
-          "next": "n05"
+          "confidence": "inferred",
+          "next": "n08"
         },
         {
           "id": "n05",
           "node_type": "process",
-          "label": "給与計算の実行・明細確認",
-          "actor": "給与計算システム",
-          "description": "給与計算システムが入力データをもとに給与・控除・手取り金額を計算し、給与明細データを生成する",
-          "outputs": ["給与計算明細", "支払一覧"],
+          "label": "見積依頼（原則3社以上）",
+          "actor": "契約担当者",
+          "description": "随意契約の場合、原則3社以上へ見積を依頼する",
+          "outputs": [
+            "見積依頼書"
+          ],
           "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
             "タスク順": 2,
-            "タスク名": "給与計算入力"
+            "タスク名": "見積徴取・比較検討"
           },
+          "source_quote": "随意契約では原則3社以上など必要社数の見積を徴取し",
           "confidence": "explicit",
-          "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
           "next": "n06"
         },
         {
           "id": "n06",
-          "node_type": "process",
-          "label": "給与計算データの承認依頼",
-          "actor": "会計責任者",
-          "description": "会計責任者が給与計算明細・支払一覧の内容（合計金額・前月比・控除額）を確認する",
-          "inputs": ["給与計算明細", "支払一覧"],
+          "node_type": "decision",
+          "label": "必要社数の見積回収判定",
+          "actor": "契約担当者",
+          "description": "必要社数（原則3社以上）の見積書が揃ったか判定する",
+          "inputs": [
+            "見積書"
+          ],
           "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
-            "タスク順": 3,
-            "タスク名": "給与計算データ承認"
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 2,
+            "タスク名": "見積徴取・比較検討"
           },
-          "source_quote": "給料計算データについて会計責任者等が確認・承認する",
-          "confidence": "explicit",
-          "next": "n07"
+          "confidence": "inferred",
+          "condition": "必要社数の見積書が期限内に揃ったか",
+          "branches": [
+            {
+              "label": "揃った",
+              "target": "n08"
+            },
+            {
+              "label": "不足",
+              "target": "n07",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "見積が3社集まらない場合の取り扱い（理由書作成・少数社での続行等）を教えてください",
+          "hearing_answer_example": "市場に業者が少ない場合は理由書を作成し会計責任者の承認を得て2社で進める"
         },
         {
           "id": "n07",
-          "node_type": "decision",
-          "label": "給与計算承認判定",
-          "actor": "会計責任者",
-          "description": "会計責任者が給与計算データの内容を確認し承認可否を判定する",
+          "node_type": "exception",
+          "label": "追加徴取・理由書作成",
+          "actor": "契約担当者",
+          "description": "追加の見積依頼を行うか、社数不足の理由書を作成して承認を得る",
+          "outputs": [
+            "理由書"
+          ],
           "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
-            "タスク順": 3,
-            "タスク名": "給与計算データ承認"
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 2,
+            "タスク名": "見積徴取・比較検討"
           },
           "confidence": "inferred",
-          "condition": "給与計算データに誤りや異常値がないか",
-          "branches": [
-            { "label": "承認", "target": "n08" },
-            { "label": "差戻し", "target": "n04", "edge_type": "return" }
-          ],
-          "hearing_item": "給与計算承認時のチェック項目（前月比較・社会保険額確認等）と、差戻し時の修正手順を教えてください",
-          "hearing_answer_example": "前月比で増減5%以上の項目を重点確認し計算明細と突合。差異がある場合は出納職員へ差戻して修正後に再承認する"
+          "next": "n08"
         },
         {
           "id": "n08",
           "node_type": "process",
-          "label": "給与振込の実行",
-          "actor": "出納職員",
-          "description": "出納職員が承認済み給与データをもとにインターネットバンキングで給与振込を実行する。振込控えを保管する。",
-          "inputs": ["承認済み支払一覧"],
-          "outputs": ["振込控え"],
+          "label": "見積比較・契約先候補の選定",
+          "actor": "契約担当者",
+          "description": "見積書の金額・条件を比較表に整理し、契約先候補を選定する",
+          "inputs": [
+            "見積書"
+          ],
+          "outputs": [
+            "見積比較表"
+          ],
           "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 2,
+            "タスク名": "見積徴取・比較検討"
+          },
+          "source_quote": "必要社数の見積を徴取し比較する",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "decision",
+          "label": "契約先決定の承認判定",
+          "actor": "会計責任者",
+          "description": "契約先候補・契約条件について承認可否を判定する",
+          "inputs": [
+            "見積比較表"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 2,
+            "タスク名": "見積徴取・比較検討"
+          },
+          "confidence": "inferred",
+          "condition": "契約先・契約条件が妥当か（金額・規程適合）",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n10"
+            },
+            {
+              "label": "差戻し",
+              "target": "n08",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "契約先決定の承認者は誰ですか。金額により承認者（会計責任者・理事長）が変わりますか",
+          "hearing_answer_example": "100万円未満は会計責任者、100万円以上は理事長が決裁する"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "契約書の作成",
+          "actor": "契約担当者",
+          "description": "契約先決定後、標準契約書または業者指定様式で契約書を作成する",
+          "outputs": [
+            "契約書案"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 3,
+            "タスク名": "契約書作成"
+          },
+          "source_quote": "標準契約書または業者指定様式で契約書を作成する",
+          "confidence": "explicit",
+          "next": "n11"
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "契約書の署名・捺印",
+          "actor": "取引先",
+          "description": "法人と取引先双方が契約書に署名・捺印し、契約を締結する",
+          "inputs": [
+            "契約書案"
+          ],
+          "outputs": [
+            "契約書"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 3,
+            "タスク名": "契約書作成"
+          },
+          "confidence": "inferred",
+          "next": "n12"
+        },
+        {
+          "id": "n12",
+          "node_type": "process",
+          "label": "納品・履行の確認",
+          "actor": "契約担当者",
+          "description": "納品書・納品物・業務報告書等で契約内容の履行を確認する",
+          "inputs": [
+            "納品書",
+            "業務報告書"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
             "タスク順": 4,
-            "タスク名": "給与振込"
+            "タスク名": "契約履行確認"
           },
-          "source_quote": "承認済み給与データをもとに給与を支払う",
+          "source_quote": "納品書、納品物、業務報告書等で契約履行を確認する",
           "confidence": "explicit",
-          "next": "n09"
+          "next": "n13"
         },
         {
-          "id": "n09",
-          "node_type": "process",
-          "label": "給与仕訳の会計システム入力",
-          "actor": "出納職員",
-          "description": "出納職員が給与支払時の会計仕訳（支払給与・社会保険料・源泉徴収税等）を会計システムに入力する",
-          "inputs": ["振込控え", "給与計算明細"],
-          "outputs": ["給与仕訳"],
-          "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "給与支払",
-            "タスク順": 5,
-            "タスク名": "給与仕訳入力"
-          },
-          "source_quote": "給与支払時の会計仕訳を会計システムに入力する",
-          "confidence": "explicit",
-          "next": "n10"
-        },
-        {
-          "id": "n10",
-          "node_type": "end",
-          "label": "給与支払処理 完了",
-          "actor": "出納職員",
-          "description": "給与支払処理が完了"
-        }
-      ],
-      "hearing_items": [
-        {
-          "node_id": "n02",
-          "question": "勤怠記録の管理方法（紙・勤怠システム等）と、給与計算システムへのデータ入力方法を教えてください",
-          "answer_example": "紙の出勤簿を集計してExcelに手入力後、給与計算システムへ転記している",
-          "reason": "マニュアルに勤怠収集の媒体・システムとの連携方法の記述がない"
-        },
-        {
-          "node_id": "n07",
-          "question": "給与計算承認時のチェック項目と差戻し時の修正手順を教えてください",
-          "answer_example": "前月比で増減5%以上の項目を重点確認し、差異がある場合は出納職員へ差戻して修正後に再承認する",
-          "reason": "マニュアルに承認却下時の処理フローの記述がない"
-        }
-      ],
-      "unmodeled_notes": [
-        "給与明細の従業員への配布手順（紙・Web等）はマニュアルに記載がないためフロー化せず"
-      ]
-    },
-    {
-      "category": "決算・報告",
-      "business_type": "月次報告",
-      "actors": ["出納職員", "会計責任者", "理事長", "会計システム"],
-      "nodes": [
-        {
-          "id": "n01",
-          "node_type": "start",
-          "label": "月次報告処理 開始",
-          "actor": "出納職員",
-          "description": "月次報告処理を開始する（月次定例）"
-        },
-        {
-          "id": "n02",
-          "node_type": "process",
-          "label": "現預金残高の確認",
-          "actor": "出納職員",
-          "description": "出納職員が現金・預金・仮払金・仮受金等の月次処理に必要な残高を確認し、通帳残高と会計システムの帳簿残高を照合する",
-          "inputs": ["通帳", "小口現金出納帳"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "月次報告",
-            "タスク順": 1,
-            "タスク名": "現預金残高確認"
-          },
-          "source_quote": "現金、預金、仮払金、仮受金など月次処理に必要な残高を確認する",
-          "confidence": "explicit",
-          "next": "n03"
-        },
-        {
-          "id": "n03",
+          "id": "n13",
           "node_type": "decision",
-          "label": "現預金残高一致確認",
-          "actor": "出納職員",
-          "description": "通帳残高と会計システムの帳簿残高が一致しているか確認する",
+          "label": "履行内容の一致判定",
+          "actor": "契約担当者",
+          "description": "納品物・役務が契約内容と一致するか判定する",
           "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "月次報告",
-            "タスク順": 1,
-            "タスク名": "現預金残高確認"
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 4,
+            "タスク名": "契約履行確認"
           },
           "confidence": "inferred",
-          "condition": "通帳残高と会計システム残高が一致しているか",
+          "condition": "納品物・役務の内容が契約書と一致するか",
           "branches": [
-            { "label": "一致", "target": "n05" },
-            { "label": "不一致", "target": "n04", "edge_type": "exception" }
+            {
+              "label": "一致",
+              "target": "n15"
+            },
+            {
+              "label": "不一致",
+              "target": "n14",
+              "edge_type": "exception"
+            }
           ],
-          "hearing_item": "現預金残高が不一致の場合の調査手順と会計責任者への報告ルールを教えてください",
-          "hearing_answer_example": "出納職員が入出金明細を再確認し、差異の原因を特定してから会計責任者へ報告する"
+          "hearing_item": "納品物が契約内容と異なる場合の対応（是正依頼・受領拒否・検収保留等）の手順を教えてください",
+          "hearing_answer_example": "契約担当者が業者へ是正を依頼し、再納品まで検収を保留する"
         },
         {
-          "id": "n04",
+          "id": "n14",
           "node_type": "exception",
-          "label": "残高差異の原因調査",
-          "actor": "出納職員",
-          "description": "出納職員が入出金明細・伝票を再確認し、現預金残高の差異原因を特定して会計責任者へ報告する",
+          "label": "取引先への是正依頼",
+          "actor": "契約担当者",
+          "description": "不一致がある場合、取引先へ是正・再納品を依頼し、再度履行確認を行う",
           "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "月次報告",
-            "タスク順": 1,
-            "タスク名": "現預金残高確認"
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 4,
+            "タスク名": "契約履行確認"
           },
           "confidence": "inferred",
-          "next": "n05"
+          "next": "n12"
         },
         {
-          "id": "n05",
+          "id": "n15",
           "node_type": "process",
-          "label": "月次試算表の出力",
-          "actor": "会計システム",
-          "description": "会計システムから当月分の月次試算表（貸借対照表・損益計算書相当）を出力する",
-          "outputs": ["月次試算表"],
+          "label": "支払依頼書の起案",
+          "actor": "契約担当者",
+          "description": "履行確認の完了を受けて支払依頼書を起案し、支払処理へ引き継ぐ",
+          "outputs": [
+            "支払依頼書"
+          ],
           "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "月次報告",
-            "タスク順": 2,
-            "タスク名": "月次試算表作成"
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 4,
+            "タスク名": "契約履行確認"
           },
-          "source_quote": "会計システムで月次試算表を作成し内容を確認する",
-          "confidence": "explicit",
-          "next": "n06"
+          "confidence": "inferred",
+          "next": "n16"
         },
         {
-          "id": "n06",
-          "node_type": "process",
-          "label": "月次試算表の内容確認",
-          "actor": "出納職員",
-          "description": "出納職員が月次試算表の各勘定科目残高を確認し、誤りや計上漏れ・前月比の異常値がないかチェックする",
-          "inputs": ["月次試算表", "前月試算表"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "月次報告",
-            "タスク順": 2,
-            "タスク名": "月次試算表作成"
-          },
-          "source_quote": "内容を確認する",
-          "confidence": "explicit",
-          "next": "n07"
-        },
-        {
-          "id": "n07",
-          "node_type": "process",
-          "label": "月次報告書のコメント作成",
-          "actor": "会計責任者",
-          "description": "会計責任者が月次試算表の重要事項・差異説明・注目科目についての報告コメントを作成する",
-          "inputs": ["月次試算表"],
-          "outputs": ["月次報告書"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "月次報告",
-            "タスク順": 3,
-            "タスク名": "月次報告"
-          },
-          "source_quote": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する",
-          "confidence": "explicit",
-          "next": "n08"
-        },
-        {
-          "id": "n08",
-          "node_type": "process",
-          "label": "理事長への月次報告",
-          "actor": "会計責任者",
-          "description": "会計責任者が経理規程で定めた期日までに月次試算表と報告コメントをとりまとめて理事長へ月次報告する",
-          "inputs": ["月次試算表", "月次報告書"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "月次報告",
-            "タスク順": 3,
-            "タスク名": "月次報告"
-          },
-          "source_quote": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する",
-          "confidence": "explicit",
-          "next": "n09"
-        },
-        {
-          "id": "n09",
+          "id": "n16",
           "node_type": "end",
-          "label": "月次報告 完了",
-          "actor": "会計責任者",
-          "description": "月次報告が完了"
+          "label": "契約事務 完了",
+          "actor": "契約担当者",
+          "description": "契約の締結・履行確認を完了し支払処理へ接続する"
         }
       ],
       "hearing_items": [
         {
-          "node_id": "n07",
-          "question": "月次報告書の報告コメントの作成基準（どの科目に何を書くか）はありますか",
-          "answer_example": "前月比で5%以上変動した科目に理由コメントを付ける運用を行っている",
-          "reason": "マニュアルにコメント作成基準の記述がなく、担当者依存になっている可能性がある"
+          "node_id": "n03",
+          "question_type": "branch_confirmation",
+          "question": "随意契約を選択できる基準（金額上限等）は規程に明文化されていますか。基準超過時の手続は何ですか",
+          "answer_example": "少額随意契約の上限金額を契約規程に定めており、上限超過は理事長の承認が必要",
+          "reason": "マニュアルに契約方式の判断基準の記載がない"
+        },
+        {
+          "node_id": "n06",
+          "question_type": "branch_confirmation",
+          "question": "見積が3社集まらない場合の取り扱い（理由書作成・少数社での続行等）を教えてください",
+          "answer_example": "市場に業者が少ない場合は理由書を作成し会計責任者の承認を得て2社で進める",
+          "reason": "マニュアルの「原則3社以上」の例外時の扱いの記載がない"
+        },
+        {
+          "node_id": "n09",
+          "question_type": "reality_check",
+          "question": "契約先の決定は実際には誰が承認していますか。金額により承認者が変わる運用になっていますか",
+          "answer_example": "実際は金額にかかわらず理事長が最終決裁している",
+          "reason": "マニュアルに契約先決定の承認者の記載がなく、実態の確認が必要"
         }
       ],
       "unmodeled_notes": [
-        "理事長から月次報告に対して修正や差戻しが発生する場合の手順はマニュアルに記載がないためフロー化せず"
-      ]
-    },
-    {
-      "category": "決算・報告",
-      "business_type": "年次決算",
-      "actors": ["出納職員", "会計責任者", "会計システム", "理事長"],
-      "nodes": [
-        {
-          "id": "n01",
-          "node_type": "start",
-          "label": "年次決算処理 開始",
-          "actor": "出納職員",
-          "description": "年度末の決算整理仕訳作成を開始する（年次）"
-        },
-        {
-          "id": "n02",
-          "node_type": "process",
-          "label": "決算整理仕訳の洗い出し",
-          "actor": "出納職員",
-          "description": "出納職員が前期仕訳・減価償却計算表・保険証書等を参照し、未収・未払・棚卸・減価償却・引当金・見越繰延の仕訳項目を洗い出す",
-          "inputs": ["前期仕訳帳", "減価償却計算表", "保険証書", "棚卸表"],
-          "outputs": ["決算整理仕訳リスト（下書き）"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 1,
-            "タスク名": "決算整理仕訳作成"
-          },
-          "source_quote": "未収・未払、棚卸、減価償却、引当金、見越繰延など決算整理仕訳を作成する",
-          "confidence": "explicit",
-          "next": "n03"
-        },
-        {
-          "id": "n03",
-          "node_type": "process",
-          "label": "決算整理仕訳の作成（Excelで下書き）",
-          "actor": "出納職員",
-          "description": "出納職員が洗い出した項目をもとにExcelで決算整理仕訳の下書きを作成し、勘定科目・金額・計算根拠を記入する",
-          "inputs": ["決算整理仕訳リスト（下書き）"],
-          "outputs": ["決算整理仕訳表"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 1,
-            "タスク名": "決算整理仕訳作成"
-          },
-          "source_quote": "決算整理仕訳を作成する",
-          "confidence": "explicit",
-          "next": "n04"
-        },
-        {
-          "id": "n04",
-          "node_type": "process",
-          "label": "会計責任者による仕訳レビュー",
-          "actor": "会計責任者",
-          "description": "会計責任者が決算整理仕訳表の内容（科目・金額・計算根拠）をレビューし、誤りや漏れがないか確認する",
-          "inputs": ["決算整理仕訳表"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 1,
-            "タスク名": "決算整理仕訳作成"
-          },
-          "source_quote": "決算整理仕訳を作成する",
-          "confidence": "explicit",
-          "next": "n05"
-        },
-        {
-          "id": "n05",
-          "node_type": "decision",
-          "label": "仕訳レビュー承認判定",
-          "actor": "会計責任者",
-          "description": "会計責任者が決算整理仕訳の内容を確認し承認可否を判定する",
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 1,
-            "タスク名": "決算整理仕訳作成"
-          },
-          "confidence": "inferred",
-          "condition": "決算整理仕訳の科目・金額・計算根拠に誤りや漏れがないか",
-          "branches": [
-            { "label": "承認", "target": "n07" },
-            { "label": "修正差戻し", "target": "n03", "edge_type": "return" }
-          ],
-          "hearing_item": "決算整理仕訳のレビュー・差戻し手順と、修正後の再確認の流れを教えてください",
-          "hearing_answer_example": "会計責任者がコメントを記入して出納職員へ差戻し、修正後に再提出・再確認する"
-        },
-        {
-          "id": "n06",
-          "node_type": "exception",
-          "label": "仕訳修正対応",
-          "actor": "出納職員",
-          "description": "出納職員が会計責任者のコメントをもとに決算整理仕訳表を修正する",
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 1,
-            "タスク名": "決算整理仕訳作成"
-          },
-          "confidence": "inferred",
-          "next": "n04"
-        },
-        {
-          "id": "n07",
-          "node_type": "process",
-          "label": "決算整理仕訳の会計システム入力",
-          "actor": "出納職員",
-          "description": "出納職員が承認済みの決算整理仕訳を会計システムへ一件ずつ入力する",
-          "inputs": ["承認済み決算整理仕訳表"],
-          "outputs": ["決算整理仕訳（会計システム）"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 2,
-            "タスク名": "決算整理仕訳入力"
-          },
-          "source_quote": "作成した決算整理仕訳を会計システムへ入力する",
-          "confidence": "explicit",
-          "next": "n08"
-        },
-        {
-          "id": "n08",
-          "node_type": "process",
-          "label": "計算書類の出力",
-          "actor": "会計システム",
-          "description": "会計システムから貸借対照表・資金収支計算書・事業活動計算書・注記・附属明細書等を出力する",
-          "outputs": ["貸借対照表", "資金収支計算書", "事業活動計算書"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 3,
-            "タスク名": "計算書類作成"
-          },
-          "source_quote": "貸借対照表、資金収支計算書、事業活動計算書、注記、附属明細書等を作成する",
-          "confidence": "explicit",
-          "next": "n09"
-        },
-        {
-          "id": "n09",
-          "node_type": "process",
-          "label": "計算書類の体裁整備",
-          "actor": "出納職員",
-          "description": "出納職員が会計システムから出力した計算書類の体裁を整え（表紙・注記・附属明細書の追記）、提出可能な形式に仕上げる",
-          "inputs": ["貸借対照表", "資金収支計算書", "事業活動計算書"],
-          "outputs": ["計算書類一式"],
-          "source_task": {
-            "業務分類": "決算・報告",
-            "業務種別": "年次決算",
-            "タスク順": 3,
-            "タスク名": "計算書類作成"
-          },
-          "source_quote": "計算書類作成",
-          "confidence": "explicit",
-          "next": "n10"
-        },
-        {
-          "id": "n10",
-          "node_type": "end",
-          "label": "年次決算 完了",
-          "actor": "出納職員",
-          "description": "年次決算処理が完了"
-        }
-      ],
-      "hearing_items": [
-        {
-          "node_id": "n05",
-          "question": "決算整理仕訳のレビュー・差戻しの手順と修正後の再確認フローを教えてください",
-          "answer_example": "会計責任者がコメントを記入して出納職員へ差戻し、修正後に再提出・再確認する",
-          "reason": "マニュアルに決算整理仕訳の承認・差戻し手順の記述がない"
-        }
-      ],
-      "unmodeled_notes": [
-        "申告・納税手続きの詳細フロー（顧問税理士関与の範囲等）はマニュアルに記載がないためフロー化せず"
+        "入札契約の公告・開札手続の詳細はマニュアルに記載がないため1ノードに集約した"
       ]
     },
     {
       "category": "現金管理",
       "business_type": "小口現金支払",
-      "actors": ["申請者", "出納職員", "上長"],
+      "actors": [
+        "申請者",
+        "出納職員",
+        "上長"
+      ],
       "nodes": [
         {
           "id": "n01",
@@ -804,7 +2475,9 @@
           "label": "小口支払申請書の提出",
           "actor": "申請者",
           "description": "申請者が支払内容・金額・目的を記載した申請書（または口頭）を出納職員へ提出する",
-          "outputs": ["小口支払申請書"],
+          "outputs": [
+            "小口支払申請書"
+          ],
           "source_task": {
             "業務分類": "現金管理",
             "業務種別": "小口現金支払",
@@ -821,7 +2494,9 @@
           "label": "申請内容の受付・確認",
           "actor": "出納職員",
           "description": "出納職員が申請書の内容（支払目的・金額・申請者）を確認し、小口現金規程の対象かどうかを判断する",
-          "inputs": ["小口支払申請書"],
+          "inputs": [
+            "小口支払申請書"
+          ],
           "source_task": {
             "業務分類": "現金管理",
             "業務種別": "小口現金支払",
@@ -838,7 +2513,10 @@
           "label": "証憑（領収書）の確認",
           "actor": "出納職員",
           "description": "出納職員が提出された領収書の内容（支払内容・金額・日付・宛名）と承認有無を確認する",
-          "inputs": ["領収書", "上長承認印"],
+          "inputs": [
+            "領収書",
+            "上長承認印"
+          ],
           "source_task": {
             "業務分類": "現金管理",
             "業務種別": "小口現金支払",
@@ -864,8 +2542,15 @@
           "confidence": "inferred",
           "condition": "領収書の宛名・承認印・金額が規程基準を満たしているか",
           "branches": [
-            { "label": "基準を満たす", "target": "n07" },
-            { "label": "不備あり", "target": "n06", "edge_type": "exception" }
+            {
+              "label": "基準を満たす",
+              "target": "n07"
+            },
+            {
+              "label": "不備あり",
+              "target": "n06",
+              "edge_type": "exception"
+            }
           ],
           "hearing_item": "証憑確認基準（宛名・承認印等の必須要件）と不備時の差戻し手順を教えてください",
           "hearing_answer_example": "宛名あり・承認印ありを必須とし、不備があれば申請者へ差戻して再提出を求める"
@@ -891,7 +2576,9 @@
           "label": "小口現金の支払い",
           "actor": "出納職員",
           "description": "出納職員が金庫から所定金額の現金を取り出し申請者へ支払う（または領収書と引き換えに精算する）",
-          "outputs": ["現金"],
+          "outputs": [
+            "現金"
+          ],
           "source_task": {
             "業務分類": "現金管理",
             "業務種別": "小口現金支払",
@@ -908,8 +2595,12 @@
           "label": "小口現金出納帳への記入",
           "actor": "出納職員",
           "description": "出納職員が小口現金出納帳に支払日・金額・科目・摘要を記入し、証憑を出納帳と一緒に綴り込んで保管する",
-          "inputs": ["領収書"],
-          "outputs": ["小口現金出納帳（記入済み）"],
+          "inputs": [
+            "領収書"
+          ],
+          "outputs": [
+            "小口現金出納帳（記入済み）"
+          ],
           "source_task": {
             "業務分類": "現金管理",
             "業務種別": "小口現金支払",
@@ -933,10 +2624,2731 @@
           "node_id": "n05",
           "question": "小口支払の証憑確認基準（宛名・承認印等の必須要件）と不備時の差戻し手順を教えてください",
           "answer_example": "宛名あり・承認印ありを必須とし、不備があれば申請者へ差戻して再提出を求める",
-          "reason": "マニュアルに承認有無の確認基準と不備時の対応手順の記述がない"
+          "reason": "マニュアルに承認有無の確認基準と不備時の対応手順の記述がない",
+          "question_type": "branch_confirmation"
+        },
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "小口支払の申請は実際には事前申請ですか。立替払い後の事後精算が発生していますか",
+          "answer_example": "少額は事後精算が多く、領収書持参で精算している",
+          "reason": "申請タイミングの実態によりフロー順序が変わるため"
+        },
+        {
+          "node_id": "n07",
+          "question_type": "branch_confirmation",
+          "question": "小口現金で支払えない金額・内容だった場合の振替手順（通常の支払処理へ回す等）を教えてください",
+          "answer_example": "1万円超は支払処理（振込）へ回している",
+          "reason": "マニュアルに小口対象外の場合の扱いの記載がない"
         }
       ],
       "unmodeled_notes": []
+    },
+    {
+      "category": "現金管理",
+      "business_type": "現金残高確認",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "理事長"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "現金残高確認 開始",
+          "actor": "出納職員",
+          "description": "定例の現金実査として残高確認を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "金庫内現金の実査",
+          "actor": "出納職員",
+          "description": "金庫内の現金を金種別に数え、実査額を記録する",
+          "outputs": [
+            "実査メモ"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 1,
+            "タスク名": "現金実査・照合"
+          },
+          "source_quote": "金庫内現金を数え",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "小口現金出納帳との照合",
+          "actor": "出納職員",
+          "description": "実査額と小口現金出納帳の残高を照合する",
+          "inputs": [
+            "小口現金出納帳"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 1,
+            "タスク名": "現金実査・照合"
+          },
+          "source_quote": "小口現金出納帳・会計帳簿と照合する",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "会計帳簿との照合",
+          "actor": "出納職員",
+          "description": "実査額と会計システムの現金勘定残高を照合する",
+          "inputs": [
+            "総勘定元帳"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 1,
+            "タスク名": "現金実査・照合"
+          },
+          "source_quote": "小口現金出納帳・会計帳簿と照合する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "decision",
+          "label": "残高差異の有無判定",
+          "actor": "出納職員",
+          "description": "実査額と帳簿残高に差異があるか判定する",
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 1,
+            "タスク名": "現金実査・照合"
+          },
+          "source_quote": "残高差異がある場合は原因を調査し",
+          "confidence": "explicit",
+          "condition": "実査額と出納帳・会計帳簿の残高が一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n10"
+            },
+            {
+              "label": "差異あり",
+              "target": "n06",
+              "edge_type": "exception"
+            }
+          ]
+        },
+        {
+          "id": "n06",
+          "node_type": "exception",
+          "label": "差異原因の調査",
+          "actor": "出納職員",
+          "description": "記帳漏れ・釣銭誤り・伝票未処理など差異の原因を調査する",
+          "inputs": [
+            "小口現金出納帳",
+            "領収書綴り"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 2,
+            "タスク名": "現金差異調査・報告"
+          },
+          "source_quote": "残高差異がある場合は原因を調査し会計責任者へ報告する",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "差異報告書の作成・報告",
+          "actor": "出納職員",
+          "description": "調査結果を差異報告書にまとめ会計責任者へ報告する",
+          "outputs": [
+            "差異報告書"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 2,
+            "タスク名": "現金差異調査・報告"
+          },
+          "source_quote": "原因を調査し会計責任者へ報告する",
+          "confidence": "explicit",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "decision",
+          "label": "原因解明の判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が差異原因の解明状況を確認し、対応方針を判定する",
+          "inputs": [
+            "差異報告書"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 2,
+            "タスク名": "現金差異調査・報告"
+          },
+          "confidence": "inferred",
+          "condition": "差異の原因が解明され帳簿修正で対応できるか",
+          "branches": [
+            {
+              "label": "解明済み",
+              "target": "n10"
+            },
+            {
+              "label": "未解明",
+              "target": "n09",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください",
+          "hearing_answer_example": "会計責任者が理事長へ報告し、承認のうえ雑損失で処理する"
+        },
+        {
+          "id": "n09",
+          "node_type": "exception",
+          "label": "理事長報告・損失処理",
+          "actor": "会計責任者",
+          "description": "未解明の差異について理事長へ報告し、承認を得て雑損失等で処理する",
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 2,
+            "タスク名": "現金差異調査・報告"
+          },
+          "confidence": "inferred",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "実査結果の記録・保管",
+          "actor": "出納職員",
+          "description": "実査結果（実査額・照合結果・対応内容）を実査表に記録し保管する",
+          "outputs": [
+            "実査表"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 1,
+            "タスク名": "現金実査・照合"
+          },
+          "confidence": "inferred",
+          "next": "n11"
+        },
+        {
+          "id": "n11",
+          "node_type": "end",
+          "label": "現金残高確認 完了",
+          "actor": "出納職員",
+          "description": "現金残高の確認を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "現金実査は実際には誰が行い、立会者はいますか。実査結果は実査表等の書面に記録していますか",
+          "answer_example": "毎月末日に出納職員と会計責任者が立会いのうえ実査し、実査表に記録する",
+          "reason": "マニュアルに実査の立会・記録方法の記載がなく、実態の確認が必要"
+        },
+        {
+          "node_id": "n08",
+          "question_type": "branch_confirmation",
+          "question": "調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください",
+          "answer_example": "会計責任者が理事長へ報告し、承認のうえ雑損失で処理する",
+          "reason": "マニュアルに差異未解明時の処理の記載がない"
+        },
+        {
+          "node_id": "n05",
+          "question_type": "branch_confirmation",
+          "question": "差異が軽微な場合（数十円等）でも全件調査・報告していますか。金額による省略基準はありますか",
+          "answer_example": "金額にかかわらず全件調査し、報告書を作成している",
+          "reason": "マニュアルに差異額による対応の違いの記載がない"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
+      "category": "人件費支払",
+      "business_type": "給与支払",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "各部門担当者",
+        "給与計算システム",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "給与支払処理 開始",
+          "actor": "出納職員",
+          "description": "給与支払月次処理を開始する（月次定例）"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "勤怠記録の収集",
+          "actor": "出納職員",
+          "description": "出納職員が各部門から日報・勤怠記録（紙）を収集し、出勤日数・残業時間・有休使用などを確認する",
+          "inputs": [
+            "日報",
+            "勤怠記録"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 1,
+            "タスク名": "勤怠情報収集"
+          },
+          "source_quote": "日報や勤怠情報を収集し給与計算の元データを整える",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "勤怠データのExcel集計",
+          "actor": "出納職員",
+          "description": "出納職員が収集した紙の勤怠記録を集計してExcelに手入力し、人員別の勤務時間一覧を作成する",
+          "inputs": [
+            "日報",
+            "勤怠記録"
+          ],
+          "outputs": [
+            "勤怠集計表"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 1,
+            "タスク名": "勤怠情報収集"
+          },
+          "source_quote": "給与計算の元データを整える",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "給与計算システムへの勤怠入力",
+          "actor": "出納職員",
+          "description": "出納職員が勤怠集計表を参照しながら給与計算システムに出勤日数・残業時間・各種手当・控除情報を入力する",
+          "inputs": [
+            "勤怠集計表"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 2,
+            "タスク名": "給与計算入力"
+          },
+          "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "給与計算の実行・明細確認",
+          "actor": "給与計算システム",
+          "description": "給与計算システムが入力データをもとに給与・控除・手取り金額を計算し、給与明細データを生成する",
+          "outputs": [
+            "給与計算明細",
+            "支払一覧"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 2,
+            "タスク名": "給与計算入力"
+          },
+          "confidence": "explicit",
+          "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "給与計算データの承認依頼",
+          "actor": "会計責任者",
+          "description": "会計責任者が給与計算明細・支払一覧の内容（合計金額・前月比・控除額）を確認する",
+          "inputs": [
+            "給与計算明細",
+            "支払一覧"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 3,
+            "タスク名": "給与計算データ承認"
+          },
+          "source_quote": "給料計算データについて会計責任者等が確認・承認する",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "給与計算承認判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が給与計算データの内容を確認し承認可否を判定する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 3,
+            "タスク名": "給与計算データ承認"
+          },
+          "confidence": "inferred",
+          "condition": "給与計算データに誤りや異常値がないか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n08"
+            },
+            {
+              "label": "差戻し",
+              "target": "n04",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "給与計算承認時のチェック項目（前月比較・社会保険額確認等）と、差戻し時の修正手順を教えてください",
+          "hearing_answer_example": "前月比で増減5%以上の項目を重点確認し計算明細と突合。差異がある場合は出納職員へ差戻して修正後に再承認する"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "給与振込の実行",
+          "actor": "出納職員",
+          "description": "出納職員が承認済み給与データをもとにインターネットバンキングで給与振込を実行する。振込控えを保管する。",
+          "inputs": [
+            "承認済み支払一覧"
+          ],
+          "outputs": [
+            "振込控え"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 4,
+            "タスク名": "給与振込"
+          },
+          "source_quote": "承認済み給与データをもとに給与を支払う",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "給与仕訳の会計システム入力",
+          "actor": "出納職員",
+          "description": "出納職員が給与支払時の会計仕訳（支払給与・社会保険料・源泉徴収税等）を会計システムに入力する",
+          "inputs": [
+            "振込控え",
+            "給与計算明細"
+          ],
+          "outputs": [
+            "給与仕訳"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 5,
+            "タスク名": "給与仕訳入力"
+          },
+          "source_quote": "給与支払時の会計仕訳を会計システムに入力する",
+          "confidence": "explicit",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "end",
+          "label": "給与支払処理 完了",
+          "actor": "出納職員",
+          "description": "給与支払処理が完了"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n02",
+          "question": "勤怠記録の管理方法（紙・勤怠システム等）と、給与計算システムへのデータ入力方法を教えてください",
+          "answer_example": "紙の出勤簿を集計してExcelに手入力後、給与計算システムへ転記している",
+          "reason": "マニュアルに勤怠収集の媒体・システムとの連携方法の記述がない",
+          "question_type": "branch_confirmation"
+        },
+        {
+          "node_id": "n07",
+          "question": "給与計算承認時のチェック項目と差戻し時の修正手順を教えてください",
+          "answer_example": "前月比で増減5%以上の項目を重点確認し、差異がある場合は出納職員へ差戻して修正後に再承認する",
+          "reason": "マニュアルに承認却下時の処理フローの記述がない",
+          "question_type": "branch_confirmation"
+        },
+        {
+          "node_id": "n08",
+          "question_type": "reality_check",
+          "question": "給与振込の実行前に振込データを承認者が再確認するステップは実際にはありますか",
+          "answer_example": "承認済みデータをそのまま出納職員が送信しており、送信前の再確認はない",
+          "reason": "振込実行前の牽制の有無がマニュアルに記載されていない"
+        }
+      ],
+      "unmodeled_notes": [
+        "給与明細の従業員への配布手順（紙・Web等）はマニュアルに記載がないためフロー化せず"
+      ]
+    },
+    {
+      "category": "人件費支払",
+      "business_type": "賞与支給",
+      "actors": [
+        "理事長",
+        "出納職員",
+        "会計責任者",
+        "給与計算システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "賞与支給 開始",
+          "actor": "理事長",
+          "description": "賞与支給時期の到来により賞与支給業務を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "支給基準の決定・通知受領",
+          "actor": "理事長",
+          "description": "理事長が決定した支給基準（支給月数等）の通知を出納職員が受領する",
+          "outputs": [
+            "支給基準通知"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 1,
+            "タスク名": "賞与支給額計算"
+          },
+          "confidence": "inferred",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "対象職員・基礎データの確認",
+          "actor": "出納職員",
+          "description": "支給対象職員の基本給・在籍状況など計算の基礎データを確認する",
+          "inputs": [
+            "給与台帳"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 1,
+            "タスク名": "賞与支給額計算"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "賞与支給額の計算",
+          "actor": "出納職員",
+          "description": "支給基準に基づき職員ごとの賞与支給金額を計算する",
+          "inputs": [
+            "支給基準通知",
+            "給与台帳"
+          ],
+          "outputs": [
+            "賞与計算表"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 1,
+            "タスク名": "賞与支給額計算"
+          },
+          "source_quote": "賞与支給金額を計算し",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "decision",
+          "label": "計算結果の承認判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が賞与計算表の内容（支給額・対象者・控除）を確認し承認可否を判定する",
+          "inputs": [
+            "賞与計算表"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 1,
+            "タスク名": "賞与支給額計算"
+          },
+          "confidence": "inferred",
+          "condition": "賞与計算結果が支給基準・対象者と一致するか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n07"
+            },
+            {
+              "label": "差戻し",
+              "target": "n06",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "賞与計算結果の確認・承認は誰がどのように行っていますか。差戻し時の再計算手順も教えてください",
+          "hearing_answer_example": "会計責任者が計算表を確認し、誤りがあれば出納職員が再計算して再提出する"
+        },
+        {
+          "id": "n06",
+          "node_type": "exception",
+          "label": "賞与の再計算",
+          "actor": "出納職員",
+          "description": "差戻しを受けて計算誤りを修正し再計算する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 1,
+            "タスク名": "賞与支給額計算"
+          },
+          "confidence": "inferred",
+          "next": "n05"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "給与計算システムへの入力",
+          "actor": "出納職員",
+          "description": "承認済みの賞与支給額を給与計算システムへ入力する",
+          "inputs": [
+            "賞与計算表"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 2,
+            "タスク名": "賞与データシステム入力"
+          },
+          "source_quote": "給与計算システムへ入力する",
+          "confidence": "explicit",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "賞与支給データの確定",
+          "actor": "出納職員",
+          "description": "システム上で社会保険料・源泉所得税の控除計算を行い、支給データを確定する",
+          "outputs": [
+            "賞与支給データ",
+            "賞与明細"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 2,
+            "タスク名": "賞与データシステム入力"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "賞与の支給実行",
+          "actor": "出納職員",
+          "description": "確定した賞与支給データをもとに振込等で賞与を支給する（振込手順はマニュアルに記載なし・要確認）",
+          "inputs": [
+            "賞与支給データ"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 2,
+            "タスク名": "賞与データシステム入力"
+          },
+          "confidence": "inferred",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "end",
+          "label": "賞与支給 完了",
+          "actor": "出納職員",
+          "description": "賞与の支給を完了する（賞与支払届は社会保険・源泉の業務で提出する）"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n02",
+          "question_type": "branch_confirmation",
+          "question": "賞与支給額の計算根拠（基準月数・個人評価反映等）はどのように決定・伝達されますか",
+          "answer_example": "理事長が支給月数を決定し、出納職員が給与計算システムで計算する",
+          "reason": "マニュアルに支給基準の決定方法の記載がない"
+        },
+        {
+          "node_id": "n05",
+          "question_type": "branch_confirmation",
+          "question": "賞与計算結果の確認・承認は誰がどのように行っていますか。差戻し時の再計算手順も教えてください",
+          "answer_example": "会計責任者が計算表を確認し、誤りがあれば出納職員が再計算して再提出する",
+          "reason": "マニュアルに賞与計算の承認手順の記載がない"
+        },
+        {
+          "node_id": "n09",
+          "question_type": "reality_check",
+          "question": "賞与の振込は実際には給与振込と同じ手順（インターネットバンキング等）ですか。支給前に理事長等の承認を別途取っていますか",
+          "answer_example": "給与と同様にインターネットバンキングで振込し、支給前に理事長の承認を得ている",
+          "reason": "マニュアルに賞与の振込手順の記載がなく、実態の確認が必要"
+        }
+      ],
+      "unmodeled_notes": [
+        "賞与支払届の提出は社会保険・源泉のフローで扱うためここではモデル化しない"
+      ]
+    },
+    {
+      "category": "人件費支払",
+      "business_type": "年末調整",
+      "actors": [
+        "出納職員",
+        "職員",
+        "会計責任者",
+        "給与計算システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "年末調整 開始",
+          "actor": "出納職員",
+          "description": "年末調整時期の到来により年末調整業務を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "申告書様式の配布",
+          "actor": "出納職員",
+          "description": "扶養控除等申告書・保険料控除申告書等の様式を職員へ配布し、提出期限を案内する",
+          "outputs": [
+            "申告書様式"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "confidence": "inferred",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "申告書・控除資料の回収",
+          "actor": "出納職員",
+          "description": "職員から記入済み申告書と控除証明書等の添付資料を回収する",
+          "inputs": [
+            "扶養控除等申告書",
+            "保険料控除申告書",
+            "控除証明書"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "source_quote": "年末調整に必要な申告書・控除資料を確認し",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "decision",
+          "label": "期限内回収の判定",
+          "actor": "出納職員",
+          "description": "全職員分の申告書が提出期限内に揃ったか判定する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "confidence": "inferred",
+          "condition": "全職員分の申告書が期限内に揃ったか",
+          "branches": [
+            {
+              "label": "期限内",
+              "target": "n06"
+            },
+            {
+              "label": "未提出あり",
+              "target": "n05",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "申告書が期限までに提出されない職員への督促手順と、最終的に未提出の場合の取り扱いを教えてください",
+          "hearing_answer_example": "出納職員が個別に督促し、未提出者は扶養控除のみで計算して確定申告を案内する"
+        },
+        {
+          "id": "n05",
+          "node_type": "exception",
+          "label": "未提出者への督促",
+          "actor": "出納職員",
+          "description": "未提出の職員へ個別に督促し申告書を回収する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "confidence": "inferred",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "記載内容・添付資料の確認",
+          "actor": "出納職員",
+          "description": "申告書の記載内容と控除証明書等の添付資料の整合を確認する",
+          "inputs": [
+            "扶養控除等申告書",
+            "控除証明書"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "source_quote": "申告書・控除資料を確認し計算する",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "記載不備の有無判定",
+          "actor": "出納職員",
+          "description": "申告書の記載漏れ・添付漏れがないか判定する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "confidence": "inferred",
+          "condition": "申告書の記載内容・添付資料に不備がないか",
+          "branches": [
+            {
+              "label": "不備なし",
+              "target": "n09"
+            },
+            {
+              "label": "不備あり",
+              "target": "n08",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "申告書に不備があった場合の差戻し方法（本人へ直接・部門経由等）を教えてください",
+          "hearing_answer_example": "紙の申告書を職員が記入・提出し、不備は出納職員が本人へ直接差戻す"
+        },
+        {
+          "id": "n08",
+          "node_type": "exception",
+          "label": "本人への差戻し・再提出依頼",
+          "actor": "出納職員",
+          "description": "不備のある申告書を本人へ差戻し、修正・再提出を依頼する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "confidence": "inferred",
+          "next": "n06"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "控除情報のシステム入力",
+          "actor": "出納職員",
+          "description": "確認済みの申告内容（扶養・保険料控除等）を給与計算システムへ入力する",
+          "inputs": [
+            "扶養控除等申告書",
+            "保険料控除申告書"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 2,
+            "タスク名": "年末調整計算・精算"
+          },
+          "confidence": "inferred",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "年末調整計算の実行",
+          "actor": "出納職員",
+          "description": "給与計算システムで年末調整計算を実行し、職員ごとの過不足額を算出する",
+          "outputs": [
+            "年末調整計算結果",
+            "源泉徴収票"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 2,
+            "タスク名": "年末調整計算・精算"
+          },
+          "source_quote": "申告書・控除資料を確認し計算する",
+          "confidence": "explicit",
+          "next": "n11"
+        },
+        {
+          "id": "n11",
+          "node_type": "decision",
+          "label": "精算結果の確認判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が過不足一覧の内容を確認し精算実行の可否を判定する",
+          "inputs": [
+            "年末調整計算結果"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 2,
+            "タスク名": "年末調整計算・精算"
+          },
+          "confidence": "inferred",
+          "condition": "過不足計算の結果に異常がないか",
+          "branches": [
+            {
+              "label": "問題なし",
+              "target": "n12"
+            },
+            {
+              "label": "再計算",
+              "target": "n09",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください",
+          "hearing_answer_example": "12月給与で精算し、過不足一覧を会計責任者が確認する"
+        },
+        {
+          "id": "n12",
+          "node_type": "process",
+          "label": "過不足額の精算処理",
+          "actor": "出納職員",
+          "description": "確認済みの過不足額を給与で精算（還付・追加徴収）する",
+          "outputs": [
+            "精算データ"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 2,
+            "タスク名": "年末調整計算・精算"
+          },
+          "confidence": "inferred",
+          "next": "n13"
+        },
+        {
+          "id": "n13",
+          "node_type": "end",
+          "label": "年末調整 完了",
+          "actor": "出納職員",
+          "description": "年末調整の計算・精算を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n03",
+          "question_type": "reality_check",
+          "question": "申告書の回収は実際には紙ですか。年末調整システム・電子申請を使っていますか",
+          "answer_example": "全員分を紙で回収し、出納職員がシステムへ手入力している",
+          "reason": "回収・入力方法によりフローと改善余地が変わるため"
+        },
+        {
+          "node_id": "n07",
+          "question_type": "branch_confirmation",
+          "question": "申告書に不備があった場合の差戻し方法（本人へ直接・部門経由等）を教えてください",
+          "answer_example": "紙の申告書を職員が記入・提出し、不備は出納職員が本人へ直接差戻す",
+          "reason": "マニュアルに不備時の差戻し手順の記載がない"
+        },
+        {
+          "node_id": "n11",
+          "question_type": "branch_confirmation",
+          "question": "年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください",
+          "answer_example": "12月給与で精算し、過不足一覧を会計責任者が確認する",
+          "reason": "マニュアルに精算方法・確認者の記載がない"
+        }
+      ],
+      "unmodeled_notes": [
+        "法定調書（源泉徴収票の税務署提出・給与支払報告書）の提出はマニュアルに記載がないためフロー化していない"
+      ]
+    },
+    {
+      "category": "人件費支払",
+      "business_type": "社会保険・源泉",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "給与計算システム",
+        "税務署・社会保険事務所"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "社会保険・源泉 開始",
+          "actor": "出納職員",
+          "description": "毎月の源泉納付・定例の社会保険届出として業務を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "源泉徴収税額の確認",
+          "actor": "出納職員",
+          "description": "給与計算システムの源泉徴収データから当月の納付税額を確認する",
+          "inputs": [
+            "給与計算データ"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 1,
+            "タスク名": "源泉徴収税額計算・納付"
+          },
+          "source_quote": "毎月の源泉徴収税額を確認し",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "納付書の作成",
+          "actor": "出納職員",
+          "description": "所得税徴収高計算書（納付書）を作成する",
+          "outputs": [
+            "納付書"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 1,
+            "タスク名": "源泉徴収税額計算・納付"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "税務署への納付",
+          "actor": "出納職員",
+          "description": "所轄税務署へ電子申告（e-Tax）または書面で源泉所得税を納付する",
+          "inputs": [
+            "納付書"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 1,
+            "タスク名": "源泉徴収税額計算・納付"
+          },
+          "source_quote": "所轄税務署へ電子申告または書面で納付する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "decision",
+          "label": "納付期限内の判定",
+          "actor": "出納職員",
+          "description": "法定納期限（翌月10日等）内に納付が完了したか判定する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 1,
+            "タスク名": "源泉徴収税額計算・納付"
+          },
+          "confidence": "inferred",
+          "condition": "法定納期限内に納付が完了したか",
+          "branches": [
+            {
+              "label": "期限内",
+              "target": "n07"
+            },
+            {
+              "label": "期限超過",
+              "target": "n06",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "源泉所得税の納付期限の管理方法と、期限を過ぎそうな場合・過ぎた場合の対応を教えてください",
+          "hearing_answer_example": "出納職員がカレンダーで管理し、遅延時は会計責任者へ報告のうえ至急納付する"
+        },
+        {
+          "id": "n06",
+          "node_type": "exception",
+          "label": "遅延対応・至急納付",
+          "actor": "出納職員",
+          "description": "期限超過時は会計責任者へ報告のうえ至急納付し、不納付加算税等の有無を確認する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 1,
+            "タスク名": "源泉徴収税額計算・納付"
+          },
+          "confidence": "inferred",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "給与データの抽出",
+          "actor": "出納職員",
+          "description": "算定基礎届・賞与支払届等の作成に必要な給与・賞与データを給与計算システムから抽出する",
+          "inputs": [
+            "給与計算データ"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 2,
+            "タスク名": "社会保険届出書作成"
+          },
+          "confidence": "inferred",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "届出書類の作成",
+          "actor": "出納職員",
+          "description": "算定基礎届・賞与支払届・入退職届等を作成する。システム出力できない項目は手入力する",
+          "outputs": [
+            "算定基礎届",
+            "賞与支払届"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 2,
+            "タスク名": "社会保険届出書作成"
+          },
+          "source_quote": "算定基礎届、賞与支払届等を作成・提出する",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "decision",
+          "label": "記載内容の確認判定",
+          "actor": "出納職員",
+          "description": "届出書の記載内容（報酬月額・対象者等）が給与データと一致するか確認する",
+          "inputs": [
+            "給与計算データ"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 2,
+            "タスク名": "社会保険届出書作成"
+          },
+          "confidence": "inferred",
+          "condition": "届出書の記載内容が給与データと一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n11"
+            },
+            {
+              "label": "不一致",
+              "target": "n10",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "届出書の記載ミスや提出後の是正指示があった場合の訂正手順を教えてください",
+          "hearing_answer_example": "訂正届を作成し、出納職員が窓口または電子申請で再提出する"
+        },
+        {
+          "id": "n10",
+          "node_type": "exception",
+          "label": "記載内容の修正",
+          "actor": "出納職員",
+          "description": "不一致箇所を修正し再確認する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 2,
+            "タスク名": "社会保険届出書作成"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "届出の提出",
+          "actor": "出納職員",
+          "description": "作成した届出書類を社会保険事務所・ハローワーク等へ電子申請または郵送で提出する",
+          "inputs": [
+            "算定基礎届",
+            "賞与支払届"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 3,
+            "タスク名": "社会保険届出提出"
+          },
+          "source_quote": "社会保険事務所・ハローワーク等へ電子申請または郵送で提出する",
+          "confidence": "explicit",
+          "next": "n12"
+        },
+        {
+          "id": "n12",
+          "node_type": "process",
+          "label": "提出控えの保管",
+          "actor": "出納職員",
+          "description": "提出控え・受領通知を取得し保管する",
+          "outputs": [
+            "提出控え"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 3,
+            "タスク名": "社会保険届出提出"
+          },
+          "source_quote": "提出控えを保管する",
+          "confidence": "explicit",
+          "next": "n13"
+        },
+        {
+          "id": "n13",
+          "node_type": "end",
+          "label": "社会保険・源泉 完了",
+          "actor": "出納職員",
+          "description": "源泉納付と社会保険届出を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n04",
+          "question_type": "reality_check",
+          "question": "源泉所得税の納付は実際には毎月納付ですか、納期特例（年2回）ですか。期限管理は誰が行っていますか",
+          "answer_example": "納期特例で年2回納付し、出納職員が期限を管理している",
+          "reason": "納付サイクルによりフローの繰り返し構造が変わるため"
+        },
+        {
+          "node_id": "n09",
+          "question_type": "branch_confirmation",
+          "question": "届出書の記載ミスや提出後の是正指示があった場合の訂正手順を教えてください",
+          "answer_example": "訂正届を作成し、出納職員が窓口または電子申請で再提出する",
+          "reason": "マニュアルに是正指示時の対応の記載がない"
+        },
+        {
+          "node_id": "n08",
+          "question_type": "reality_check",
+          "question": "届出書の作成は実際には給与計算システムから自動出力できていますか。手入力している項目はどれですか",
+          "answer_example": "算定基礎届は給与計算システムから出力。住所や氏名は手入力している",
+          "reason": "手入力部分の特定が自動化検討の前提になるため"
+        }
+      ],
+      "unmodeled_notes": [
+        "住民税の特別徴収事務はマニュアルに明示的な手順記載がないためフロー化していない"
+      ]
+    },
+    {
+      "category": "資産・負債管理",
+      "business_type": "債権債務管理",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "理事長",
+        "取引先",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "債権債務管理 開始",
+          "actor": "出納職員",
+          "description": "毎月末日の定例確認として債権債務管理を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "残高内訳データの抽出",
+          "actor": "出納職員",
+          "description": "会計システムから毎月末日の未収金・未払金等の残高内訳を抽出する",
+          "inputs": [
+            "総勘定元帳"
+          ],
+          "outputs": [
+            "残高内訳表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 1,
+            "タスク名": "債権債務残高内訳調査"
+          },
+          "source_quote": "毎月末日の未収金・未払金など債権債務の残高内訳を調査する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "内訳の調査・整理",
+          "actor": "出納職員",
+          "description": "残高内訳の発生日・相手先・回収予定を調査しExcelの残高内訳表に整理する",
+          "inputs": [
+            "請求リスト",
+            "支払一覧表"
+          ],
+          "outputs": [
+            "残高内訳表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 1,
+            "タスク名": "債権債務残高内訳調査"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "decision",
+          "label": "不明残高・長期滞留の有無判定",
+          "actor": "出納職員",
+          "description": "内訳不明の残高や長期滞留の未収金がないか判定する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 1,
+            "タスク名": "債権債務残高内訳調査"
+          },
+          "confidence": "inferred",
+          "condition": "全残高の内訳が判明し、長期滞留がないか",
+          "branches": [
+            {
+              "label": "問題なし",
+              "target": "n10"
+            },
+            {
+              "label": "不明・滞留あり",
+              "target": "n05"
+            }
+          ],
+          "hearing_item": "長期滞留と判断する基準（経過月数等）と、滞留時に残高確認へ進む判断基準を教えてください",
+          "hearing_answer_example": "3か月以上未回収の未収金は取引先へ残高確認書を送付する"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "残高確認書の送付",
+          "actor": "出納職員",
+          "description": "必要に応じて取引先へ残高確認書を送付する",
+          "outputs": [
+            "残高確認書"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 2,
+            "タスク名": "取引先残高照合"
+          },
+          "source_quote": "必要に応じて取引先との残高確認を行い",
+          "confidence": "explicit",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "確認書の回収・照合",
+          "actor": "出納職員",
+          "description": "取引先から残高確認書を回収し、帳簿残高と照合する",
+          "inputs": [
+            "残高確認書（回答済）"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 2,
+            "タスク名": "取引先残高照合"
+          },
+          "source_quote": "残高確認を行い差異を調査する",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "取引先残高との一致判定",
+          "actor": "出納職員",
+          "description": "取引先の回答残高と帳簿残高が一致するか判定する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 2,
+            "タスク名": "取引先残高照合"
+          },
+          "source_quote": "差異を調査する",
+          "confidence": "explicit",
+          "condition": "取引先回答残高と帳簿残高が一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n10"
+            },
+            {
+              "label": "不一致",
+              "target": "n08",
+              "edge_type": "exception"
+            }
+          ]
+        },
+        {
+          "id": "n08",
+          "node_type": "exception",
+          "label": "差異原因の調査",
+          "actor": "出納職員",
+          "description": "計上時期のずれ・記帳漏れ・誤請求など差異の原因を調査する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 2,
+            "タスク名": "取引先残高照合"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "差異・不明残高の報告",
+          "actor": "会計責任者",
+          "description": "会計責任者が残高差異や不明残高について理事長へ報告する",
+          "inputs": [
+            "残高内訳表",
+            "調査結果"
+          ],
+          "outputs": [
+            "差異報告"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 3,
+            "タスク名": "残高差異報告・対応"
+          },
+          "source_quote": "残高差異や不明残高について会計責任者が報告し",
+          "confidence": "explicit",
+          "next": "n11"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "残高内訳表の確定・保管",
+          "actor": "出納職員",
+          "description": "残高内訳表を確定し月次報告資料として保管する",
+          "outputs": [
+            "残高内訳表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 1,
+            "タスク名": "債権債務残高内訳調査"
+          },
+          "confidence": "inferred",
+          "next": "n13"
+        },
+        {
+          "id": "n11",
+          "node_type": "decision",
+          "label": "措置の承認判定",
+          "actor": "理事長",
+          "description": "理事長が報告内容を確認し、必要な措置（督促・修正・貸倒処理等）を承認する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 3,
+            "タスク名": "残高差異報告・対応"
+          },
+          "confidence": "inferred",
+          "condition": "提案された措置（督促・修正・貸倒処理）を承認するか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n12"
+            },
+            {
+              "label": "再調査",
+              "target": "n08",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "不明残高・回収不能債権の措置（貸倒処理等）は誰の承認で実行しますか",
+          "hearing_answer_example": "会計責任者が原因を調査し、理事長承認のうえで貸倒引当金計上または督促を実施する"
+        },
+        {
+          "id": "n12",
+          "node_type": "process",
+          "label": "措置の実行",
+          "actor": "出納職員",
+          "description": "承認された措置（督促・帳簿修正・貸倒処理等）を実行し、結果を記録する",
+          "outputs": [
+            "対応記録"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 3,
+            "タスク名": "残高差異報告・対応"
+          },
+          "source_quote": "必要な措置を行う",
+          "confidence": "explicit",
+          "next": "n13"
+        },
+        {
+          "id": "n13",
+          "node_type": "end",
+          "label": "債権債務管理 完了",
+          "actor": "出納職員",
+          "description": "当月分の債権債務管理を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n04",
+          "question_type": "branch_confirmation",
+          "question": "長期滞留と判断する基準（経過月数等）と、滞留時に残高確認へ進む判断基準を教えてください",
+          "answer_example": "3か月以上未回収の未収金は取引先へ残高確認書を送付する",
+          "reason": "マニュアルの「必要に応じて」の判断基準の記載がない"
+        },
+        {
+          "node_id": "n11",
+          "question_type": "branch_confirmation",
+          "question": "不明残高・回収不能債権の措置（貸倒処理等）は誰の承認で実行しますか",
+          "answer_example": "会計責任者が原因を調査し、理事長承認のうえで貸倒引当金計上または督促を実施する",
+          "reason": "マニュアルに措置の承認権限の記載がない"
+        },
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "残高内訳調査は実際には毎月末に行っていますか。決算期のみ詳細に調査する運用になっていませんか",
+          "answer_example": "毎月は金額確認のみで、詳細な内訳調査は四半期ごとに行っている",
+          "reason": "マニュアル記載の毎月実施と実態の乖離を確認するため"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
+      "category": "資産・負債管理",
+      "business_type": "実地棚卸",
+      "actors": [
+        "出納職員",
+        "担当職員",
+        "会計責任者",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "実地棚卸 開始",
+          "actor": "出納職員",
+          "description": "決算期等の棚卸時期到来により実地棚卸を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "棚卸方法の周知",
+          "actor": "出納職員",
+          "description": "棚卸の対象範囲・基準日・記入方法を各部門へ周知する",
+          "outputs": [
+            "棚卸実施要領"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 1,
+            "タスク名": "棚卸表整備・配布"
+          },
+          "source_quote": "棚卸方法を周知し、棚卸表を担当職員に回付する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "棚卸表の作成・配布",
+          "actor": "出納職員",
+          "description": "棚卸表の様式を準備し、担当職員へ配布（回付）する",
+          "outputs": [
+            "棚卸表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 1,
+            "タスク名": "棚卸表整備・配布"
+          },
+          "source_quote": "棚卸表を担当職員に回付する",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "実地棚卸の実施",
+          "actor": "担当職員",
+          "description": "担当職員が現物を確認し、品名・品番・数量を棚卸表に記入する",
+          "inputs": [
+            "棚卸表"
+          ],
+          "outputs": [
+            "記入済み棚卸表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 2,
+            "タスク名": "実地棚卸実施"
+          },
+          "source_quote": "品名、品番、数量を棚卸表に記入し",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "帳簿外資産の確認",
+          "actor": "担当職員",
+          "description": "帳簿に計上されていない棚卸資産がないか確認し、あれば棚卸表に追記して報告する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 2,
+            "タスク名": "実地棚卸実施"
+          },
+          "source_quote": "帳簿にない棚卸資産も確認する",
+          "confidence": "explicit",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "棚卸表の回収・集計",
+          "actor": "出納職員",
+          "description": "各部門から棚卸表を回収し、集計表に取りまとめる",
+          "inputs": [
+            "記入済み棚卸表"
+          ],
+          "outputs": [
+            "棚卸集計表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 3,
+            "タスク名": "棚卸表集計・承認"
+          },
+          "source_quote": "棚卸表を回収・集計し",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "帳簿と現物の差異判定",
+          "actor": "出納職員",
+          "description": "棚卸集計結果と帳簿残高に差異があるか判定する",
+          "inputs": [
+            "棚卸集計表",
+            "総勘定元帳"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 3,
+            "タスク名": "棚卸表集計・承認"
+          },
+          "confidence": "inferred",
+          "condition": "棚卸集計と帳簿残高が一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n09"
+            },
+            {
+              "label": "差異あり",
+              "target": "n08",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "棚卸差異（帳簿と現物の不一致）が発生した場合の調査・処理の手順を教えてください",
+          "hearing_answer_example": "差異原因を調査し、会計責任者承認のうえ棚卸減耗損として計上する"
+        },
+        {
+          "id": "n08",
+          "node_type": "exception",
+          "label": "差異原因の調査・再確認",
+          "actor": "出納職員",
+          "description": "差異品目の再カウント・受払記録の確認など原因を調査する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 3,
+            "タスク名": "棚卸表集計・承認"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "decision",
+          "label": "会計責任者の承認判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が棚卸集計結果（差異の処理案を含む）を確認し承認可否を判定する",
+          "inputs": [
+            "棚卸集計表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 3,
+            "タスク名": "棚卸表集計・承認"
+          },
+          "source_quote": "会計責任者の承認を得る",
+          "confidence": "explicit",
+          "condition": "棚卸結果・差異処理案を承認するか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n10"
+            },
+            {
+              "label": "差戻し",
+              "target": "n06",
+              "edge_type": "return"
+            }
+          ]
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "棚卸結果のシステム反映",
+          "actor": "出納職員",
+          "description": "承認済みの棚卸差異（減耗・評価替え等）を会計システムへ反映する",
+          "outputs": [
+            "棚卸仕訳"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 3,
+            "タスク名": "棚卸表集計・承認"
+          },
+          "confidence": "inferred",
+          "next": "n11"
+        },
+        {
+          "id": "n11",
+          "node_type": "end",
+          "label": "実地棚卸 完了",
+          "actor": "出納職員",
+          "description": "実地棚卸と差異処理を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n04",
+          "question_type": "reality_check",
+          "question": "実地棚卸は実際には誰が実施していますか。担当職員のみで役職者の立会いなしに行うことはありますか",
+          "answer_example": "各部門の担当職員が実施し、出納職員が抜き取りで立会う",
+          "reason": "マニュアルに立会要件の記載がなく、実態の確認が必要"
+        },
+        {
+          "node_id": "n07",
+          "question_type": "branch_confirmation",
+          "question": "棚卸差異（帳簿と現物の不一致）が発生した場合の調査・処理の手順を教えてください",
+          "answer_example": "差異原因を調査し、会計責任者承認のうえ棚卸減耗損として計上する",
+          "reason": "マニュアルに差異処理の手順の記載がない"
+        },
+        {
+          "node_id": "n05",
+          "question_type": "branch_confirmation",
+          "question": "帳簿にない棚卸資産が見つかった場合の登録・評価の手順を教えてください",
+          "answer_example": "取得経緯を調査し、評価額を見積もって会計責任者承認のうえ帳簿へ計上する",
+          "reason": "マニュアルに帳簿外資産発見時の処理の記載がない"
+        }
+      ],
+      "unmodeled_notes": []
+    },
+    {
+      "category": "資産・負債管理",
+      "business_type": "固定資産管理",
+      "actors": [
+        "固定資産管理責任者",
+        "会計責任者",
+        "理事長"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "固定資産管理 開始",
+          "actor": "固定資産管理責任者",
+          "description": "固定資産の取得・年度末確認・除却の発生により管理業務を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "取得情報の受領",
+          "actor": "固定資産管理責任者",
+          "description": "取得した固定資産の請求書・納品書・契約書から取得価額・取得日等の情報を受領する",
+          "inputs": [
+            "請求書",
+            "納品書"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 1,
+            "タスク名": "固定資産台帳登録"
+          },
+          "confidence": "inferred",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "固定資産台帳への登録",
+          "actor": "固定資産管理責任者",
+          "description": "取得価額・耐用年数・部門・使用場所等を固定資産管理台帳へ登録する",
+          "outputs": [
+            "固定資産管理台帳"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 1,
+            "タスク名": "固定資産台帳登録"
+          },
+          "source_quote": "取得した固定資産を固定資産管理台帳へ登録する",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "decision",
+          "label": "登録内容の確認判定",
+          "actor": "固定資産管理責任者",
+          "description": "登録した取得価額・耐用年数等が証憑と一致するか確認する",
+          "inputs": [
+            "請求書",
+            "固定資産管理台帳"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 1,
+            "タスク名": "固定資産台帳登録"
+          },
+          "confidence": "inferred",
+          "condition": "台帳の登録内容が取得証憑と一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n06"
+            },
+            {
+              "label": "不一致",
+              "target": "n05",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "台帳登録の内容は誰かが二次確認していますか。登録誤りが見つかった場合の修正手順を教えてください",
+          "hearing_answer_example": "登録は責任者のみで行い二次確認はない。誤りは発見時に修正し会計責任者へ報告する"
+        },
+        {
+          "id": "n05",
+          "node_type": "exception",
+          "label": "登録内容の修正",
+          "actor": "固定資産管理責任者",
+          "description": "不一致箇所を修正し再確認する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 1,
+            "タスク名": "固定資産台帳登録"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "年度末現物確認の実施",
+          "actor": "固定資産管理責任者",
+          "description": "年度末に固定資産管理台帳と現物の存在・使用状況を突合確認する",
+          "inputs": [
+            "固定資産管理台帳"
+          ],
+          "outputs": [
+            "現物確認記録"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 2,
+            "タスク名": "固定資産現物確認"
+          },
+          "source_quote": "年度末に固定資産台帳と現物の存在・使用状況を確認する",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "台帳と現物の一致判定",
+          "actor": "固定資産管理責任者",
+          "description": "台帳の全資産について現物の存在・使用状況が確認できたか判定する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 2,
+            "タスク名": "固定資産現物確認"
+          },
+          "confidence": "inferred",
+          "condition": "台帳記載の資産がすべて現物確認できたか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n09"
+            },
+            {
+              "label": "不一致あり",
+              "target": "n08",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "現物確認で台帳にない資産や所在不明の資産が見つかった場合の対応手順を教えてください",
+          "hearing_answer_example": "固定資産管理責任者が原因を調査し、会計責任者承認のうえ台帳修正または除却処理する"
+        },
+        {
+          "id": "n08",
+          "node_type": "exception",
+          "label": "所在不明・台帳外資産の調査",
+          "actor": "固定資産管理責任者",
+          "description": "所在不明資産・台帳外資産の経緯を調査し、台帳修正案または除却案を作成する",
+          "outputs": [
+            "調査報告"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 2,
+            "タスク名": "固定資産現物確認"
+          },
+          "confidence": "inferred",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "除却・売却の起案",
+          "actor": "固定資産管理責任者",
+          "description": "廃棄・売却が必要な資産について除却起案書を作成する",
+          "outputs": [
+            "除却起案書"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 3,
+            "タスク名": "除却承認・台帳更新"
+          },
+          "confidence": "inferred",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "decision",
+          "label": "除却の承認判定",
+          "actor": "理事長",
+          "description": "廃棄・売却について所定の承認（会計責任者・理事長）の可否を判定する",
+          "inputs": [
+            "除却起案書"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 3,
+            "タスク名": "除却承認・台帳更新"
+          },
+          "source_quote": "固定資産の廃棄・売却時に所定の承認を得て",
+          "confidence": "explicit",
+          "condition": "除却・売却を承認するか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n11"
+            },
+            {
+              "label": "差戻し",
+              "target": "n09",
+              "edge_type": "return"
+            }
+          ]
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "台帳の除却反映",
+          "actor": "固定資産管理責任者",
+          "description": "承認済みの除却・売却を固定資産管理台帳へ反映し、記録を保管する",
+          "outputs": [
+            "固定資産管理台帳"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 3,
+            "タスク名": "除却承認・台帳更新"
+          },
+          "source_quote": "所定の承認を得て台帳へ反映する",
+          "confidence": "explicit",
+          "next": "n12"
+        },
+        {
+          "id": "n12",
+          "node_type": "end",
+          "label": "固定資産管理 完了",
+          "actor": "固定資産管理責任者",
+          "description": "固定資産の登録・確認・除却処理を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n03",
+          "question_type": "reality_check",
+          "question": "固定資産台帳は実際にはシステム管理ですかExcel管理ですか。会計システムの減価償却データと連携していますか",
+          "answer_example": "Excel管理で、会計システムの減価償却データとは別管理。年度末に突合している",
+          "reason": "台帳の管理方法によりフローと改善余地が変わるため"
+        },
+        {
+          "node_id": "n07",
+          "question_type": "branch_confirmation",
+          "question": "現物確認で台帳にない資産や所在不明の資産が見つかった場合の対応手順を教えてください",
+          "answer_example": "固定資産管理責任者が原因を調査し、会計責任者承認のうえ台帳修正または除却処理する",
+          "reason": "マニュアルに不一致時の対応の記載がない"
+        },
+        {
+          "node_id": "n10",
+          "question_type": "branch_confirmation",
+          "question": "除却・売却の承認は金額・資産種別により承認者（会計責任者・理事長・理事会）が変わりますか",
+          "answer_example": "基本財産は理事会承認、その他は理事長承認としている",
+          "reason": "マニュアルの「所定の承認」の決裁ルートが特定されていない"
+        }
+      ],
+      "unmodeled_notes": [
+        "減価償却計算は年次決算の決算整理仕訳で扱うためここではフロー化しない"
+      ]
+    },
+    {
+      "category": "決算・報告",
+      "business_type": "月次報告",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "理事長",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "月次報告処理 開始",
+          "actor": "出納職員",
+          "description": "月次報告処理を開始する（月次定例）"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "現預金残高の確認",
+          "actor": "出納職員",
+          "description": "出納職員が現金・預金・仮払金・仮受金等の月次処理に必要な残高を確認し、通帳残高と会計システムの帳簿残高を照合する",
+          "inputs": [
+            "通帳",
+            "小口現金出納帳"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 1,
+            "タスク名": "現預金残高確認"
+          },
+          "source_quote": "現金、預金、仮払金、仮受金など月次処理に必要な残高を確認する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "decision",
+          "label": "現預金残高一致確認",
+          "actor": "出納職員",
+          "description": "通帳残高と会計システムの帳簿残高が一致しているか確認する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 1,
+            "タスク名": "現預金残高確認"
+          },
+          "confidence": "inferred",
+          "condition": "通帳残高と会計システム残高が一致しているか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n05"
+            },
+            {
+              "label": "不一致",
+              "target": "n04",
+              "edge_type": "exception"
+            }
+          ],
+          "hearing_item": "現預金残高が不一致の場合の調査手順と会計責任者への報告ルールを教えてください",
+          "hearing_answer_example": "出納職員が入出金明細を再確認し、差異の原因を特定してから会計責任者へ報告する"
+        },
+        {
+          "id": "n04",
+          "node_type": "exception",
+          "label": "残高差異の原因調査",
+          "actor": "出納職員",
+          "description": "出納職員が入出金明細・伝票を再確認し、現預金残高の差異原因を特定して会計責任者へ報告する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 1,
+            "タスク名": "現預金残高確認"
+          },
+          "confidence": "inferred",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "月次試算表の出力",
+          "actor": "会計システム",
+          "description": "会計システムから当月分の月次試算表（貸借対照表・損益計算書相当）を出力する",
+          "outputs": [
+            "月次試算表"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 2,
+            "タスク名": "月次試算表作成"
+          },
+          "source_quote": "会計システムで月次試算表を作成し内容を確認する",
+          "confidence": "explicit",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "月次試算表の内容確認",
+          "actor": "出納職員",
+          "description": "出納職員が月次試算表の各勘定科目残高を確認し、誤りや計上漏れ・前月比の異常値がないかチェックする",
+          "inputs": [
+            "月次試算表",
+            "前月試算表"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 2,
+            "タスク名": "月次試算表作成"
+          },
+          "source_quote": "内容を確認する",
+          "confidence": "explicit",
+          "next": "n07"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "月次報告書のコメント作成",
+          "actor": "会計責任者",
+          "description": "会計責任者が月次試算表の重要事項・差異説明・注目科目についての報告コメントを作成する",
+          "inputs": [
+            "月次試算表"
+          ],
+          "outputs": [
+            "月次報告書"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 3,
+            "タスク名": "月次報告"
+          },
+          "source_quote": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する",
+          "confidence": "explicit",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "理事長への月次報告",
+          "actor": "会計責任者",
+          "description": "会計責任者が経理規程で定めた期日までに月次試算表と報告コメントをとりまとめて理事長へ月次報告する",
+          "inputs": [
+            "月次試算表",
+            "月次報告書"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 3,
+            "タスク名": "月次報告"
+          },
+          "source_quote": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "end",
+          "label": "月次報告 完了",
+          "actor": "会計責任者",
+          "description": "月次報告が完了"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n07",
+          "question": "月次報告書の報告コメントの作成基準（どの科目に何を書くか）はありますか",
+          "answer_example": "前月比で5%以上変動した科目に理由コメントを付ける運用を行っている",
+          "reason": "マニュアルにコメント作成基準の記述がなく、担当者依存になっている可能性がある",
+          "question_type": "branch_confirmation"
+        },
+        {
+          "node_id": "n03",
+          "question_type": "branch_confirmation",
+          "question": "現預金残高が一致しない場合の調査・修正は誰がどの期限までに行いますか",
+          "answer_example": "出納職員が当日中に調査し、判明しない場合は会計責任者へ報告する",
+          "reason": "マニュアルに残高不一致時の対応の記載がない"
+        },
+        {
+          "node_id": "n02",
+          "question_type": "reality_check",
+          "question": "預金残高の照合は実際には通帳記帳とシステム残高の手作業突合ですか。インターネットバンキングの明細を利用していますか",
+          "answer_example": "通帳を記帳しシステム残高と手作業で突合している",
+          "reason": "照合方法の実態により自動化余地が変わるため"
+        }
+      ],
+      "unmodeled_notes": [
+        "理事長から月次報告に対して修正や差戻しが発生する場合の手順はマニュアルに記載がないためフロー化せず"
+      ]
+    },
+    {
+      "category": "決算・報告",
+      "business_type": "年次決算",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "会計システム",
+        "理事長"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "年次決算処理 開始",
+          "actor": "出納職員",
+          "description": "年度末の決算整理仕訳作成を開始する（年次）"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "決算整理仕訳の洗い出し",
+          "actor": "出納職員",
+          "description": "出納職員が前期仕訳・減価償却計算表・保険証書等を参照し、未収・未払・棚卸・減価償却・引当金・見越繰延の仕訳項目を洗い出す",
+          "inputs": [
+            "前期仕訳帳",
+            "減価償却計算表",
+            "保険証書",
+            "棚卸表"
+          ],
+          "outputs": [
+            "決算整理仕訳リスト（下書き）"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 1,
+            "タスク名": "決算整理仕訳作成"
+          },
+          "source_quote": "未収・未払、棚卸、減価償却、引当金、見越繰延など決算整理仕訳を作成する",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "決算整理仕訳の作成（Excelで下書き）",
+          "actor": "出納職員",
+          "description": "出納職員が洗い出した項目をもとにExcelで決算整理仕訳の下書きを作成し、勘定科目・金額・計算根拠を記入する",
+          "inputs": [
+            "決算整理仕訳リスト（下書き）"
+          ],
+          "outputs": [
+            "決算整理仕訳表"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 1,
+            "タスク名": "決算整理仕訳作成"
+          },
+          "source_quote": "決算整理仕訳を作成する",
+          "confidence": "explicit",
+          "next": "n04"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "会計責任者による仕訳レビュー",
+          "actor": "会計責任者",
+          "description": "会計責任者が決算整理仕訳表の内容（科目・金額・計算根拠）をレビューし、誤りや漏れがないか確認する",
+          "inputs": [
+            "決算整理仕訳表"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 1,
+            "タスク名": "決算整理仕訳作成"
+          },
+          "source_quote": "決算整理仕訳を作成する",
+          "confidence": "explicit",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "decision",
+          "label": "仕訳レビュー承認判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が決算整理仕訳の内容を確認し承認可否を判定する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 1,
+            "タスク名": "決算整理仕訳作成"
+          },
+          "confidence": "inferred",
+          "condition": "決算整理仕訳の科目・金額・計算根拠に誤りや漏れがないか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n07"
+            },
+            {
+              "label": "修正差戻し",
+              "target": "n03",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "決算整理仕訳のレビュー・差戻し手順と、修正後の再確認の流れを教えてください",
+          "hearing_answer_example": "会計責任者がコメントを記入して出納職員へ差戻し、修正後に再提出・再確認する"
+        },
+        {
+          "id": "n06",
+          "node_type": "exception",
+          "label": "仕訳修正対応",
+          "actor": "出納職員",
+          "description": "出納職員が会計責任者のコメントをもとに決算整理仕訳表を修正する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 1,
+            "タスク名": "決算整理仕訳作成"
+          },
+          "confidence": "inferred",
+          "next": "n04"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "決算整理仕訳の会計システム入力",
+          "actor": "出納職員",
+          "description": "出納職員が承認済みの決算整理仕訳を会計システムへ一件ずつ入力する",
+          "inputs": [
+            "承認済み決算整理仕訳表"
+          ],
+          "outputs": [
+            "決算整理仕訳（会計システム）"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 2,
+            "タスク名": "決算整理仕訳入力"
+          },
+          "source_quote": "作成した決算整理仕訳を会計システムへ入力する",
+          "confidence": "explicit",
+          "next": "n08"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "計算書類の出力",
+          "actor": "会計システム",
+          "description": "会計システムから貸借対照表・資金収支計算書・事業活動計算書・注記・附属明細書等を出力する",
+          "outputs": [
+            "貸借対照表",
+            "資金収支計算書",
+            "事業活動計算書"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 3,
+            "タスク名": "計算書類作成"
+          },
+          "source_quote": "貸借対照表、資金収支計算書、事業活動計算書、注記、附属明細書等を作成する",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "計算書類の体裁整備",
+          "actor": "出納職員",
+          "description": "出納職員が会計システムから出力した計算書類の体裁を整え（表紙・注記・附属明細書の追記）、提出可能な形式に仕上げる",
+          "inputs": [
+            "貸借対照表",
+            "資金収支計算書",
+            "事業活動計算書"
+          ],
+          "outputs": [
+            "計算書類一式"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 3,
+            "タスク名": "計算書類作成"
+          },
+          "source_quote": "計算書類作成",
+          "confidence": "explicit",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "end",
+          "label": "年次決算 完了",
+          "actor": "出納職員",
+          "description": "年次決算処理が完了"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n05",
+          "question": "決算整理仕訳のレビュー・差戻しの手順と修正後の再確認フローを教えてください",
+          "answer_example": "会計責任者がコメントを記入して出納職員へ差戻し、修正後に再提出・再確認する",
+          "reason": "マニュアルに決算整理仕訳の承認・差戻し手順の記述がない",
+          "question_type": "branch_confirmation"
+        },
+        {
+          "node_id": "n08",
+          "question_type": "branch_confirmation",
+          "question": "計算書類の最終確認・承認は誰がどの順序で行いますか（会計責任者→監事→理事会等）",
+          "answer_example": "会計責任者の確認後、監事監査を経て理事会・評議員会で承認する",
+          "reason": "マニュアルに計算書類の承認ルートの記載がない"
+        },
+        {
+          "node_id": "n03",
+          "question_type": "reality_check",
+          "question": "決算整理仕訳の下書きは実際には前期仕訳の流用ですか。チェックリスト等で網羅性を確認していますか",
+          "answer_example": "前期仕訳一覧をコピーして当期分を作っており、チェックリストはない",
+          "reason": "作成方法の実態により漏れリスクと改善余地が変わるため"
+        }
+      ],
+      "unmodeled_notes": [
+        "申告・納税手続きの詳細フロー（顧問税理士関与の範囲等）はマニュアルに記載がないためフロー化せず"
+      ]
+    },
+    {
+      "category": "決算・報告",
+      "business_type": "税務申告",
+      "actors": [
+        "出納職員",
+        "会計責任者",
+        "顧問税理士",
+        "税務署"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "税務申告 開始",
+          "actor": "出納職員",
+          "description": "年次決算の確定を受けて税務申告業務を開始する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "収益事業・課税状況の確認",
+          "actor": "出納職員",
+          "description": "当期の収益事業の有無・消費税課税の該当状況を会計データから確認する",
+          "inputs": [
+            "計算書類",
+            "総勘定元帳"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 1,
+            "タスク名": "申告要否確認"
+          },
+          "source_quote": "収益事業や消費税課税がある場合",
+          "confidence": "explicit",
+          "next": "n03"
+        },
+        {
+          "id": "n03",
+          "node_type": "decision",
+          "label": "申告要否の判定",
+          "actor": "会計責任者",
+          "description": "収益事業・消費税課税の該当有無から申告の要否を判定する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 1,
+            "タスク名": "申告要否確認"
+          },
+          "source_quote": "収益事業や消費税課税がある場合、申告書作成・申告・納税を行う",
+          "confidence": "explicit",
+          "condition": "収益事業または消費税課税に該当するか",
+          "branches": [
+            {
+              "label": "該当あり",
+              "target": "n04"
+            },
+            {
+              "label": "該当なし",
+              "target": "n10"
+            }
+          ]
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
+          "label": "申告資料の準備",
+          "actor": "出納職員",
+          "description": "計算書類・会計データ・収益事業区分の集計など申告書作成に必要な資料を準備する",
+          "inputs": [
+            "計算書類",
+            "収益事業区分集計"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 2,
+            "タスク名": "法人税等申告書作成"
+          },
+          "confidence": "inferred",
+          "next": "n05"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "申告書の作成",
+          "actor": "顧問税理士",
+          "description": "法人税・消費税の申告書を作成する（内製または顧問税理士へ委託）",
+          "inputs": [
+            "計算書類",
+            "会計データ"
+          ],
+          "outputs": [
+            "申告書案"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 2,
+            "タスク名": "法人税等申告書作成"
+          },
+          "source_quote": "申告書作成・申告・納税を行う",
+          "confidence": "explicit",
+          "next": "n06"
+        },
+        {
+          "id": "n06",
+          "node_type": "decision",
+          "label": "申告内容の確認判定",
+          "actor": "会計責任者",
+          "description": "会計責任者が申告書案の内容（税額・区分）を確認し承認可否を判定する",
+          "inputs": [
+            "申告書案"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 2,
+            "タスク名": "法人税等申告書作成"
+          },
+          "confidence": "inferred",
+          "condition": "申告書案の税額・区分に誤りがないか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n08"
+            },
+            {
+              "label": "修正依頼",
+              "target": "n07",
+              "edge_type": "return"
+            }
+          ],
+          "hearing_item": "申告書の内容は法人側で誰が最終確認していますか。修正が必要な場合の税理士とのやり取りの手順も教えてください",
+          "hearing_answer_example": "会計責任者が税額と事業区分を確認し、疑義は税理士へ照会して修正してもらう"
+        },
+        {
+          "id": "n07",
+          "node_type": "exception",
+          "label": "申告書の修正",
+          "actor": "顧問税理士",
+          "description": "指摘を受けた箇所を修正し再提出する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 2,
+            "タスク名": "法人税等申告書作成"
+          },
+          "confidence": "inferred",
+          "next": "n06"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "税務署への申告",
+          "actor": "出納職員",
+          "description": "完成した申告書を電子申告（e-Tax）または書面で税務署へ提出する",
+          "inputs": [
+            "申告書"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 3,
+            "タスク名": "申告・納税手続"
+          },
+          "source_quote": "申告書作成・申告・納税を行う",
+          "confidence": "explicit",
+          "next": "n09"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "納税の実行",
+          "actor": "出納職員",
+          "description": "申告税額を期限内に納付し、納付記録を取得する",
+          "outputs": [
+            "納付書控え"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 3,
+            "タスク名": "申告・納税手続"
+          },
+          "source_quote": "申告・納税を行う",
+          "confidence": "explicit",
+          "next": "n10"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "申告控え・判定記録の保管",
+          "actor": "出納職員",
+          "description": "申告書控え・納付記録（申告不要の場合は判定記録）を保管する",
+          "outputs": [
+            "申告書控え"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 3,
+            "タスク名": "申告・納税手続"
+          },
+          "confidence": "inferred",
+          "next": "n11"
+        },
+        {
+          "id": "n11",
+          "node_type": "end",
+          "label": "税務申告 完了",
+          "actor": "出納職員",
+          "description": "税務申告・納税（または申告不要の確認）を完了する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n03",
+          "question_type": "reality_check",
+          "question": "収益事業・消費税課税の該当判定は実際には誰がいつ行っていますか。税理士へ確認していますか",
+          "answer_example": "決算時に顧問税理士へ確認し、会計責任者が判定結果を記録している",
+          "reason": "マニュアルに判定の担当・タイミングの記載がなく、実態の確認が必要"
+        },
+        {
+          "node_id": "n05",
+          "question_type": "branch_confirmation",
+          "question": "法人税・消費税の申告書作成は内製ですか外部（税理士等）に委託していますか",
+          "answer_example": "収益事業がある場合は顧問税理士に委託している",
+          "reason": "マニュアルに作成主体の記載がなく、フローの主体が変わるため"
+        },
+        {
+          "node_id": "n09",
+          "question_type": "branch_confirmation",
+          "question": "納税の方法（電子納税・窓口）と納付期限の管理方法を教えてください",
+          "answer_example": "ダイレクト納付を利用し、出納職員が申告期限と合わせて管理している",
+          "reason": "マニュアルに納税方法・期限管理の記載がない"
+        }
+      ],
+      "unmodeled_notes": [
+        "地方税（法人住民税等）の申告はマニュアルに記載がないためフロー化していない"
+      ]
     }
   ]
 }

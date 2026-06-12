@@ -174,6 +174,39 @@ function verifyAnalysis(analysis, analysisPath) {
     }
   }
 
+  // 詳細As-Isフローの欠落業務種別(直列フォールバック描画になり粒度が粗くなる)を警告する
+  const businessTypeKeys = new Set();
+  normalized.matrix_tasks.forEach((task) => {
+    const category = String(task['業務分類'] || '').trim();
+    const businessType = String(task['業務種別'] || '').trim();
+    if (category && businessType) businessTypeKeys.add(`${category}|||${businessType}`);
+  });
+  const detailFlowKeys = new Set(detailFlows.map((flow) =>
+    `${String(flow.category || '').trim()}|||${String(flow.business_type || '').trim()}`
+  ));
+  const missingDetailFlows = [...businessTypeKeys].filter((key) => !detailFlowKeys.has(key));
+  if (missingDetailFlows.length > 0) {
+    warnings.push(`asis_flow_details missing for ${missingDetailFlows.length} business type(s) (rendered as coarse serial flow): ${missingDetailFlows.map((key) => key.replace('|||', ' / ')).join(', ')}`);
+  }
+  detailFlows.forEach((flow) => {
+    const nodeCount = Array.isArray(flow.nodes) ? flow.nodes.length : 0;
+    if (nodeCount > 0 && nodeCount < 8) {
+      warnings.push(`asis_flow_details too coarse: ${flow.category} / ${flow.business_type} has only ${nodeCount} nodes (target 10-25)`);
+    }
+  });
+
+  // 業務種別が1つしかない業務分類(1:1構成)を警告する
+  const typesByCategory = new Map();
+  businessTypeKeys.forEach((key) => {
+    const [category] = key.split('|||');
+    typesByCategory.set(category, (typesByCategory.get(category) || 0) + 1);
+  });
+  typesByCategory.forEach((count, category) => {
+    if (count < 2) {
+      warnings.push(`category has only ${count} business type (expect 2-5 per category): ${category}`);
+    }
+  });
+
   const cellsWithUseCase = normalized.heatmap_cells.filter((cell) => String(cell.ai_use_case || '').trim());
   const templatePhrase = /確認観点(の)?整理|記録作成|根拠資料との照合/;
   const templated = cellsWithUseCase.filter((cell) => templatePhrase.test(String(cell.ai_use_case || ''))).length;

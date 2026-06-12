@@ -46,16 +46,17 @@
 
 `prompts/04_asis_detail_prompt.md` の指示に従い、業務種別ごとの詳細As-Isフロー（分岐・差戻し・例外処理・実担当者・入出力帳票）を `output/asis_flows_YYYYMMDD.json` に保存する。
 
+- 詳細フローは**マトリクスの全業務種別分を作成する（スキップ禁止）**。1業務種別あたり10〜25ノード（6ノード以下は粗すぎ）。
 - マニュアル原文に根拠のある分岐は `confidence: "explicit"` + `source_quote`、根拠のない推定分岐は `confidence: "inferred"` + `hearing_item`（確認質問）にする。
-- `hearing_items` は `render_outputs.mjs` 実行時に業務整理マトリクスの確認事項へ自動転記され、クライアント入力CSVに載る。
-- このファイルが存在する業務種別は、As-Is draw.io が詳細フロー（動的スイムレーン・判断ひし形・書類シンボル・凡例付き）として描画される。存在しない業務種別は従来どおり `matrix_tasks` からの直列フローで描画される。
+- `hearing_items` は業務種別あたり最低3件（うち実態確認 `question_type: "reality_check"` を1件以上）。`render_outputs.mjs` 実行時に業務整理マトリクスの確認事項へ自動転記され、クライアント入力CSVに載る。
+- このファイルが存在する業務種別は、As-Is draw.io が詳細フロー（動的スイムレーン・判断ひし形・書類シンボル・凡例付き）として描画される。存在しない業務種別は従来どおり `matrix_tasks` からの直列フローで描画される（粗くなるため詳細フロー欠落は `verify_outputs.mjs` が警告する）。
 
 ### Step 6: クライアント入力用CSVを生成する
 
 `prompts/05_client_csv_prompt.md` の指示に従い、`output/matrix_YYYYMMDD.md` と `output/asis_flows_YYYYMMDD.json` の `hearing_items` から `output/client_input_YYYYMMDD.csv` を生成する。
 
 クライアントが記入したCSVは `input/source/client_input_filled.csv` または `input/source/client_input_filled_YYYYMMDD.csv` として保存する。
-CSVには確認事項への `クライアント回答` と、As-Isフローへ直接反映する業務分類単位の自由記入欄 `As-Isフロー更新内容_業務分類` を含める。旧CSVの `As-Isフロー更新内容` は互換入力として扱う。`発生頻度` と `AI導入余地_ヒアリング後` は新規CSVの入力欄としては作成しない。
+CSVには確認事項への `クライアント回答` と、As-Isフローへ直接反映する業務分類単位の自由記入欄 `As-Isフロー更新内容_業務分類` を含める。旧CSVの `As-Isフロー更新内容` は互換入力として扱う。`発生頻度` と `AI導入余地_ヒアリング後` は新規CSVの入力欄としては作成しない。`AI導入余地_仮案` 列も出力しない（業務整理マトリクスからAI導入余地表記を廃止したため）。
 
 ### Step 7: スコアリングを実行する
 
@@ -106,6 +107,7 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 ## 分析ルール
 
 - 業務カテゴリーは入力文書から実態に合わせて抽出する（5〜8カテゴリー）。
+- 各業務分類は原則2〜5個の業務種別に分解する（業務分類:業務種別 = 1:n）。業務分類と同名の業務種別1個だけ、という1:1構成は禁止し、`verify_outputs.mjs` が警告する。
 - 業務整理マトリクスの横軸は、業務分類ごとに作成する。横軸名・順番は他の業務分類と一致しなくてよい。
 - マトリクス横軸はマニュアルの節・手順見出しに相当する実工程粒度にする（1業務種別あたり5〜10工程）。タスクは「1タスク=1主体・1対象・1成果物」で分割し、業務種別あたり5〜15行を目安にする。
 - ヒートマップの横軸は、各業務分類のタスクを抽象化・グループ化して `大分類グループ / 抽象ステップ` の2段にする（業務分類間の比較可能性のため、こちらは抽象軸を維持する）。

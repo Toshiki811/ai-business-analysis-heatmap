@@ -118,6 +118,8 @@ function shouldKeepQuestion(task) {
   if (task.question_source === 'asis_detail') return true;
   if (String(task['クライアント回答'] || '').trim()) return true;
   if (/（確認不要）/.test(question)) return false;
+  // マニュアル記載と実態の乖離を問う質問は、タスク本文から回答を推定できないため常に保持する
+  if (/実際|実態|実務上|マニュアル(上|では|に記載)/.test(extractQuestionText(question))) return true;
   if (questionAnsweredByTaskText(task)) return false;
   if (hasFlowChangingQuestion(question)) return true;
   if (hasNonFlowQuestion(question)) return false;

@@ -110,18 +110,15 @@ AI導入効果スコア =
 | 品質改善・ミス削減効果 | ミスが頻発・重大 | 時々ミスがある | 品質ばらつき | ほぼ安定 | 改善不要 |
 | AI適合度 | — | — | — | — | — |
 
-AI適合度（`ai_fit_score`）は `automation_type` から機械的に決める。
+AI適合度（`ai_fit_score`）は `automation_type` から機械的に決める。クライアント向けの表示は「AI / RPA（ルールベース） / 人」の3軸に集約し、ai_fit_score も3軸単位（5 / 3 / 1）で揃える。内部の6分類はTo-Be生成・実装設計で使い続ける。
 
-| automation_type | ai_fit_score | 意味 |
-|---|---|---|
-| `ai_agent` | 5 | AIでなければ自動化できない多段判断 |
-| `generative_ai` | 4 | 非構造文書の読解・生成にAIが必要 |
-| `rpa` | 2 | AIなしで自動化可能（連携実装で足りる） |
-| `system_config` | 2 | AIなしで自動化可能（設定で足りる） |
-| `rule_based` | 1〜2 | ルール実装で足りる。AI導入の効果は低い |
-| `manual` | 1 | 自動化自体が不適 |
+| 3軸表示 | automation_type | ai_fit_score | 意味 |
+|---|---|---|---|
+| AI | `ai_agent`, `generative_ai` | 5 | 非構造文書の読解・生成や多段判断を含み、AIでなければ自動化できない |
+| RPA（ルールベース） | `rpa`, `system_config`, `rule_based` | 3 | 判断条件が明文化されており、ルール実装・連携・設定で自動化できる（AIは不要） |
+| 人 | `manual` | 1 | 人の判断・責任が本質で、自動化自体が不適 |
 
-これにより、ルールベース・設定で足りる業務はAI導入効果スコアが自然に下がる。ヒートマップの表示は従来通り `低` / `中` / `高` のみとし、`automation_type` はセル詳細・To-Be提案で使う。
+これにより、ルール実装で足りる業務はAI導入効果スコアが自然に下がる。ヒートマップの表示は従来通り `低` / `中` / `高` のみとし、`automation_type` はセル詳細・To-Be提案で使う。なお `ai_fit_score`・総合スコア・`effect_level` はレンダリング時に `scripts/lib/schema.mjs` の `aiFitScoreForAutomationType()` で automation_type から再導出・再計算されるため、この表とコードを変更する際は両者を同期させること。
 
 ## effect_level
 

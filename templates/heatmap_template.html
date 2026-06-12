@@ -227,6 +227,66 @@
 
     .modal-body { padding: 20px 24px; }
 
+    .score-method-btn {
+      padding: 4px 12px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #93c5fd;
+      background: #1e3a5f;
+      border: 1px solid #3b82f6;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .score-method-btn:hover { background: #27466e; }
+
+    .sm-section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #f1f5f9;
+      margin-bottom: 8px;
+    }
+    .sm-formula {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.9;
+    }
+    .sm-formula .sm-weight { color: #60a5fa; font-weight: 800; }
+    .sm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+    .sm-table th {
+      background: #0f172a;
+      color: #94a3b8;
+      font-weight: 700;
+      padding: 6px 8px;
+      border: 1px solid #334155;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .sm-table td {
+      padding: 6px 8px;
+      border: 1px solid #334155;
+      vertical-align: top;
+    }
+    .sm-note {
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.35);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+
     .tab-btn {
       padding: 7px 18px;
       border-radius: 8px;
@@ -1085,7 +1145,7 @@
     .business-type-expand-pane {
       display: grid;
       grid-template-columns: 1fr;
-      grid-template-rows: auto minmax(360px, min(520px, 58vh)) auto auto;
+      grid-template-rows: auto auto minmax(360px, min(520px, 58vh)) auto auto;
     }
     .business-type-expand-toolbar {
       background: #0a1120;
@@ -1197,7 +1257,7 @@
       font-weight: 700;
     }
     @media (max-width: 900px) {
-      .business-type-expand-pane { grid-template-rows: auto minmax(320px, 46vh) auto auto; }
+      .business-type-expand-pane { grid-template-rows: auto auto minmax(320px, 46vh) auto auto; }
       .business-type-expand-qa { max-height: none; }
     }
 
@@ -1321,9 +1381,15 @@
       background-color: rgba(30,58,95,0.28);
     }
     .tl-cell.is-clickable:active { transform: scale(0.99); }
-    .tl-cell.burden-high-cell  { background:rgba(220,38,38,0.12); border-left-color:#dc2626; }
-    .tl-cell.burden-mid-cell   { background:rgba(245,158,11,0.10); border-left-color:#f59e0b; }
-    .tl-cell.burden-low-cell   { background:rgba(34,197,94,0.07);  border-left-color:#22c55e; }
+    .tl-cell.burden-high-cell  { background:rgba(220,38,38,0.16); border-left-color:#dc2626; }
+    .tl-cell.burden-mid-cell   { background:rgba(245,158,11,0.14); border-left-color:#f59e0b; }
+    .tl-cell.burden-low-cell   { background:rgba(34,197,94,0.16);  border-left-color:#22c55e; }
+    .tl-cell-flow-num {
+      color: #60a5fa;
+      font-weight: 800;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
     .tl-cell-name {
       font-weight: 800;
       font-size: 12px;
@@ -2508,7 +2574,7 @@
         <div>
           <h2 class="text-base font-bold text-white">業務整理マトリクス</h2>
           <p class="text-xs text-slate-400 mt-1">
-            業務種別ごとにAs-Isフローを展開できます。負担色: <span class="text-red-400 font-semibold">高</span> / <span class="text-amber-400 font-semibold">中</span> / <span class="text-green-400 font-semibold">低</span>。未確認件数は行見出しに表示します。
+            業務種別ごとにAs-Isフローを展開できます。負担色: <span class="text-red-400 font-semibold">高</span> / <span class="text-amber-400 font-semibold">中</span> / <span class="text-green-400 font-semibold">低</span>。未確認件数は行見出しに表示します。セル内タスクの<span class="font-semibold" style="color:#60a5fa;">①②…</span>は、▸で開くAs-Isフロー図の工程番号に対応します。
           </p>
         </div>
         <div class="flex items-center gap-4 flex-wrap">
@@ -2534,21 +2600,10 @@
         <!-- 凡例（右上） -->
         <div class="flex items-center gap-4 flex-wrap text-xs text-slate-400 mt-1">
           <div class="flex items-center gap-1.5">
-            <div class="legend-dot" style="background:#fce4e4;border:1px solid #fca5a5;"></div>
-            <span>低</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <div class="legend-dot" style="background:#f87171;"></div>
-            <span>中</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <div class="legend-dot" style="background:#dc2626;"></div>
-            <span>高</span>
-          </div>
-          <div class="flex items-center gap-1.5">
             <span class="font-black" style="color:#3b82f6;">★</span>
             <span>TOP3（クリックで詳細）</span>
           </div>
+          <button class="score-method-btn" onclick="openScoreMethodModal()">評価方法</button>
         </div>
       </div>
 
@@ -2579,10 +2634,6 @@
             <p class="text-xs text-slate-500 mt-0.5">手作業負担が大きく、自動化・支援による時間削減・品質平準化の効果が大きい。</p>
           </div>
         </div>
-      </div>
-      <div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-700">
-        <p>※ 判断条件が明文化されておりルールベース・既存システム設定で足りる業務は、AI適合度を低く採点しているため「低」「中」に寄ります。セル詳細の「推奨自動化手段」で実装手段を確認できます。</p>
-        <div id="automation-breakdown" class="mt-2"></div>
       </div>
     </section>
 
@@ -2639,25 +2690,15 @@
                   class="text-slate-400 hover:text-white text-2xl leading-none flex-shrink-0 mt-1">×</button>
         </div>
         <div class="flex gap-2 mt-4">
-          <button class="tab-btn active" id="tab-tobe"   onclick="switchTab('tobe')">To-Be フロー</button>
-          <button class="tab-btn"        id="tab-detail" onclick="switchTab('detail')">詳細情報</button>
+          <button class="tab-btn active" id="tab-detail" onclick="switchTab('detail')">詳細情報</button>
+          <button class="tab-btn"        id="tab-tobe"   onclick="switchTab('tobe')">To-Be フロー</button>
         </div>
       </div>
 
       <div class="modal-body">
 
-        <!-- To-Be -->
-        <div id="panel-tobe">
-          <p class="text-xs text-slate-400 mb-3" id="modal-solution"></p>
-          <div id="tobe-diagram-container" class="rounded-lg overflow-hidden border border-slate-600" style="height:480px;background:#fff;"></div>
-          <div class="mt-4 p-3 bg-slate-700 rounded-lg">
-            <p class="text-xs text-slate-300"><span class="text-yellow-400 font-bold">リスク・注意点：</span><span id="modal-risks"></span></p>
-          </div>
-          <div class="mt-3 flex gap-3" id="tobe-drawio-link-area"></div>
-        </div>
-
         <!-- 詳細情報 -->
-        <div id="panel-detail" class="hidden">
+        <div id="panel-detail">
           <div class="space-y-5">
             <div>
               <p class="text-xs text-slate-400 mb-1.5">期待される効果</p>
@@ -2680,6 +2721,16 @@
           </div>
         </div>
 
+        <!-- To-Be -->
+        <div id="panel-tobe" class="hidden">
+          <p class="text-xs text-slate-400 mb-3" id="modal-solution"></p>
+          <div id="tobe-diagram-container" class="rounded-lg overflow-hidden border border-slate-600" style="height:480px;background:#fff;"></div>
+          <div class="mt-4 p-3 bg-slate-700 rounded-lg">
+            <p class="text-xs text-slate-300"><span class="text-yellow-400 font-bold">リスク・注意点：</span><span id="modal-risks"></span></p>
+          </div>
+          <div class="mt-3 flex gap-3" id="tobe-drawio-link-area"></div>
+        </div>
+
         <!-- 担当凡例 -->
         <div class="flex flex-wrap gap-3 mt-6 pt-4 border-t border-slate-700">
           <div class="flex items-center gap-1.5 text-xs text-slate-300">
@@ -2698,6 +2749,94 @@
             <div class="actor-badge actor-system" style="width:20px;height:20px;font-size:8px;">Sys</div>
             <span>System（自動連携）</span>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 評価方法モーダル -->
+  <div class="modal-overlay" id="score-method-modal" onclick="closeScoreMethodModal(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white">AI導入効果の評価方法</h2>
+            <p class="text-xs text-slate-400 mt-1">ヒートマップ・TOP3共通の採点基準</p>
+          </div>
+          <button onclick="document.getElementById('score-method-modal').classList.remove('active')"
+                  class="text-slate-400 hover:text-white text-2xl leading-none flex-shrink-0 mt-1">×</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="space-y-6">
+
+          <div>
+            <div class="sm-section-title">1. スコア計算式（100点満点）</div>
+            <div class="sm-formula">
+              AI導入効果スコア ＝
+              作業時間削減インパクト <span class="sm-weight">× 40%</span>
+              ＋ 作業頻度・件数 <span class="sm-weight">× 20%</span>
+              ＋ 実装容易性 <span class="sm-weight">× 15%</span>
+              ＋ 品質改善・ミス削減効果 <span class="sm-weight">× 10%</span>
+              ＋ AI適合度 <span class="sm-weight">× 15%</span>
+              <div class="text-slate-500 mt-1">各評価軸は1〜5点で採点し、加重平均（最大5.0）を100点に換算します。</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="sm-section-title">2. 各評価軸の採点基準（1〜5点）</div>
+            <div class="overflow-x-auto">
+              <table class="sm-table">
+                <thead>
+                  <tr><th>評価軸</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th>作業時間削減インパクト</th><td>1件30分以上削減</td><td>15〜30分</td><td>5〜15分</td><td>1〜5分</td><td>1分未満</td></tr>
+                  <tr><th>作業頻度・件数</th><td>毎日50件以上</td><td>毎日10〜50件</td><td>週数回/数件</td><td>月数回</td><td>ほぼ発生しない</td></tr>
+                  <tr><th>実装容易性</th><td>既存APIで即実装可</td><td>軽微なカスタマイズ</td><td>中程度の開発</td><td>大規模開発</td><td>技術的に困難</td></tr>
+                  <tr><th>品質改善・ミス削減効果</th><td>ミスが頻発・重大</td><td>時々ミスがある</td><td>品質ばらつき</td><td>ほぼ安定</td><td>改善不要</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <div class="sm-section-title">3. AI適合度の決め方</div>
+            <p class="text-xs text-slate-400 mb-2">AI適合度は、その業務に最も適した自動化手段を「AI / RPA（ルールベース） / 人」の3軸で判定し、そこから機械的に決まります。</p>
+            <div class="overflow-x-auto">
+              <table class="sm-table">
+                <thead>
+                  <tr><th>推奨自動化手段</th><th>AI適合度</th><th>意味</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th>AI</th><td>5</td><td>非構造文書の読解・生成や多段の判断を含み、AIでなければ自動化できない</td></tr>
+                  <tr><th>RPA（ルールベース）</th><td>3</td><td>判断条件が明文化されており、ルール実装・システム連携で自動化できる（AIは不要）</td></tr>
+                  <tr><th>人</th><td>1</td><td>人の判断・責任が本質で、自動化自体が不適</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="sm-note mt-2">
+              <span class="font-bold text-blue-300">評価観点：</span>
+              判断条件が明文化されておりルール実装で足りる業務は「RPA（ルールベース）」、人の判断が本質の業務は「人」と判定し、AI適合度を低く採点します。各セルの判定結果は、セル詳細の「推奨自動化手段」で確認できます。
+            </div>
+          </div>
+
+          <div>
+            <div class="sm-section-title">4. ヒートマップ表示（低・中・高）の閾値</div>
+            <div class="overflow-x-auto">
+              <table class="sm-table">
+                <thead>
+                  <tr><th>表示</th><th>スコア</th><th>読み方</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th><span class="legend-dot" style="display:inline-block;background:#dc2626;vertical-align:-2px;"></span> 高</th><td>70点以上</td><td>優先的に検討すべき領域</td></tr>
+                  <tr><th><span class="legend-dot" style="display:inline-block;background:#f87171;vertical-align:-2px;"></span> 中</th><td>40〜69点</td><td>一定の効果が見込める</td></tr>
+                  <tr><th><span class="legend-dot" style="display:inline-block;background:#fce4e4;border:1px solid #fca5a5;vertical-align:-2px;"></span> 低</th><td>39点以下</td><td>AI化余地はあるが限定的</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -2770,21 +2909,22 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return ({ '小': 'background:#d1fae5;color:#065f46;', '中': 'background:#fef3c7;color:#92400e;', '大': 'background:#fee2e2;color:#991b1b;' })[scale] || '';
     }
     function automationTypeLabel(type) {
+      // 表示は「AI / RPA（ルールベース） / 人」の3軸に集約(内部キーは6分類を維持)
       return ({
-        'rule_based': 'ルールベース',
-        'system_config': '既存システム設定',
-        'rpa': 'RPA/連携',
-        'generative_ai': '生成AI',
-        'ai_agent': 'AIエージェント',
-        'manual': '人手維持'
+        'rule_based': 'RPA（ルールベース）',
+        'system_config': 'RPA（ルールベース）',
+        'rpa': 'RPA（ルールベース）',
+        'generative_ai': 'AI',
+        'ai_agent': 'AI',
+        'manual': '人'
       })[String(type || '').trim()] || '';
     }
     function automationChipStyle(type) {
       return ({
-        'rule_based': 'background:#475569;color:#e2e8f0;',
-        'system_config': 'background:#475569;color:#e2e8f0;',
+        'rule_based': 'background:#155e75;color:#a5f3fc;',
+        'system_config': 'background:#155e75;color:#a5f3fc;',
         'rpa': 'background:#155e75;color:#a5f3fc;',
-        'generative_ai': 'background:#1e40af;color:#bfdbfe;',
+        'generative_ai': 'background:#6d28d9;color:#ede9fe;',
         'ai_agent': 'background:#6d28d9;color:#ede9fe;',
         'manual': 'background:#334155;color:#94a3b8;'
       })[String(type || '').trim()] || '';
@@ -2830,12 +2970,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         answer ? `回答: ${answer}` : '',
         updateNote ? `As-Isフロー更新内容: ${updateNote}` : ''
       ].filter(Boolean).join('\n');
-    }
-    function maxBurdenLabel(tasks) {
-      const rank = {高: 3, 中: 2, 低: 1};
-      return tasks.reduce((best, task) =>
-        (rank[task['人手の負担']] || 0) > (rank[best] || 0) ? task['人手の負担'] : best, ''
-      ) || '-';
     }
     function summaryCard(label, value) {
       return `<div class="axis-summary-card">
@@ -3797,7 +3931,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
                   .map(label => `<li>${escapeHtml(label)}</li>`)
                   .join('');
                 const top3Button = top3Index >= 0
-                  ? `<button class="axis-action-btn" onclick="openModal(${top3Index})">To-Beフローを見る</button>`
+                  ? `<button class="axis-action-btn" onclick="openModal(${top3Index}, 'tobe')">To-Beフローを見る</button>`
                   : '';
                 return `
                   <tr>
@@ -3866,7 +4000,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         </div>
       ` : '';
       const top3Button = top3Index >= 0
-        ? `<button class="axis-action-btn" onclick="openModal(${top3Index})">To-Beフローを見る</button>`
+        ? `<button class="axis-action-btn" onclick="openModal(${top3Index}, 'tobe')">To-Beフローを見る</button>`
         : '';
       return `
         <div class="axis-detail-section">
@@ -3886,12 +4020,10 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     function renderAsIsTaskDetail(task) {
       const minutes = minutesValue(task);
       const heatmapAxis = [task['ヒートマップグループ'], taskHeatmapStep(task)].filter(Boolean).join(' / ');
-      const operationRows = [
-        ['業務内容', task['業務内容詳細']],
-        ['具体的な実施内容', task['実施内容']],
-        ['担当・確認者', task['担当・確認者']],
-        ['使用資料/システム', task['使用資料/システム']],
-        ['成果物/記録', task['成果物/記録']]
+      const ioRows = [
+        ['インプット', task['インプット']],
+        ['処理', task['処理'] || task['業務内容詳細']],
+        ['アウトプット', task['アウトプット']]
       ];
       const controlRows = [
         ['判断・確認ポイント', task['判断・確認ポイント']],
@@ -3902,14 +4034,11 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         ['人手の負担', task['人手の負担']],
         ['現状課題', task['現状課題']]
       ];
-      const aiRows = [
-        ['AI活用余地', task['AI活用余地']],
-        ['区分', task['区分']]
-      ];
+      const flowNum = taskFlowNum(task['業務分類'], task['業務種別'], task);
       return `
         <div class="axis-detail-section">
           <div class="axis-detail-row-title">
-            <h4>${escapeHtml(task['タスク名'] || '')}</h4>
+            <h4>${flowNum ? `<span class="tl-cell-flow-num" title="As-Isフロー図の工程番号に対応">${escapeHtml(flowNum)}</span>` : ''}${escapeHtml(task['タスク名'] || '')}</h4>
             <span class="axis-mini-badge">${escapeHtml(task['業務種別'] || '')}</span>
           </div>
           ${detailChips([
@@ -3917,10 +4046,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             ['マトリクス横軸', taskMatrixAxis(task)],
             ['ヒートマップ軸', heatmapAxis]
           ])}
-          ${detailGroup('業務手順・入出力', operationRows)}
+          ${detailGroup('業務詳細（インプット → 処理 → アウトプット）', ioRows)}
           ${detailGroup('確認・判断', controlRows)}
           ${detailGroup('負荷・現状課題', burdenRows)}
-          ${detailGroup('AI活用観点', aiRows)}
         </div>
       `;
     }
@@ -4020,36 +4148,14 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         title: `${category} / ${businessType} / ${matrixAxis}`,
         subtitle: tasks.length ? 'マトリクスセル内のAs-Is業務内容' : 'このセルに該当するタスクはありません',
         countText: tasks.length ? `${tasks.length}タスク` : '',
-        summaryHtml: tasks.length ? [
-          summaryCard('対象タスク', `${tasks.length}件`),
-          summaryCard('最大負担', maxBurdenLabel(tasks))
-        ].join('') : '',
+        summaryHtml: '',
         contentHtml: tasks.length
           ? tasks.map(renderAsIsTaskDetail).join('')
           : emptyDetailMessage('このマトリクスセルには表示できるタスクがありません。')
       });
     }
 
-    function buildAutomationBreakdown(data) {
-      const el = document.getElementById('automation-breakdown');
-      if (!el) return;
-      const counts = {};
-      (data.heatmap_cells || []).forEach(cell => {
-        const type = String(cell.automation_type || '').trim();
-        if (!type) return;
-        counts[type] = (counts[type] || 0) + 1;
-      });
-      const order = ['ai_agent', 'generative_ai', 'rpa', 'system_config', 'rule_based', 'manual'];
-      const types = order.filter(type => counts[type]);
-      if (types.length === 0) { el.innerHTML = ''; return; }
-      el.innerHTML = '<span class="text-slate-400 mr-2">自動化手段の内訳:</span>' +
-        types.map(type =>
-          `<span class="inline-flex items-center gap-1 mr-3">${automationChip(type)}<span class="text-slate-300">${counts[type]}件</span></span>`
-        ).join('');
-    }
-
     function buildHeatmap(data) {
-      buildAutomationBreakdown(data);
       const table = document.getElementById('heatmap-table');
       const tasks = data.matrix_tasks || [];
       const columns = flatHeatmapColumns(data);
@@ -4146,7 +4252,22 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       }).join('');
     }
 
-    function openModal(index) {
+    function computeTotalScore(scores) {
+      if (!scores || typeof scores !== 'object') return null;
+      const num = v => { const n = Number(v); return Number.isFinite(n) ? n : null; };
+      const tr = num(scores.time_reduction);
+      const fr = num(scores.frequency);
+      const ie = num(scores.implementation_ease);
+      const qi = num(scores.quality_impact);
+      const af = num(scores.ai_fit);
+      if (tr === null || fr === null || ie === null || qi === null) return null;
+      const weighted = af === null
+        ? tr * 0.45 + fr * 0.25 + ie * 0.20 + qi * 0.10
+        : tr * 0.40 + fr * 0.20 + ie * 0.15 + qi * 0.10 + af * 0.15;
+      return Math.round(weighted * 20);
+    }
+
+    function openModal(index, initialTab) {
       const item = (ANALYSIS_DATA.top3 || [])[index];
       if (!item) return;
 
@@ -4158,7 +4279,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       document.getElementById('detail-effect').textContent = item.expected_effect || '';
 
       const scores = item.scores || {};
-      document.getElementById('detail-total-score').textContent = scores.total || '-';
+      document.getElementById('detail-total-score').textContent = scores.total || computeTotalScore(scores) || '-';
 
       const scaleEl = document.getElementById('detail-scale');
       scaleEl.textContent = item.development_scale || '';
@@ -4220,7 +4341,8 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       }
 
       const rank = item.rank;
-      renderDrawio('tobe-diagram-container', (DRAWIO_XML_MAP || {})[`top${rank}_to_be`]);
+      // 非表示パネル内で描画するとサイズ0になるため、To-Beタブ初回表示時に描画する
+      pendingToBeDrawio = { xml: (DRAWIO_XML_MAP || {})[`top${rank}_to_be`] };
 
       // draw.io ファイルリンク
       const ff = item.flow_files || {};
@@ -4234,7 +4356,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         </a>` : '';
       document.getElementById('tobe-drawio-link-area').innerHTML = drawioLinkHtml(ff.to_be_drawio, 'To-Be業務フローを開く');
 
-      switchTab('tobe');
+      switchTab(initialTab === 'tobe' ? 'tobe' : 'detail');
       document.getElementById('modal').classList.add('active');
     }
 
@@ -4294,11 +4416,17 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       `).join('');
     }
 
+    let pendingToBeDrawio = null;
+
     function switchTab(tab) {
-      ['tobe', 'detail'].forEach(t => {
+      ['detail', 'tobe'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
         document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
       });
+      if (tab === 'tobe' && pendingToBeDrawio) {
+        renderDrawio('tobe-diagram-container', pendingToBeDrawio.xml);
+        pendingToBeDrawio = null;
+      }
     }
 
     function closeModal(e) {
@@ -4306,9 +4434,19 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         document.getElementById('modal').classList.remove('active');
     }
 
+    function openScoreMethodModal() {
+      document.getElementById('score-method-modal').classList.add('active');
+    }
+
+    function closeScoreMethodModal(e) {
+      if (e.target === document.getElementById('score-method-modal'))
+        document.getElementById('score-method-modal').classList.remove('active');
+    }
+
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         document.getElementById('modal').classList.remove('active');
+        document.getElementById('score-method-modal').classList.remove('active');
         closeAxisDetailPanel();
       }
     });
@@ -4512,6 +4650,61 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       );
     }
 
+    function flowNumLabel(displayNum) {
+      if (displayNum <= 20) return String.fromCodePoint(0x245F + displayNum);
+      if (displayNum <= 35) return String.fromCodePoint(0x3251 + displayNum - 21);
+      if (displayNum <= 50) return String.fromCodePoint(0x32B1 + displayNum - 36);
+      return `[${displayNum}]`;
+    }
+
+    const businessTypeFlowNumCache = new Map();
+    function businessTypeFlowNumInfo(category, businessType) {
+      const key = `${category}|||${businessType}`;
+      if (!businessTypeFlowNumCache.has(key)) {
+        businessTypeFlowNumCache.set(key, buildBusinessTypeFlowNumInfo(category, businessType));
+      }
+      return businessTypeFlowNumCache.get(key);
+    }
+
+    function buildBusinessTypeFlowNumInfo(category, businessType) {
+      // 詳細As-Isフローがある業務種別: ノードのtask_id紐付けから番号を引く
+      // (図中の「N.」はnodes配列のindex+1。start/end/decisionノードは無番号)
+      const detail = (ANALYSIS_DATA.asis_flow_details || []).find(f =>
+        f.category === category && f.business_type === businessType);
+      if (detail && Array.isArray(detail.nodes) && detail.nodes.length) {
+        const byTaskId = {};
+        detail.nodes.forEach((node, index) => {
+          const rawKind = String(node.node_type || 'process');
+          const kind = ['start', 'end', 'process', 'decision', 'exception'].includes(rawKind) ? rawKind : 'process';
+          if (kind === 'start' || kind === 'end' || kind === 'decision') return;
+          if (!node.task_id) return;
+          (byTaskId[node.task_id] = byTaskId[node.task_id] || []).push(index + 1);
+        });
+        if (Object.keys(byTaskId).length) return { byTaskId };
+      }
+      // 従来フロー: process-ノード名との照合
+      const flowKey = resolveBusinessTypeFlowKey(category, businessType);
+      const xml = flowKey ? (DRAWIO_XML_MAP[flowKey] || null) : null;
+      const processNodes = parseProcessNodes(xml);
+      if (Object.keys(processNodes).length) {
+        return { processNodes, numMap: buildNumMap(processNodes) };
+      }
+      return null;
+    }
+
+    function taskFlowNum(category, businessType, task) {
+      if (!category || !businessType) return '';
+      const info = businessTypeFlowNumInfo(category, businessType);
+      if (!info) return '';
+      if (info.byTaskId) {
+        return (info.byTaskId[task.task_id] || []).map(flowNumLabel).join('');
+      }
+      const pid = matchProcessId(task['タスク名'] || '', info.processNodes);
+      if (!pid) return '';
+      const displayNum = info.numMap[parseInt(pid.replace('process-', ''), 10)];
+      return displayNum ? flowNumLabel(displayNum) : '';
+    }
+
     function buildMatrix(data) {
       const allTasks = data.matrix_tasks || [];
       if (!allTasks.length) return;
@@ -4624,13 +4817,14 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       };
     }
 
-    function renderMatrixTaskItem(task) {
+    function renderMatrixTaskItem(task, flowNum) {
       const abstractStep = taskHeatmapStep(task) || taskMatrixAxis(task);
+      const numBadge = flowNum ? `<span class="tl-cell-flow-num" title="As-Isフロー図の工程番号に対応">${escapeHtml(flowNum)}</span>` : '';
       return [
         '<div class="tl-cell-item">',
         '<div class="tl-cell-title-row">',
         '<div>',
-        `<div class="tl-cell-name">${escapeHtml(task['タスク名'] || '')}</div>`,
+        `<div class="tl-cell-name">${numBadge}${escapeHtml(task['タスク名'] || '')}</div>`,
         abstractStep ? `<div class="tl-cell-step">${escapeHtml(abstractStep)}</div>` : '',
         '</div>',
         '</div>',
@@ -4648,7 +4842,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       const tip = tasksInCell.map(matrixTaskTooltip).join('\n\n---\n\n');
       let html = `<td class="tl-cell is-clickable ${burdCls}" data-tooltip-text="${tooltipAttr(tip)}" onclick='openMatrixCellPanel(${jsAttrString(category)}, ${jsAttrString(businessType)}, ${jsAttrString(matrixAxis)})'>`;
       html += '<div class="tl-cell-stack">';
-      tasksInCell.forEach((t, index) => { html += renderMatrixTaskItem(t, index); });
+      tasksInCell.forEach(t => { html += renderMatrixTaskItem(t, taskFlowNum(category, businessType, t)); });
       html += '</div></td>';
       return html;
     }
@@ -4769,6 +4963,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             `<td colspan="${totalCols}">` +
             `<div class="business-type-expand-pane">` +
             `<div class="business-type-expand-toolbar" id="bt-expand-toolbar-${rowId}"></div>` +
+            `<div style="font-size:11px;color:#64748b;margin:4px 12px 6px;">フロー図の工程番号は、マトリクスセル内タスクの<span style="color:#60a5fa;font-weight:800;">①②…</span>と対応しています</div>` +
             `<div class="business-type-expand-diagram" id="bt-expand-diagram-${rowId}"></div>` +
             `<div class="business-type-expand-qa" id="bt-expand-qa-${rowId}"></div>` +
             `<div class="business-type-expand-actions">` +

@@ -9,7 +9,7 @@
     "schema_version": "2026-06-12",
     "schema_normalized_at": "2026-06-12",
     "asis_flow_details_source": "asis_flows_20260612.json",
-    "suppressed_question_count": 4,
+    "suppressed_question_count": 0,
     "to_be_tasks_generated_count": 0,
     "to_be_tasks_cell_count": 57
   },
@@ -347,12 +347,12 @@
       "source_tasks": [
         "職務分掌範囲確認"
       ],
-      "score": 47,
+      "score": 50,
       "time_reduction_score": 2,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "職務分掌規程と実際の担当状況の突合は規程文書の読解が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり10分程度",
@@ -399,12 +399,12 @@
         "帳簿一覧整備",
         "会計システム設定確認"
       ],
-      "score": 44,
+      "score": 47,
       "time_reduction_score": 2,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "帳簿一覧・科目・帳票出力は会計システムの設定・標準機能の範囲でありQ1aに該当",
       "estimated_time_saved": "1回あたり30分程度",
@@ -449,12 +449,12 @@
       "source_tasks": [
         "帳票出力テスト確認"
       ],
-      "score": 51,
+      "score": 54,
       "time_reduction_score": 2,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "出力帳票の誤り確認は帳票の読解・前回出力との比較が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり15分程度",
@@ -499,12 +499,12 @@
       "source_tasks": [
         "事業計画情報収集"
       ],
-      "score": 63,
+      "score": 66,
       "time_reduction_score": 4,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "各部門のExcel様式・事業計画文書の集約・読解が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり60分以上",
@@ -549,12 +549,12 @@
       "source_tasks": [
         "資金収支予算案作成"
       ],
-      "score": 71,
+      "score": 74,
       "time_reduction_score": 5,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "前年度実績CSVと要求資料からの予算下書き作成は文書・データの読解と下書き生成でQ3に該当",
       "estimated_time_saved": "1回あたり90分以上",
@@ -641,12 +641,12 @@
       "source_tasks": [
         "確定予算システム登録"
       ],
-      "score": 54,
+      "score": 57,
       "time_reduction_score": 3,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "確定予算Excelから会計システム予算管理機能への転記は構造化データ間の入力でQ2に該当",
       "estimated_time_saved": "1回あたり40分程度",
@@ -691,12 +691,12 @@
       "source_tasks": [
         "予算執行差異確認"
       ],
-      "score": 56,
+      "score": 59,
       "time_reduction_score": 3,
       "frequency_score": 2,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "予算対実績の乖離検知はしきい値が決まればルール化可能で、会計システムの予実レポート機能で実現できるためQ1aに該当",
       "estimated_time_saved": "1回あたり40分程度",
@@ -741,12 +741,12 @@
       "source_tasks": [
         "補正予算案作成"
       ],
-      "score": 63,
+      "score": 66,
       "time_reduction_score": 4,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "変更事由の整理と補正予算案の下書きは文書読解と下書き生成でQ3に該当",
       "estimated_time_saved": "1回あたり60分程度",
@@ -833,12 +833,12 @@
       "source_tasks": [
         "請求データ作成"
       ],
-      "score": 62,
+      "score": 65,
       "time_reduction_score": 3,
       "frequency_score": 3,
       "implementation_ease_score": 4,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "利用実績CSVから請求システムへの取込・請求データ作成は構造化データ間の転記でQ2に該当",
       "estimated_time_saved": "1件あたり15分程度",
@@ -885,12 +885,12 @@
         "請求内容確認",
         "入金確認・照合"
       ],
-      "score": 59,
+      "score": 62,
       "time_reduction_score": 3,
       "frequency_score": 3,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "入金明細と請求リストの消込は構造化データ同士の突合でQ2に該当",
       "estimated_time_saved": "1件あたり15分程度",
@@ -935,12 +935,12 @@
       "source_tasks": [
         "請求書発行・送付"
       ],
-      "score": 53,
+      "score": 56,
       "time_reduction_score": 2,
       "frequency_score": 3,
       "implementation_ease_score": 5,
       "quality_impact_score": 2,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "請求書発行は請求システムの標準機能で出力できるためQ1aに該当",
       "estimated_time_saved": "1件あたり5分程度",
@@ -1027,12 +1027,12 @@
       "source_tasks": [
         "領収書発行"
       ],
-      "score": 38,
+      "score": 41,
       "time_reduction_score": 1,
       "frequency_score": 2,
       "implementation_ease_score": 4,
       "quality_impact_score": 2,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "領収書発行は請求システム・レジスター等の標準機能で実現できるためQ1aに該当",
       "estimated_time_saved": "1件あたり3分程度",
@@ -1063,7 +1063,7 @@
       ],
       "reason": "少額・短時間の定型作業。所要時間・頻度は仮置き値（領収書発行: 5（仮）分）に基づく。",
       "source_reference": "keirijimumanyuaru.md: 収納事務 / 現金収納 / 領収書発行",
-      "effect_level": "low",
+      "effect_level": "medium",
       "is_top3": false
     },
     {
@@ -1119,12 +1119,12 @@
       "source_tasks": [
         "収納伝票会計入力"
       ],
-      "score": 62,
+      "score": 65,
       "time_reduction_score": 3,
       "frequency_score": 3,
       "implementation_ease_score": 4,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "入金明細から会計伝票への起票は構造化データの転記でQ2に該当",
       "estimated_time_saved": "1件あたり8分程度",
@@ -1169,12 +1169,12 @@
       "source_tasks": [
         "収納証憑整理・保管"
       ],
-      "score": 55,
+      "score": 58,
       "time_reduction_score": 2,
       "frequency_score": 3,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "紙証憑の電子化・属性付けはOCRと文書読解が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり5分程度",
@@ -1219,12 +1219,12 @@
       "source_tasks": [
         "購入・支払起案"
       ],
-      "score": 55,
+      "score": 58,
       "time_reduction_score": 2,
       "frequency_score": 3,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "様式が統一されていない稟議書・購入依頼書の内容確認は非構造文書の読解でQ3に該当",
       "estimated_time_saved": "1件あたり7分程度",
@@ -1269,12 +1269,12 @@
       "source_tasks": [
         "請求書・証憑照合"
       ],
-      "score": 78,
+      "score": 81,
       "time_reduction_score": 4,
       "frequency_score": 3,
       "implementation_ease_score": 4,
       "quality_impact_score": 5,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "請求書・契約書・稟議書・納品書（紙・PDF）の突合は非構造文書の読解・照合が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり15分程度",
@@ -1335,12 +1335,12 @@
       "source_tasks": [
         "支払情報承認"
       ],
-      "score": 52,
+      "score": 55,
       "time_reduction_score": 2,
       "frequency_score": 3,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "金額別の承認ルートは規程で明文化可能でありワークフロー設定で実現できるためQ1aに該当",
       "estimated_time_saved": "1件あたり5分程度",
@@ -1387,12 +1387,12 @@
         "振込実行",
         "支払伝票会計入力"
       ],
-      "score": 62,
+      "score": 65,
       "time_reduction_score": 3,
       "frequency_score": 3,
       "implementation_ease_score": 4,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "承認済み支払情報からの振込データ作成・支払伝票入力は構造化データ間の転記でQ2に該当",
       "estimated_time_saved": "1件あたり12分程度",
@@ -1441,12 +1441,12 @@
         "見積徴取・比較検討",
         "契約履行確認"
       ],
-      "score": 69,
+      "score": 72,
       "time_reduction_score": 4,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "見積書の比較・契約規程との照合・納品書による履行確認は非構造文書の読解が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり30分程度",
@@ -1477,7 +1477,7 @@
       ],
       "reason": "見積比較と履行確認に手作業が集中し判断が属人化している。所要時間・頻度は仮置き値（契約方式確認: 15（仮）分、見積徴取・比較検討: 60（仮）分、契約履行確認: 20（仮）分）に基づく。",
       "source_reference": "keirijimumanyuaru.md: 支払・契約事務 / 契約事務 / 契約方式確認、見積徴取・比較検討、契約履行確認",
-      "effect_level": "medium",
+      "effect_level": "high",
       "is_top3": false
     },
     {
@@ -1491,12 +1491,12 @@
       "source_tasks": [
         "契約書作成"
       ],
-      "score": 69,
+      "score": 72,
       "time_reduction_score": 4,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "標準契約書をもとにした契約書ドラフト作成は文書生成が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり30分程度",
@@ -1527,7 +1527,7 @@
       ],
       "reason": "契約書の作成・修正に60分を要し条件確認の負荷が大きい。所要時間・頻度は仮置き値（契約書作成: 60（仮）分）に基づく。",
       "source_reference": "keirijimumanyuaru.md: 支払・契約事務 / 契約事務 / 契約書作成",
-      "effect_level": "medium",
+      "effect_level": "high",
       "is_top3": false
     },
     {
@@ -1583,12 +1583,12 @@
       "source_tasks": [
         "小口支払証憑確認"
       ],
-      "score": 60,
+      "score": 63,
       "time_reduction_score": 2,
       "frequency_score": 3,
       "implementation_ease_score": 4,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "領収書の宛名・金額・承認印の確認は紙証憑の読解が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり4分程度",
@@ -1633,12 +1633,12 @@
       "source_tasks": [
         "出納帳記入・保管"
       ],
-      "score": 51,
+      "score": 54,
       "time_reduction_score": 2,
       "frequency_score": 3,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "確認済みの支払内容から出納帳への記入は定型転記でQ2に該当",
       "estimated_time_saved": "1件あたり4分程度",
@@ -1725,12 +1725,12 @@
       "source_tasks": [
         "現金差異調査・報告"
       ],
-      "score": 47,
+      "score": 50,
       "time_reduction_score": 2,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "差異報告書の作成は調査結果の文章化が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり15分程度",
@@ -1775,12 +1775,12 @@
       "source_tasks": [
         "勤怠情報収集・整理"
       ],
-      "score": 75,
+      "score": 78,
       "time_reduction_score": 4,
       "frequency_score": 3,
       "implementation_ease_score": 3,
       "quality_impact_score": 5,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "紙の日報・勤怠記録の読み取り・集計・整形は非構造データの読解が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり40分以上",
@@ -1845,12 +1845,12 @@
         "給与振込実行",
         "給与仕訳会計入力"
       ],
-      "score": 67,
+      "score": 70,
       "time_reduction_score": 4,
       "frequency_score": 3,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "勤怠・手当データの給与システム入力、振込データ作成、給与仕訳入力は構造化データ間の転記でQ2に該当",
       "estimated_time_saved": "1回あたり50分程度",
@@ -1881,7 +1881,7 @@
       ],
       "reason": "入力・振込・仕訳の3箇所で手作業転記が発生している。所要時間・頻度は仮置き値（給与計算システム入力: 60（仮）分、給与振込実行: 20（仮）分、給与仕訳会計入力: 20（仮）分）に基づく。",
       "source_reference": "keirijimumanyuaru.md: 人件費支払 / 給与支払 / 給与計算システム入力、給与振込実行、給与仕訳会計入力",
-      "effect_level": "medium",
+      "effect_level": "high",
       "is_top3": false
     },
     {
@@ -1895,12 +1895,12 @@
       "source_tasks": [
         "給与計算データ承認"
       ],
-      "score": 65,
+      "score": 68,
       "time_reduction_score": 3,
       "frequency_score": 3,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "給与計算結果の確認は前月比較・控除額の妥当性チェックという読解・分析が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり15分程度",
@@ -1945,12 +1945,12 @@
       "source_tasks": [
         "賞与支給額計算"
       ],
-      "score": 52,
+      "score": 55,
       "time_reduction_score": 3,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rule_based",
       "automation_reason": "支給月数×基本給の計算は基準が決まれば完全にルール化可能でQ1に該当（システム標準機能外のためルール実装）",
       "estimated_time_saved": "1回あたり20分程度",
@@ -1995,12 +1995,12 @@
       "source_tasks": [
         "賞与データシステム入力"
       ],
-      "score": 44,
+      "score": 47,
       "time_reduction_score": 2,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "賞与計算表から給与システムへの入力は構造化データの転記でQ2に該当",
       "estimated_time_saved": "1回あたり20分程度",
@@ -2045,12 +2045,12 @@
       "source_tasks": [
         "年末調整申告書収集・確認"
       ],
-      "score": 71,
+      "score": 74,
       "time_reduction_score": 4,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 5,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "扶養控除等申告書・控除証明書（紙）の記載確認・不備検知は非構造文書の読解が主作業でQ3に該当",
       "estimated_time_saved": "1人あたり5分程度",
@@ -2095,12 +2095,12 @@
       "source_tasks": [
         "年末調整計算・精算"
       ],
-      "score": 52,
+      "score": 55,
       "time_reduction_score": 3,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "年末調整計算は給与計算システムの標準機能で実行できるためQ1aに該当",
       "estimated_time_saved": "1回あたり30分程度",
@@ -2145,12 +2145,12 @@
       "source_tasks": [
         "源泉徴収税額計算・納付"
       ],
-      "score": 48,
+      "score": 51,
       "time_reduction_score": 2,
       "frequency_score": 2,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "源泉徴収税額の算出・納付書作成は給与システムと電子納税の標準機能で実現できるためQ1aに該当",
       "estimated_time_saved": "1回あたり15分程度",
@@ -2195,12 +2195,12 @@
       "source_tasks": [
         "社会保険届出書作成"
       ],
-      "score": 61,
+      "score": 64,
       "time_reduction_score": 3,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "届出書の手入力項目の補完・記載チェックは文書の読解・生成が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり30分程度",
@@ -2245,12 +2245,12 @@
       "source_tasks": [
         "社会保険届出提出"
       ],
-      "score": 45,
+      "score": 48,
       "time_reduction_score": 2,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "電子申請システムへの提出操作は定型的なシステム操作でQ2に該当",
       "estimated_time_saved": "1件あたり15分程度",
@@ -2297,12 +2297,12 @@
         "債権債務残高内訳調査",
         "取引先残高照合"
       ],
-      "score": 69,
+      "score": 72,
       "time_reduction_score": 4,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "残高内訳の調査・残高確認書の照合は帳簿データと文書の読解が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり40分程度",
@@ -2333,7 +2333,7 @@
       ],
       "reason": "長期滞留の見落としが貸倒リスクに直結する。所要時間・頻度は仮置き値（債権債務残高内訳調査: 30（仮）分、取引先残高照合: 60（仮）分）に基づく。",
       "source_reference": "keirijimumanyuaru.md: 資産・負債管理 / 債権債務管理 / 債権債務残高内訳調査、取引先残高照合",
-      "effect_level": "medium",
+      "effect_level": "high",
       "is_top3": false
     },
     {
@@ -2347,12 +2347,12 @@
       "source_tasks": [
         "残高差異報告・対応"
       ],
-      "score": 51,
+      "score": 54,
       "time_reduction_score": 2,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "差異報告と措置記録の文書化は文章生成が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり15分程度",
@@ -2397,12 +2397,12 @@
       "source_tasks": [
         "棚卸表整備・配布"
       ],
-      "score": 42,
+      "score": 45,
       "time_reduction_score": 2,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 2,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "棚卸表の様式作成・配布は標準様式の整備で解決できるためQ1aに該当",
       "estimated_time_saved": "1回あたり15分程度",
@@ -2489,12 +2489,12 @@
       "source_tasks": [
         "棚卸表集計・承認"
       ],
-      "score": 51,
+      "score": 54,
       "time_reduction_score": 3,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "棚卸表の集計と帳簿との突合は構造化データの集計・照合でQ2に該当",
       "estimated_time_saved": "1回あたり40分程度",
@@ -2539,12 +2539,12 @@
       "source_tasks": [
         "固定資産台帳登録"
       ],
-      "score": 61,
+      "score": 64,
       "time_reduction_score": 3,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "請求書・納品書からの取得情報抽出とExcel台帳への登録は非構造文書の読解が主作業でQ3に該当",
       "estimated_time_saved": "1件あたり15分程度",
@@ -2673,12 +2673,12 @@
       "source_tasks": [
         "現預金残高確認"
       ],
-      "score": 58,
+      "score": 61,
       "time_reduction_score": 3,
       "frequency_score": 2,
       "implementation_ease_score": 4,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "預金残高とシステム残高の突合は構造化データ同士の照合でQ2に該当",
       "estimated_time_saved": "1回あたり20分程度",
@@ -2723,12 +2723,12 @@
       "source_tasks": [
         "月次試算表作成"
       ],
-      "score": 61,
+      "score": 64,
       "time_reduction_score": 3,
       "frequency_score": 2,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "試算表の計上漏れ・異常値の確認は帳票の読解・比較が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり15分程度",
@@ -2773,12 +2773,12 @@
       "source_tasks": [
         "月次報告書作成・提出"
       ],
-      "score": 70,
+      "score": 73,
       "time_reduction_score": 4,
       "frequency_score": 2,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "月次報告書の差異説明コメント作成は試算表の読解と文章生成が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり30分程度",
@@ -2823,12 +2823,12 @@
       "source_tasks": [
         "決算整理仕訳作成"
       ],
-      "score": 73,
+      "score": 76,
       "time_reduction_score": 5,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "前期仕訳・減価償却計算表・保険証書等を読み解いて決算整理仕訳の下書きを作るのは非構造文書の読解・生成が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり90分以上",
@@ -2889,12 +2889,12 @@
       "source_tasks": [
         "決算整理仕訳入力"
       ],
-      "score": 54,
+      "score": 57,
       "time_reduction_score": 3,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 4,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "rpa",
       "automation_reason": "承認済み仕訳一覧の会計システム入力は構造化データの転記でQ2に該当",
       "estimated_time_saved": "1回あたり40分程度",
@@ -2939,12 +2939,12 @@
       "source_tasks": [
         "計算書類作成"
       ],
-      "score": 65,
+      "score": 68,
       "time_reduction_score": 4,
       "frequency_score": 1,
       "implementation_ease_score": 3,
       "quality_impact_score": 4,
-      "ai_fit_score": 4,
+      "ai_fit_score": 5,
       "automation_type": "generative_ai",
       "automation_reason": "注記・附属明細書の作成と前年版との整合確認は文書の生成・比較が主作業でQ3に該当",
       "estimated_time_saved": "1回あたり60分程度",
@@ -3073,12 +3073,12 @@
       "source_tasks": [
         "申告・納税手続"
       ],
-      "score": 44,
+      "score": 47,
       "time_reduction_score": 2,
       "frequency_score": 1,
       "implementation_ease_score": 4,
       "quality_impact_score": 3,
-      "ai_fit_score": 2,
+      "ai_fit_score": 3,
       "automation_type": "system_config",
       "automation_reason": "電子申告・電子納税は既存の標準サービス（e-Tax・ダイレクト納付）で実現できるためQ1aに該当",
       "estimated_time_saved": "1回あたり30分程度",
@@ -3134,7 +3134,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "経理体制・帳簿管理 > 経理体制整備 > 1. 経理担当者任命 / 担当者任命",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612",
+      "インプット": "職務分掌規程、人事異動情報",
+      "処理": "理事長が会計責任者・出納職員・予算管理責任者・固定資産管理責任者の任命対象者を検討し、理事会で任命を決定して辞令・職務分掌規程に反映する。",
+      "アウトプット": "辞令、理事会議事録（任命記録）"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -3156,7 +3159,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "経理体制・帳簿管理 > 経理体制整備 > 2. 職務分掌範囲確認 / 職務分掌確認",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612",
+      "インプット": "職務分掌規程、経理規程",
+      "処理": "会計責任者が各サービス区分の担当範囲と権限委譲の境界を規程と照らして確認し、見直しが必要な場合は改定案をまとめる。",
+      "アウトプット": "確認記録、規程改定案（必要時）"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -3178,7 +3184,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "経理体制・帳簿管理 > 経理体制整備 > 3. 監督体制定期確認 / 監督体制確認",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612",
+      "インプット": "仕訳日記帳、月次試算表",
+      "処理": "会計責任者が出納職員の業務遂行状況を帳簿類から定期的に確認し、経理規程からの逸脱がないかチェックする。",
+      "アウトプット": "確認記録（逸脱時は是正指示）"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -3200,7 +3209,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "経理体制・帳簿管理 > 帳簿・帳票管理 > 1. 帳簿一覧整備 / 帳簿一覧整備",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612",
+      "インプット": "経理規程",
+      "処理": "出納職員が経理規程に定める必要帳簿（仕訳日記帳・総勘定元帳・小口現金出納帳・固定資産管理台帳等）を洗い出して一覧化し、不足分を整備する。",
+      "アウトプット": "帳簿一覧表"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -3222,7 +3234,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "経理体制・帳簿管理 > 帳簿・帳票管理 > 2. 会計システム設定確認 / 会計システム設定確認",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612",
+      "インプット": "勘定科目一覧、経理規程",
+      "処理": "出納職員が会計システムの勘定科目・サービス区分・帳票出力設定を確認し、年度設定・変更を登録する。",
+      "アウトプット": "設定変更記録（会計システム）"
     },
     {
       "業務分類": "経理体制・帳簿管理",
@@ -3244,7 +3259,10 @@
       "as_is_category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "as_is_node_id": "process-006",
       "as_is_position_label": "経理体制・帳簿管理 > 帳簿・帳票管理 > 3. 帳票出力テスト確認 / 帳票出力確認",
-      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612"
+      "as_is_business_type_flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612",
+      "インプット": "月次試算表、総勘定元帳（会計システム出力）",
+      "処理": "会計責任者が会計システムから出力した帳票の科目・金額・体裁に誤りがないか確認し、不備があれば設定修正を依頼する。",
+      "アウトプット": "確認済み帳票、修正依頼（不備時）"
     },
     {
       "業務分類": "予算管理",
@@ -3266,7 +3284,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "予算管理 > 当初予算編成 > 1. 事業計画情報収集 / 事業計画情報収集",
-      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612"
+      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612",
+      "インプット": "次年度事業計画、社会福祉充実計画、現場ヒアリング結果",
+      "処理": "予算管理責任者が各資料を収集・整理し、予算編成の基礎資料として予算要求様式に取りまとめる。",
+      "アウトプット": "予算要求様式（基礎資料一式）"
     },
     {
       "業務分類": "予算管理",
@@ -3288,7 +3309,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "予算管理 > 当初予算編成 > 2. 資金収支予算案作成 / 予算案作成",
-      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612"
+      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612",
+      "インプット": "前年度試算表、予算要求様式",
+      "処理": "予算管理責任者が会計システムまたはExcelで勘定科目単位に収入・支出予算を積算し、法人全体・サービス区分ごとの予算案にまとめる。",
+      "アウトプット": "予算積算表、資金収支予算案"
     },
     {
       "業務分類": "予算管理",
@@ -3310,7 +3334,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "予算管理 > 当初予算編成 > 3. 予算理事会承認 / 理事会承認",
-      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612"
+      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612",
+      "インプット": "資金収支予算案",
+      "処理": "理事長が予算案を理事会へ提出し、審議・承認を経て予算を確定する。修正指示があれば差し戻して再編成する。",
+      "アウトプット": "承認済み予算案、理事会議事録"
     },
     {
       "業務分類": "予算管理",
@@ -3331,7 +3358,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "予算管理 > 当初予算編成 > 4. 確定予算システム登録 / 予算確定登録",
-      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612"
+      "as_is_business_type_flow_key": "asis_予算管理__当初予算編成_20260612",
+      "インプット": "承認済み予算案",
+      "処理": "予算管理責任者が承認済み予算を会計システムの予算管理機能へ科目単位で入力・登録する。",
+      "アウトプット": "予算管理表（会計システム登録済み）"
     },
     {
       "業務分類": "予算管理",
@@ -3353,7 +3383,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "予算管理 > 補正予算管理 > 1. 予算執行差異確認 / 予算差異確認",
-      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260612"
+      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260612",
+      "インプット": "月次試算表、予算管理表（予算対実績レポート）",
+      "処理": "予算管理責任者が予算と実績を照合し、差異の大きい科目と変更事由を特定する。",
+      "アウトプット": "差異分析メモ"
     },
     {
       "業務分類": "予算管理",
@@ -3374,7 +3407,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260612",
       "as_is_node_id": "process-006",
       "as_is_position_label": "予算管理 > 補正予算管理 > 2. 補正予算案作成 / 補正予算案作成",
-      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260612"
+      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260612",
+      "インプット": "差異分析メモ",
+      "処理": "予算管理責任者が変更事由をもとに補正額を積算し、Excelで補正予算案として整理する。",
+      "アウトプット": "補正積算表、補正予算案"
     },
     {
       "業務分類": "予算管理",
@@ -3396,7 +3432,10 @@
       "as_is_category_flow_key": "asis_予算管理_20260612",
       "as_is_node_id": "process-007",
       "as_is_position_label": "予算管理 > 補正予算管理 > 3. 補正予算理事会承認 / 理事会提出・承認",
-      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260612"
+      "as_is_business_type_flow_key": "asis_予算管理__補正予算管理_20260612",
+      "インプット": "補正予算案",
+      "処理": "予算管理責任者が補正予算案を理事会へ提出し、承認を経て確定後、予算管理表へ反映する。",
+      "アウトプット": "理事会議事録、更新済み予算管理表"
     },
     {
       "業務分類": "収納事務",
@@ -3418,7 +3457,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "収納事務 > 請求・収納 > 1. 請求データ作成 / 請求データ作成",
-      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612",
+      "インプット": "利用実績データ",
+      "処理": "出納職員が利用実績を参照し、請求システムで補助金・利用料・サービス報酬の請求データを作成する。",
+      "アウトプット": "請求データ（請求システム）"
     },
     {
       "業務分類": "収納事務",
@@ -3440,7 +3482,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "収納事務 > 請求・収納 > 2. 請求内容確認 / 請求内容確認",
-      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612",
+      "インプット": "請求データ、利用実績データ",
+      "処理": "出納職員が請求額・利用者負担・補助金等の内容を利用実績と突き合わせ、誤りがないか確認する。誤りがあれば修正する。",
+      "アウトプット": "確認済み請求データ"
     },
     {
       "業務分類": "収納事務",
@@ -3462,7 +3507,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "収納事務 > 請求・収納 > 3. 請求書発行・送付 / 請求書発行",
-      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612",
+      "インプット": "確認済み請求データ",
+      "処理": "出納職員が請求システムから請求書（または請求書兼領収書）を出力し、利用者・関係機関へ送付または手渡しする。",
+      "アウトプット": "請求書（発送済み）、請求書控え"
     },
     {
       "業務分類": "収納事務",
@@ -3484,7 +3532,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "収納事務 > 請求・収納 > 4. 入金確認・照合 / 入金確認",
-      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__請求_収納_20260612",
+      "インプット": "預金通帳・入金明細、請求リスト",
+      "処理": "出納職員が銀行口座への入金を請求リストと照合して入金消込を行い、不一致があれば調査する。",
+      "アウトプット": "消込済み請求リスト"
     },
     {
       "業務分類": "収納事務",
@@ -3506,7 +3557,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "収納事務 > 現金収納 > 1. 現金受領・収納確認 / 現金受領",
-      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260612",
+      "インプット": "現金、請求書控え",
+      "処理": "出納職員が利用者または関係者から現金を受け取り、金額・名目を請求書控えと照らして確認する。",
+      "アウトプット": "収納確認済みの現金（領収書発行へ）"
     },
     {
       "業務分類": "収納事務",
@@ -3527,7 +3581,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-006",
       "as_is_position_label": "収納事務 > 現金収納 > 2. 領収書発行 / 領収書発行",
-      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260612",
+      "インプット": "収納した現金（金額・名目）",
+      "処理": "出納職員が福祉サービス利用者負担金の収納時に領収書を作成して利用者へ手渡し、控えを保管する。",
+      "アウトプット": "領収書、領収書控え"
     },
     {
       "業務分類": "収納事務",
@@ -3549,7 +3606,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-007",
       "as_is_position_label": "収納事務 > 現金収納 > 3. 収納現金預入 / 預入処理",
-      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__現金収納_20260612",
+      "インプット": "収納現金、入金票",
+      "処理": "出納職員が経理規程の期日内に金融機関へ現金を預け入れ、入金票・入金明細を取得する。",
+      "アウトプット": "入金票、入金明細（預入記録）"
     },
     {
       "業務分類": "収納事務",
@@ -3571,7 +3631,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-008",
       "as_is_position_label": "収納事務 > 会計伝票作成 > 1. 収納伝票会計入力 / 収納伝票入力",
-      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260612",
+      "インプット": "入金明細、消込済み請求リスト、勘定科目一覧",
+      "処理": "出納職員が科目・金額・補助科目を確認のうえ、会計システムで収納に係る会計伝票を作成・登録する。",
+      "アウトプット": "登録済み収納伝票（会計システム）"
     },
     {
       "業務分類": "収納事務",
@@ -3592,7 +3655,10 @@
       "as_is_category_flow_key": "asis_収納事務_20260612",
       "as_is_node_id": "process-009",
       "as_is_position_label": "収納事務 > 会計伝票作成 > 2. 収納証憑整理・保管 / 収納証憑保管",
-      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260612"
+      "as_is_business_type_flow_key": "asis_収納事務__会計伝票作成_20260612",
+      "インプット": "領収書控え、入金明細、収納伝票",
+      "処理": "出納職員が証憑類を日付順に整理し、月別ファイルに綴り込んで保管する。",
+      "アウトプット": "月別証憑ファイル"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3614,7 +3680,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 1. 購入・支払起案 / 購入・支払起案",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612",
+      "インプット": "購入仕様書、見積書",
+      "処理": "契約担当者または担当者が発注前に稟議書・購入依頼書を作成し、会計責任者へ起案して承認を得る。",
+      "アウトプット": "承認済み稟議書、購入依頼書"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3636,7 +3705,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 2. 請求書・証憑照合 / 請求書照合",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612",
+      "インプット": "請求書、納品書、契約書、稟議書、購入依頼書",
+      "処理": "出納職員が書類間で金額・品目・支払先の一致を目視で照合し、不一致があれば担当者へ差し戻す。",
+      "アウトプット": "照合済み請求書（支払承認へ）"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3657,7 +3729,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 3. 支払情報承認 / 支払承認",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612",
+      "インプット": "照合済み請求書、支払一覧表",
+      "処理": "会計責任者が支払情報を請求書と再照合して承認し、支払一覧表へ承認記録を残す。",
+      "アウトプット": "承認済み支払一覧表"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3679,7 +3754,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 4. 振込実行 / 振込実行",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612",
+      "インプット": "承認済み支払一覧表",
+      "処理": "出納職員が総合振込またはインターネットバンキングで支払を実行し、振込控えを取得する。",
+      "アウトプット": "振込控え"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3700,7 +3778,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "支払・契約事務 > 支払処理 > 5. 支払伝票会計入力 / 支払伝票入力",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__支払処理_20260612",
+      "インプット": "振込控え、請求書、稟議書",
+      "処理": "出納職員が科目・金額・補助科目を確認のうえ、会計システムで支払に係る会計伝票を作成・登録する。",
+      "アウトプット": "登録済み支払伝票（会計システム）"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3722,7 +3803,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-006",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 1. 契約方式確認 / 契約種類確認",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612",
+      "インプット": "経理規程、契約規程、契約予定の金額・内容",
+      "処理": "契約担当者が契約金額・内容を規程に照らし、入札契約か随意契約かの手続きを判定する。",
+      "アウトプット": "契約方式の判定結果（起案資料へ記載）"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3744,7 +3828,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-007",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 2. 見積徴取・比較検討 / 見積徴取・比較",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612",
+      "インプット": "見積依頼書、各社見積書",
+      "処理": "契約担当者が原則3社以上から見積を徴取して金額・条件を比較検討する。3社に満たない場合は理由書を作成する。",
+      "アウトプット": "見積比較表、理由書（該当時）"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3765,7 +3852,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-008",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 3. 契約書作成 / 契約書作成",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612",
+      "インプット": "契約書案（標準契約書または業者指定様式）",
+      "処理": "契約担当者が契約条件を反映した契約書を作成し、双方が署名・捺印して締結する。",
+      "アウトプット": "締結済み契約書"
     },
     {
       "業務分類": "支払・契約事務",
@@ -3787,7 +3877,10 @@
       "as_is_category_flow_key": "asis_支払_契約事務_20260612",
       "as_is_node_id": "process-009",
       "as_is_position_label": "支払・契約事務 > 契約事務 > 4. 契約履行確認 / 履行確認",
-      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612"
+      "as_is_business_type_flow_key": "asis_支払_契約事務__契約事務_20260612",
+      "インプット": "納品書、納品物、業務報告書",
+      "処理": "契約担当者が契約内容どおりの履行（納品・役務提供）を確認し、支払依頼書を起案する。",
+      "アウトプット": "支払依頼書"
     },
     {
       "業務分類": "現金管理",
@@ -3809,7 +3902,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "現金管理 > 小口現金支払 > 1. 小口支払申請受付 / 小口支払申請受付",
-      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260612"
+      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260612",
+      "インプット": "小口支払申請書（または口頭申請）、領収書",
+      "処理": "出納職員が支払内容・金額・申請者を確認して申請を受け付ける。",
+      "アウトプット": "受付済み小口支払申請書"
     },
     {
       "業務分類": "現金管理",
@@ -3831,7 +3927,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "現金管理 > 小口現金支払 > 2. 小口支払証憑確認 / 証憑確認",
-      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260612"
+      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260612",
+      "インプット": "領収書、上長承認印",
+      "処理": "出納職員が領収書の内容（支払内容・金額・日付・宛名）と承認の有無を確認し、小口現金を払い出す。",
+      "アウトプット": "確認済み証憑、払出した現金"
     },
     {
       "業務分類": "現金管理",
@@ -3852,7 +3951,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "現金管理 > 小口現金支払 > 3. 出納帳記入・保管 / 小口現金出納帳記入",
-      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260612"
+      "as_is_business_type_flow_key": "asis_現金管理__小口現金支払_20260612",
+      "インプット": "領収書（払出済み）",
+      "処理": "出納職員が小口現金出納帳に日付・金額・科目・摘要を記入し、証憑を綴り込んで保管する。",
+      "アウトプット": "記入済み小口現金出納帳、証憑綴り"
     },
     {
       "業務分類": "現金管理",
@@ -3874,7 +3976,10 @@
       "as_is_category_flow_key": "asis_現金管理_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "現金管理 > 現金残高確認 > 1. 現金実査・照合 / 現金実査",
-      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260612"
+      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260612",
+      "インプット": "金庫内現金、小口現金出納帳、総勘定元帳",
+      "処理": "出納職員（または会計責任者）が金庫内現金を実査し、出納帳・会計帳簿の残高と照合する。",
+      "アウトプット": "実査表（実査メモ）"
     },
     {
       "業務分類": "現金管理",
@@ -3888,14 +3993,18 @@
       "1件あたり所要時間_分": "30（仮）",
       "人手の負担": "中",
       "現状課題": "差異原因の追跡に時間がかかる",
-      "確認事項": "",
+      "確認事項": "質問: 調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください / 回答例: 会計責任者が理事長へ報告し、承認のうえ雑損失で処理する",
       "クライアント回答": "",
       "区分": "仮案",
       "task_id": "task_97cfe2d4",
       "as_is_category_flow_key": "asis_現金管理_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "現金管理 > 現金残高確認 > 2. 現金差異調査・報告 / 差異調査・報告",
-      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260612"
+      "as_is_business_type_flow_key": "asis_現金管理__現金残高確認_20260612",
+      "question_source": "asis_detail",
+      "インプット": "小口現金出納帳、領収書綴り、実査表",
+      "処理": "出納職員が差異の原因を取引記録から調査し、結果を差異報告書にまとめて会計責任者へ提出する。",
+      "アウトプット": "差異報告書"
     },
     {
       "業務分類": "人件費支払",
@@ -3917,7 +4026,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "人件費支払 > 給与支払 > 1. 勤怠情報収集・整理 / 勤怠情報収集",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612",
+      "インプット": "日報、勤怠記録（紙）",
+      "処理": "出納職員が各部門から日報・勤怠記録を収集し、出勤日数・残業時間・有休等を集計して給与計算の元データに整える。",
+      "アウトプット": "勤怠集計表"
     },
     {
       "業務分類": "人件費支払",
@@ -3938,7 +4050,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "人件費支払 > 給与支払 > 2. 給与計算システム入力 / 給与計算入力",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612",
+      "インプット": "勤怠集計表、手当・控除情報",
+      "処理": "出納職員が給与計算システムへ勤怠・手当・控除情報を入力し、給与額を算出する。",
+      "アウトプット": "給与計算明細、支払一覧"
     },
     {
       "業務分類": "人件費支払",
@@ -3960,7 +4075,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "人件費支払 > 給与支払 > 3. 給与計算データ承認 / 給与計算データ承認",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612",
+      "インプット": "給与計算明細、支払一覧",
+      "処理": "会計責任者が金額・人数・控除額等を確認し、給与計算データを承認する。",
+      "アウトプット": "承認済み給与データ"
     },
     {
       "業務分類": "人件費支払",
@@ -3982,7 +4100,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "人件費支払 > 給与支払 > 4. 給与振込実行 / 給与振込",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612",
+      "インプット": "承認済み支払一覧",
+      "処理": "出納職員がインターネットバンキングで給与振込を実行し、振込控えを取得する。",
+      "アウトプット": "振込控え"
     },
     {
       "業務分類": "人件費支払",
@@ -4003,7 +4124,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "人件費支払 > 給与支払 > 5. 給与仕訳会計入力 / 給与仕訳入力",
-      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__給与支払_20260612",
+      "インプット": "振込控え、給与計算明細",
+      "処理": "出納職員が支払給与・社会保険料・源泉徴収等の仕訳を会計システムへ入力する。",
+      "アウトプット": "給与仕訳（会計システム登録済み）"
     },
     {
       "業務分類": "人件費支払",
@@ -4025,7 +4149,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-006",
       "as_is_position_label": "人件費支払 > 賞与支給 > 1. 賞与支給額計算 / 賞与支給額計算",
-      "as_is_business_type_flow_key": "asis_人件費支払__賞与支給_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__賞与支給_20260612",
+      "インプット": "給与台帳、支給基準通知",
+      "処理": "出納職員が決定済みの支給基準（支給月数等）に基づき賞与支給額を計算し、賞与計算表にまとめる。",
+      "アウトプット": "賞与計算表"
     },
     {
       "業務分類": "人件費支払",
@@ -4047,7 +4174,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-007",
       "as_is_position_label": "人件費支払 > 賞与支給 > 2. 賞与データシステム入力 / 賞与データ入力",
-      "as_is_business_type_flow_key": "asis_人件費支払__賞与支給_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__賞与支給_20260612",
+      "インプット": "賞与計算表",
+      "処理": "出納職員が給与計算システムへ賞与支給額を入力し、支給データを確定する。",
+      "アウトプット": "賞与支給データ、賞与明細"
     },
     {
       "業務分類": "人件費支払",
@@ -4069,7 +4199,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-008",
       "as_is_position_label": "人件費支払 > 年末調整 > 1. 年末調整申告書収集・確認 / 申告書収集・確認",
-      "as_is_business_type_flow_key": "asis_人件費支払__年末調整_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__年末調整_20260612",
+      "インプット": "扶養控除等申告書、保険料控除申告書、控除証明書",
+      "処理": "出納職員が職員から申告書類を収集し、記載内容と添付資料の不備を確認する。不備があれば職員へ差し戻す。",
+      "アウトプット": "確認済み申告書一式"
     },
     {
       "業務分類": "人件費支払",
@@ -4083,14 +4216,18 @@
       "1件あたり所要時間_分": "60（仮）",
       "人手の負担": "高",
       "現状課題": "要確認",
-      "確認事項": "",
+      "確認事項": "質問: 年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください / 回答例: 12月給与で精算し、過不足一覧を会計責任者が確認する",
       "クライアント回答": "",
       "区分": "仮案",
       "task_id": "task_10c8a736",
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-009",
       "as_is_position_label": "人件費支払 > 年末調整 > 2. 年末調整計算・精算 / 年末調整計算",
-      "as_is_business_type_flow_key": "asis_人件費支払__年末調整_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__年末調整_20260612",
+      "question_source": "asis_detail",
+      "インプット": "確認済み申告書一式",
+      "処理": "出納職員が給与計算システムで年末調整計算を行い、過不足額を給与で精算する。",
+      "アウトプット": "年末調整計算結果、源泉徴収票、精算データ"
     },
     {
       "業務分類": "人件費支払",
@@ -4112,7 +4249,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-010",
       "as_is_position_label": "人件費支払 > 社会保険・源泉 > 1. 源泉徴収税額計算・納付 / 源泉徴収事務",
-      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260612",
+      "インプット": "給与計算データ",
+      "処理": "出納職員が毎月の源泉徴収税額を確認して納付書を作成し、所轄税務署へ電子申告または書面で納付する。",
+      "アウトプット": "納付書（納付済み控え）"
     },
     {
       "業務分類": "人件費支払",
@@ -4134,7 +4274,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-011",
       "as_is_position_label": "人件費支払 > 社会保険・源泉 > 2. 社会保険届出書作成 / 社会保険届出作成",
-      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260612",
+      "インプット": "給与計算データ",
+      "処理": "出納職員が給与計算システムのデータを参照し、算定基礎届・賞与支払届・入退職届等を作成する。",
+      "アウトプット": "算定基礎届、賞与支払届等の届出書類"
     },
     {
       "業務分類": "人件費支払",
@@ -4155,7 +4298,10 @@
       "as_is_category_flow_key": "asis_人件費支払_20260612",
       "as_is_node_id": "process-012",
       "as_is_position_label": "人件費支払 > 社会保険・源泉 > 3. 社会保険届出提出 / 届出提出",
-      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260612"
+      "as_is_business_type_flow_key": "asis_人件費支払__社会保険_源泉_20260612",
+      "インプット": "作成済み届出書類",
+      "処理": "出納職員が社会保険事務所・ハローワーク等へ電子申請または郵送で提出し、控えを保管する。",
+      "アウトプット": "提出控え"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4177,7 +4323,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "資産・負債管理 > 債権債務管理 > 1. 債権債務残高内訳調査 / 残高内訳調査",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260612",
+      "インプット": "総勘定元帳、請求リスト、支払一覧表",
+      "処理": "出納職員が毎月末日の未収金・未払金等の残高内訳を会計システムから抽出し、内容を調査する。",
+      "アウトプット": "残高内訳表"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4198,7 +4347,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "資産・負債管理 > 債権債務管理 > 2. 取引先残高照合 / 取引先残高確認",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260612",
+      "インプット": "残高内訳表",
+      "処理": "出納職員が必要に応じて取引先へ残高確認書を送付・回収し、自社残高との差異の有無を調査する。",
+      "アウトプット": "回収済み残高確認書、差異調査結果"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4220,7 +4372,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "資産・負債管理 > 債権債務管理 > 3. 残高差異報告・対応 / 差異報告・措置",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__債権債務管理_20260612",
+      "インプット": "残高内訳表、差異調査結果",
+      "処理": "会計責任者が差異・不明残高を理事長へ報告し、回収・修正・貸倒処理等の措置を決定・実行する。",
+      "アウトプット": "差異報告、対応記録"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4241,7 +4396,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "資産・負債管理 > 実地棚卸 > 1. 棚卸表整備・配布 / 棚卸表整備・配布",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260612",
+      "インプット": "棚卸実施要領（経理規程）",
+      "処理": "出納職員が棚卸方法を各部門へ周知し、棚卸表を担当職員へ配布する。",
+      "アウトプット": "配布済み棚卸表"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4263,7 +4421,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "資産・負債管理 > 実地棚卸 > 2. 実地棚卸実施 / 実地棚卸実施",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260612",
+      "インプット": "棚卸表",
+      "処理": "担当職員が現物を確認しながら品名・品番・数量を棚卸表に記入する。帳簿にない棚卸資産も報告する。",
+      "アウトプット": "記入済み棚卸表"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4285,7 +4446,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-006",
       "as_is_position_label": "資産・負債管理 > 実地棚卸 > 3. 棚卸表集計・承認 / 棚卸表集計・承認",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__実地棚卸_20260612",
+      "インプット": "記入済み棚卸表、総勘定元帳",
+      "処理": "出納職員が棚卸表を回収・集計し、会計責任者の承認を得て棚卸差異を会計システムへ反映する。",
+      "アウトプット": "棚卸集計表、棚卸仕訳"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4307,7 +4471,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-007",
       "as_is_position_label": "資産・負債管理 > 固定資産管理 > 1. 固定資産台帳登録 / 固定資産台帳登録",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260612",
+      "インプット": "請求書、納品書",
+      "処理": "固定資産管理責任者が取得した固定資産の取得価額・耐用年数・部門・使用場所等を固定資産管理台帳へ登録する。",
+      "アウトプット": "更新済み固定資産管理台帳"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4328,7 +4495,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-008",
       "as_is_position_label": "資産・負債管理 > 固定資産管理 > 2. 固定資産現物確認 / 固定資産現物確認",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260612",
+      "インプット": "固定資産管理台帳",
+      "処理": "固定資産管理責任者が年度末に台帳と現物の存在・使用状況を突き合わせて確認する。",
+      "アウトプット": "現物確認記録（差異時は調査報告）"
     },
     {
       "業務分類": "資産・負債管理",
@@ -4350,7 +4520,10 @@
       "as_is_category_flow_key": "asis_資産_負債管理_20260612",
       "as_is_node_id": "process-009",
       "as_is_position_label": "資産・負債管理 > 固定資産管理 > 3. 除却承認・台帳更新 / 除却承認・台帳更新",
-      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260612"
+      "as_is_business_type_flow_key": "asis_資産_負債管理__固定資産管理_20260612",
+      "インプット": "除却起案書",
+      "処理": "固定資産管理責任者が廃棄・売却時に会計責任者・理事長の承認を得て、固定資産管理台帳の除却記録を更新する。",
+      "アウトプット": "承認済み除却起案書、更新済み固定資産管理台帳"
     },
     {
       "業務分類": "決算・報告",
@@ -4372,7 +4545,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-001",
       "as_is_position_label": "決算・報告 > 月次報告 > 1. 現預金残高確認 / 現預金残高確認",
-      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260612",
+      "インプット": "通帳、小口現金出納帳",
+      "処理": "出納職員が現金・預金・仮払金・仮受金などの残高を確認し、会計システム残高との一致を確認する。不一致があれば調査する。",
+      "アウトプット": "残高確認結果"
     },
     {
       "業務分類": "決算・報告",
@@ -4393,7 +4569,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-002",
       "as_is_position_label": "決算・報告 > 月次報告 > 2. 月次試算表作成 / 月次試算表作成",
-      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260612",
+      "インプット": "会計システムの月次データ、前月試算表",
+      "処理": "出納職員が会計システムで月次試算表を出力し、前月と比較して誤り・計上漏れがないか確認する。",
+      "アウトプット": "月次試算表"
     },
     {
       "業務分類": "決算・報告",
@@ -4415,7 +4594,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-003",
       "as_is_position_label": "決算・報告 > 月次報告 > 3. 月次報告書作成・提出 / 月次報告",
-      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__月次報告_20260612",
+      "インプット": "月次試算表",
+      "処理": "会計責任者が経理規程で定めた期日までに月次試算表と報告コメントをとりまとめ、理事長へ報告する。",
+      "アウトプット": "月次報告書（理事長へ提出）"
     },
     {
       "業務分類": "決算・報告",
@@ -4437,7 +4619,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-004",
       "as_is_position_label": "決算・報告 > 年次決算 > 1. 決算整理仕訳作成 / 決算整理仕訳作成",
-      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260612",
+      "インプット": "前期仕訳帳、減価償却計算表、保険証書、棚卸表",
+      "処理": "出納職員が未収・未払・棚卸・減価償却・引当金・見越繰延等の決算整理仕訳を、前期仕訳を参照しながらExcelで下書き作成する。",
+      "アウトプット": "決算整理仕訳表（下書き・承認用）"
     },
     {
       "業務分類": "決算・報告",
@@ -4458,7 +4643,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-005",
       "as_is_position_label": "決算・報告 > 年次決算 > 2. 決算整理仕訳入力 / 決算整理仕訳入力",
-      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260612",
+      "インプット": "承認済み決算整理仕訳表",
+      "処理": "出納職員が承認済みの決算整理仕訳を会計システムへ入力する。",
+      "アウトプット": "登録済み決算整理仕訳（会計システム）"
     },
     {
       "業務分類": "決算・報告",
@@ -4472,14 +4660,18 @@
       "1件あたり所要時間_分": "180（仮）",
       "人手の負担": "高",
       "現状課題": "計算書類の体裁整備に時間がかかり、過去書類との比較確認が手作業",
-      "確認事項": "",
+      "確認事項": "質問: 計算書類の最終確認・承認は誰がどの順序で行いますか（会計責任者→監事→理事会等） / 回答例: 会計責任者の確認後、監事監査を経て理事会・評議員会で承認する",
       "クライアント回答": "",
       "区分": "仮案",
       "task_id": "task_79b1cf3f",
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-006",
       "as_is_position_label": "決算・報告 > 年次決算 > 3. 計算書類作成 / 計算書類作成",
-      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__年次決算_20260612",
+      "question_source": "asis_detail",
+      "インプット": "会計システムの決算データ",
+      "処理": "出納職員が貸借対照表・資金収支計算書・事業活動計算書・注記・附属明細書等を会計システムから出力し、体裁を整えて完成させる。",
+      "アウトプット": "計算書類一式"
     },
     {
       "業務分類": "決算・報告",
@@ -4501,7 +4693,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-007",
       "as_is_position_label": "決算・報告 > 税務申告 > 1. 申告要否確認 / 申告要否確認",
-      "as_is_business_type_flow_key": "asis_決算_報告__税務申告_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__税務申告_20260612",
+      "インプット": "計算書類、総勘定元帳",
+      "処理": "出納職員が収益事業の有無・消費税課税の該当状況を確認し、申告の要否を判定する。",
+      "アウトプット": "申告要否の判定結果"
     },
     {
       "業務分類": "決算・報告",
@@ -4523,7 +4718,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-008",
       "as_is_position_label": "決算・報告 > 税務申告 > 2. 法人税等申告書作成 / 申告書作成",
-      "as_is_business_type_flow_key": "asis_決算_報告__税務申告_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__税務申告_20260612",
+      "インプット": "計算書類、収益事業区分集計、会計データ",
+      "処理": "出納職員（または顧問税理士）が法人税・消費税の申告書を計算書類・会計データをもとに作成する。",
+      "アウトプット": "申告書案"
     },
     {
       "業務分類": "決算・報告",
@@ -4545,7 +4743,10 @@
       "as_is_category_flow_key": "asis_決算_報告_20260612",
       "as_is_node_id": "process-009",
       "as_is_position_label": "決算・報告 > 税務申告 > 3. 申告・納税手続 / 申告・納税",
-      "as_is_business_type_flow_key": "asis_決算_報告__税務申告_20260612"
+      "as_is_business_type_flow_key": "asis_決算_報告__税務申告_20260612",
+      "インプット": "完成した申告書",
+      "処理": "出納職員が申告書を税務署へ電子申告等で提出し、納税を実行する。控えを保管する。",
+      "アウトプット": "申告書控え、納付書控え"
     }
   ],
   "top3": [
@@ -4592,12 +4793,13 @@
         "frequency": 3,
         "implementation_ease": 4,
         "quality_impact": 5,
-        "ai_fit": 4,
+        "ai_fit": 5,
         "time_reduction_reason": "1件20分の照合作業の大半を自動化でき、1件あたり15分程度の削減を見込む",
         "frequency_reason": "支払は週次で発生し月20件程度の照合がある",
         "implementation_ease_reason": "文書読解APIと既存の支払データ参照で実現でき、軽微なカスタマイズで導入可能",
         "quality_impact_reason": "照合漏れは支払誤りに直結し、現に目視確認の見落としが課題になっている",
-        "ai_fit_reason": "紙・PDFの非構造文書の読解・照合が主作業でAIが必要（generative_ai）"
+        "ai_fit_reason": "紙・PDFの非構造文書の読解・照合が主作業でAIが必要（generative_ai）",
+        "total": 81
       },
       "time_reduction_reason": "1件20分の照合作業の大半を自動化でき、1件あたり15分程度の削減を見込む",
       "frequency_reason": "支払は週次で発生し月20件程度の照合がある",
@@ -4787,12 +4989,13 @@
         "frequency": 3,
         "implementation_ease": 3,
         "quality_impact": 5,
-        "ai_fit": 4,
+        "ai_fit": 5,
         "time_reduction_reason": "毎月60分の手集計・転記の大半を自動化でき、40分以上の削減を見込む",
         "frequency_reason": "毎月全職員分が確実に発生する定例業務である",
         "implementation_ease_reason": "手書きOCRの精度確保に検証が必要で中程度の開発を見込む",
         "quality_impact_reason": "転記ミスが給与誤支給という重大な影響に直結する",
-        "ai_fit_reason": "紙の手書き勤怠記録の読解が主作業でAIが必要（generative_ai）"
+        "ai_fit_reason": "紙の手書き勤怠記録の読解が主作業でAIが必要（generative_ai）",
+        "total": 78
       },
       "time_reduction_reason": "毎月60分の手集計・転記の大半を自動化でき、40分以上の削減を見込む",
       "frequency_reason": "毎月全職員分が確実に発生する定例業務である",
@@ -4966,12 +5169,13 @@
         "frequency": 1,
         "implementation_ease": 3,
         "quality_impact": 4,
-        "ai_fit": 4,
+        "ai_fit": 5,
         "time_reduction_reason": "180分の下書き作成のうち90分以上の削減を見込む",
         "frequency_reason": "年1回の決算期のみ発生する",
         "implementation_ease_reason": "参照資料が多岐にわたるため読解対象の整備に中程度の開発を見込む",
         "quality_impact_reason": "作成漏れ・計算誤りは計算書類の誤りに直結する",
-        "ai_fit_reason": "前期仕訳・計算表・証書など非構造資料の読解と下書き生成が主作業でAIが必要（generative_ai）"
+        "ai_fit_reason": "前期仕訳・計算表・証書など非構造資料の読解と下書き生成が主作業でAIが必要（generative_ai）",
+        "total": 76
       },
       "time_reduction_reason": "180分の下書き作成のうち90分以上の削減を見込む",
       "frequency_reason": "年1回の決算期のみ発生する",
@@ -12468,7 +12672,7 @@
           "actor": "担当者・業務部門",
           "description": "残高差異がある場合に出納職員が原因を調査し、会計責任者へ差異報告書を提出する。",
           "issue": "差異原因の追跡に時間がかかる",
-          "question": "",
+          "question": "質問: 調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください / 回答例: 会計責任者が理事長へ報告し、承認のうえ雑損失で処理する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",
@@ -12667,7 +12871,7 @@
           "actor": "担当者・業務部門",
           "description": "出納職員が給与計算システムで年末調整計算を行い、過不足額を精算する。",
           "issue": "要確認",
-          "question": "",
+          "question": "質問: 年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください / 回答例: 12月給与で精算し、過不足一覧を会計責任者が確認する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",
@@ -13057,7 +13261,7 @@
           "actor": "担当者・業務部門",
           "description": "出納職員が会計システムから貸借対照表・資金収支計算書・事業活動計算書・注記・附属明細書等を出力し、体裁を整えて完成させる。",
           "issue": "計算書類の体裁整備に時間がかかり、過去書類との比較確認が手作業",
-          "question": "",
+          "question": "質問: 計算書類の最終確認・承認は誰がどの順序で行いますか（会計責任者→監事→理事会等） / 回答例: 会計責任者の確認後、監事監査を経て理事会・評議員会で承認する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",
@@ -13979,7 +14183,7 @@
           "actor": "担当者・業務部門",
           "description": "残高差異がある場合に出納職員が原因を調査し、会計責任者へ差異報告書を提出する。",
           "issue": "差異原因の追跡に時間がかかる",
-          "question": "",
+          "question": "質問: 調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください / 回答例: 会計責任者が理事長へ報告し、承認のうえ雑損失で処理する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",
@@ -14198,7 +14402,7 @@
           "actor": "担当者・業務部門",
           "description": "出納職員が給与計算システムで年末調整計算を行い、過不足額を精算する。",
           "issue": "要確認",
-          "question": "",
+          "question": "質問: 年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください / 回答例: 12月給与で精算し、過不足一覧を会計責任者が確認する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",
@@ -14636,7 +14840,7 @@
           "actor": "担当者・業務部門",
           "description": "出納職員が会計システムから貸借対照表・資金収支計算書・事業活動計算書・注記・附属明細書等を出力し、体裁を整えて完成させる。",
           "issue": "計算書類の体裁整備に時間がかかり、過去書類との比較確認が手作業",
-          "question": "",
+          "question": "質問: 計算書類の最終確認・承認は誰がどの順序で行いますか（会計責任者→監事→理事会等） / 回答例: 会計責任者の確認後、監事監査を経て理事会・評議員会で承認する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",

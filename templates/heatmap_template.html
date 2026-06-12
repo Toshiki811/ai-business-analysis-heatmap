@@ -2599,6 +2599,10 @@
           </div>
         </div>
       </div>
+      <div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-700">
+        <p>※ 判断条件が明文化されておりルールベース・既存システム設定で足りる業務は、AI適合度を低く採点しているため「低」「中」に寄ります。セル詳細の「推奨自動化手段」で実装手段を確認できます。</p>
+        <div id="automation-breakdown" class="mt-2"></div>
+      </div>
     </section>
 
     <!-- ④ TOP3テーブル -->
@@ -2691,6 +2695,7 @@
               <p class="text-xs text-slate-400 mb-1.5">開発規模</p>
               <span id="detail-scale" class="inline-block px-3 py-1 rounded text-sm font-bold"></span>
             </div>
+            <div id="detail-blueprint" class="hidden"></div>
           </div>
         </div>
 
@@ -2782,6 +2787,31 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     }
     function scaleColor(scale) {
       return ({ '小': 'background:#d1fae5;color:#065f46;', '中': 'background:#fef3c7;color:#92400e;', '大': 'background:#fee2e2;color:#991b1b;' })[scale] || '';
+    }
+    function automationTypeLabel(type) {
+      return ({
+        'rule_based': 'ルールベース',
+        'system_config': '既存システム設定',
+        'rpa': 'RPA/連携',
+        'generative_ai': '生成AI',
+        'ai_agent': 'AIエージェント',
+        'manual': '人手維持'
+      })[String(type || '').trim()] || '';
+    }
+    function automationChipStyle(type) {
+      return ({
+        'rule_based': 'background:#475569;color:#e2e8f0;',
+        'system_config': 'background:#475569;color:#e2e8f0;',
+        'rpa': 'background:#155e75;color:#a5f3fc;',
+        'generative_ai': 'background:#1e40af;color:#bfdbfe;',
+        'ai_agent': 'background:#6d28d9;color:#ede9fe;',
+        'manual': 'background:#334155;color:#94a3b8;'
+      })[String(type || '').trim()] || '';
+    }
+    function automationChip(type) {
+      const label = automationTypeLabel(type);
+      if (!label) return '';
+      return `<span style="${automationChipStyle(type)}padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap;">${escapeHtml(label)}</span>`;
     }
     function rankStyle(rank) {
       return (['background:#facc15;color:#78350f;', 'background:#cbd5e1;color:#1e293b;', 'background:#d97706;color:#fff;'])[rank - 1] || 'background:#475569;color:#fff;';
@@ -3829,14 +3859,32 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         </div>
       `).join('');
 
+      const useCaseDetail = cell.ai_use_case_detail || {};
+      const hasUseCaseDetail = [useCaseDetail.input, useCaseDetail.process, useCaseDetail.output]
+        .some(v => String(v || '').trim());
       const sourceTable = detailTable([
         ['業務分類', cell.category],
         ['業務種別', cell.business_type],
         ['ヒートマップ軸', targetLabel(cell.category, cell.business_type, cell.flow_step, cellDisplayHeatmapGroup(data, cell))],
         ['導入効果', effectLabel(cell.effect_level)],
+        ['推奨自動化手段', automationTypeLabel(cell.automation_type)],
+        ['判定理由', cell.automation_reason],
         ['対象As-Isタスク', linkedTaskNames],
         ['スコア根拠', cell.reason]
       ]);
+      const useCaseTable = hasUseCaseDetail ? `
+        <div class="axis-detail-section">
+          <div class="axis-detail-row-title">
+            <h4>自動化ユースケース（入力 → 処理 → 出力）</h4>
+            ${automationChip(cell.automation_type)}
+          </div>
+          ${detailTable([
+            ['入力', useCaseDetail.input],
+            ['処理', useCaseDetail.process],
+            ['出力', useCaseDetail.output]
+          ])}
+        </div>
+      ` : '';
       const top3Button = top3Index >= 0
         ? `<button class="axis-action-btn" onclick="openModal(${top3Index})">To-Beフローを見る</button>`
         : '';
@@ -3844,11 +3892,13 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         <div class="axis-detail-section">
           <div class="axis-detail-row-title">
             <h4>${escapeHtml(cell.business_type || '')} / ${escapeHtml(cell.flow_step || '')}</h4>
+            ${automationChip(cell.automation_type)}
             <span class="axis-mini-badge">${escapeHtml(effectLabel(cell.effect_level) || '-')}</span>
           </div>
           ${sourceTable}
           ${top3Button}
         </div>
+        ${useCaseTable}
         ${toBeRows}
       `;
     }
@@ -4011,7 +4061,26 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       });
     }
 
+    function buildAutomationBreakdown(data) {
+      const el = document.getElementById('automation-breakdown');
+      if (!el) return;
+      const counts = {};
+      (data.heatmap_cells || []).forEach(cell => {
+        const type = String(cell.automation_type || '').trim();
+        if (!type) return;
+        counts[type] = (counts[type] || 0) + 1;
+      });
+      const order = ['ai_agent', 'generative_ai', 'rpa', 'system_config', 'rule_based', 'manual'];
+      const types = order.filter(type => counts[type]);
+      if (types.length === 0) { el.innerHTML = ''; return; }
+      el.innerHTML = '<span class="text-slate-400 mr-2">自動化手段の内訳:</span>' +
+        types.map(type =>
+          `<span class="inline-flex items-center gap-1 mr-3">${automationChip(type)}<span class="text-slate-300">${counts[type]}件</span></span>`
+        ).join('');
+    }
+
     function buildHeatmap(data) {
+      buildAutomationBreakdown(data);
       const table = document.getElementById('heatmap-table');
       const tasks = data.matrix_tasks || [];
       const columns = flatHeatmapColumns(data);
@@ -4083,17 +4152,16 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       const tbody = document.getElementById('top3-tbody');
       tbody.innerHTML = (data.top3 || []).map((item, i) => {
         const businessType = top3BusinessType(item);
-        const level = (() => {
-          const cell = findHeatmapCell(data.heatmap_cells || [], item.target_category, businessType, top3HeatmapGroup(item), item.target_flow_step);
-          return cell ? cell.effect_level : null;
-        })();
+        const matchedCell = findHeatmapCell(data.heatmap_cells || [], item.target_category, businessType, top3HeatmapGroup(item), item.target_flow_step);
+        const level = matchedCell ? matchedCell.effect_level : null;
+        const automationType = item.automation_type || (matchedCell ? matchedCell.automation_type : '');
         return `
         <tr data-rank="${item.rank}" onclick="openModal(${i})">
           <td>
             <span class="rank-badge" data-rank="${item.rank}" style="${rankStyle(item.rank)}">${item.rank}</span>
           </td>
           <td>
-            <div class="font-semibold text-white">${item.target_business || item.title}</div>
+            <div class="font-semibold text-white">${item.target_business || item.title} ${automationChip(automationType)}</div>
             <div class="text-xs text-slate-400 mt-0.5">${targetLabel(item.target_category, businessType, item.target_flow_step, top3HeatmapGroup(item))}</div>
           </td>
           <td>
@@ -4127,7 +4195,14 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       scaleEl.textContent = item.development_scale || '';
       scaleEl.setAttribute('style', scaleColor(item.development_scale));
 
-      const axes = [
+      const hasAiFit = scores.ai_fit !== undefined && scores.ai_fit !== null && scores.ai_fit !== '';
+      const axes = hasAiFit ? [
+        { key: 'time_reduction',      label: '作業時間削減インパクト', weight: '40%', reasonKey: 'time_reduction_reason' },
+        { key: 'frequency',           label: '作業頻度・件数',         weight: '20%', reasonKey: 'frequency_reason' },
+        { key: 'implementation_ease', label: '実装容易性',             weight: '15%', reasonKey: 'implementation_ease_reason' },
+        { key: 'quality_impact',      label: '品質改善・ミス削減効果', weight: '10%', reasonKey: 'quality_impact_reason' },
+        { key: 'ai_fit',              label: 'AI適合度',               weight: '15%', reasonKey: 'ai_fit_reason' },
+      ] : [
         { key: 'time_reduction',      label: '作業時間削減インパクト', weight: '45%', reasonKey: 'time_reduction_reason' },
         { key: 'frequency',           label: '作業頻度・件数',         weight: '25%', reasonKey: 'frequency_reason' },
         { key: 'implementation_ease', label: '実装容易性',             weight: '20%', reasonKey: 'implementation_ease_reason' },
@@ -4146,6 +4221,34 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           ${scores[a.reasonKey] ? `<p class="text-xs text-slate-400">${scores[a.reasonKey]}</p>` : ''}
         </div>
       `).join('');
+
+      // implementation_blueprint（存在する場合のみ表示）
+      const blueprintEl = document.getElementById('detail-blueprint');
+      const bp = item.implementation_blueprint;
+      const bpRows = bp ? [
+        ['ツール', Array.isArray(bp.tools) ? bp.tools.join('、') : bp.tools],
+        ['参照データ', Array.isArray(bp.data_sources) ? bp.data_sources.join('、') : bp.data_sources],
+        ['判断基準', Array.isArray(bp.decision_rules) ? bp.decision_rules.join(' / ') : bp.decision_rules],
+        ['失敗時の挙動', bp.failure_behavior],
+        ['人の確認ポイント', Array.isArray(bp.human_checkpoints) ? bp.human_checkpoints.join('、') : bp.human_checkpoints]
+      ].filter(([, value]) => String(value || '').trim()) : [];
+      if (bpRows.length > 0) {
+        blueprintEl.classList.remove('hidden');
+        blueprintEl.innerHTML = `
+          <p class="text-xs text-slate-400 mb-1.5">実装設計 ${automationChip(item.automation_type)}</p>
+          <div class="bg-slate-700 rounded-lg p-3 space-y-2">
+            ${bpRows.map(([label, value]) => `
+              <div class="flex gap-2 text-xs">
+                <span class="text-slate-400 flex-shrink-0" style="width:7em;">${escapeHtml(label)}</span>
+                <span class="text-slate-200">${escapeHtml(value)}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        blueprintEl.classList.add('hidden');
+        blueprintEl.innerHTML = '';
+      }
 
       const rank = item.rank;
       renderDrawio('tobe-diagram-container', (DRAWIO_XML_MAP || {})[`top${rank}_to_be`]);
@@ -4166,7 +4269,17 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       document.getElementById('modal').classList.add('active');
     }
 
-    function renderDrawio(containerId, xml) {
+    function flowLegendHtml() {
+      return '<div style="display:flex;flex-wrap:wrap;gap:10px;padding:6px 10px;font-size:10px;color:#64748b;background:#f8fafc;border-top:1px solid #e2e8f0;">' +
+        '<span>◇ 判断・分岐</span>' +
+        '<span>▤ 入出力帳票・資料</span>' +
+        '<span style="border:1px dashed #94a3b8;padding:0 4px;border-radius:3px;">点線 = 推定（要確認）</span>' +
+        '<span style="color:#dc2626;">⤺ 赤点線 = 差戻し・戻り</span>' +
+        '<span style="color:#d97706;">→ 橙点線 = 例外処理</span>' +
+        '</div>';
+    }
+
+    function renderDrawio(containerId, xml, options) {
       const el = document.getElementById(containerId);
       el.innerHTML = '';
       if (!xml) {
@@ -4184,6 +4297,11 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         xml: xml
       });
       el.appendChild(graphDiv);
+      if (options && options.legend) {
+        const legendDiv = document.createElement('div');
+        legendDiv.innerHTML = flowLegendHtml();
+        el.appendChild(legendDiv.firstChild);
+      }
       if (window.GraphViewer) {
         GraphViewer.processElements();
       }
@@ -4261,7 +4379,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
       const processNodes = parseProcessNodes(xml);
       const numMap = buildNumMap(processNodes);
-      renderDrawio('expand-diagram-' + catId, addNumbersToDrawioXml(xml, numMap));
+      renderDrawio('expand-diagram-' + catId, addNumbersToDrawioXml(xml, numMap), { legend: true });
       FeedbackManager.renderQAPanelInto(
         document.getElementById('expand-qa-' + catId),
         category,
@@ -4325,7 +4443,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
       const processNodes = parseProcessNodes(xml);
       const numMap = buildNumMap(processNodes);
-      renderDrawio('bt-expand-diagram-' + rowId, addNumbersToDrawioXml(xml, numMap));
+      renderDrawio('bt-expand-diagram-' + rowId, addNumbersToDrawioXml(xml, numMap), { legend: true });
       FeedbackManager.renderQAPanelInto(
         document.getElementById('bt-expand-qa-' + rowId),
         category,

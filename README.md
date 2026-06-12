@@ -37,10 +37,10 @@ HTML再生成にはNode.jsを使用します。外部npmパッケージは不要
 | `prompts/01_normalize_prompt.md` | 入力文書の正規化 |
 | `prompts/02_flow_axes_prompt.md` | ヒートマップ縦軸・横軸の抽出 |
 | `prompts/03_matrix_prompt.md` | 業務整理マトリクス生成 |
-| `prompts/04_client_csv_prompt.md` | クライアント入力CSV生成 |
-| `prompts/05_score_prompt.md` | スコアリングと `heatmap_cells` 生成 |
-| `prompts/06_top3_flow_prompt.md` | TOP3選定とAs-Is / To-Beフロー設計 |
-| `prompts/07_asis_drawio_prompt.md` | 業務分類別As-Is draw.io生成 |
+| `prompts/04_asis_detail_prompt.md` | 詳細As-Isフロー抽出（分岐・差戻し・例外・入出力帳票） |
+| `prompts/05_client_csv_prompt.md` | クライアント入力CSV生成 |
+| `prompts/06_score_prompt.md` | 自動化手段判定・スコアリングと `heatmap_cells` 生成 |
+| `prompts/07_top3_tobe_prompt.md` | TOP3選定とTo-Beフロー・実装設計 |
 | `prompts/08_render_prompt.md` | HTMLレンダリング |
 
 ## HTML再生成
@@ -62,7 +62,7 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 
 ## 再入力時の検証
 
-新しい業務ドキュメントを投入して現在と同等のHTMLを出す場合、前段はAIエージェントが `prompts/01` 〜 `06` に従って `flow_axes`、`matrix`、`client_input`、`analysis`、`top3` を生成します。raw PDF / docx から最終HTMLまでの完全自動生成は未対応のため、まず `input/normalized/*.md` を作成してください。
+新しい業務ドキュメントを投入して現在と同等のHTMLを出す場合、前段はAIエージェントが `prompts/01` 〜 `07` に従って `flow_axes`、`matrix`、`asis_flows`、`client_input`、`analysis`、`top3` を生成します。raw PDF / docx から最終HTMLまでの完全自動生成は未対応のため、まず `input/normalized/*.md` を作成してください。
 
 `analysis_YYYYMMDD.json` を作成したら、レンダリング前にJSON契約を確認できます。
 
@@ -90,10 +90,10 @@ node scripts/verify_outputs.mjs --date YYYYMMDD
 │   ├── 01_normalize_prompt.md
 │   ├── 02_flow_axes_prompt.md
 │   ├── 03_matrix_prompt.md
-│   ├── 04_client_csv_prompt.md
-│   ├── 05_score_prompt.md
-│   ├── 06_top3_flow_prompt.md
-│   ├── 07_asis_drawio_prompt.md
+│   ├── 04_asis_detail_prompt.md
+│   ├── 05_client_csv_prompt.md
+│   ├── 06_score_prompt.md
+│   ├── 07_top3_tobe_prompt.md
 │   └── 08_render_prompt.md
 ├── scripts/
 │   ├── render_outputs.mjs
@@ -109,24 +109,25 @@ node scripts/verify_outputs.mjs --date YYYYMMDD
 
 ## 評価ロジック
 
-AI導入効果スコアは以下の4軸で算出します。
+各セルにはまず自動化手段（`automation_type`: ルールベース / 既存システム設定 / RPA / 生成AI / AIエージェント / 人手維持）を判定基準付きで付与し、そのうえでAI導入効果スコアを以下の5軸で算出します。
 
 | 評価軸 | ウェイト |
 |---|---|
-| 作業時間削減インパクト | 45% |
-| 作業頻度・件数 | 25% |
-| 実装容易性 | 20% |
+| 作業時間削減インパクト | 40% |
+| 作業頻度・件数 | 20% |
+| 実装容易性 | 15% |
 | 品質改善・ミス削減効果 | 10% |
+| AI適合度（automation_typeから決定） | 15% |
 
-ヒートマップのセルには「低」「中」「高」のみ表示し、数値スコアはTOP3詳細に限定します。
+ルールベース・既存システム設定で足りる業務はAI適合度が低くなり、AI導入効果スコアが下がります（「AIでなくてもすぐ自動化できる」業務をAI推奨しないため）。ヒートマップのセルには「低」「中」「高」のみ表示し、数値スコアはTOP3詳細に限定します。
 
 ## トラブルシューティング
 
 | 症状 | 対処 |
 |---|---|
 | `input/source/` が空 | ドキュメントをコピーして再実行 |
-| JSONが生成されない | `prompts/05_score_prompt.md` を確認 |
-| TOP3が表示されない | `prompts/06_top3_flow_prompt.md` の反映を確認 |
+| JSONが生成されない | `prompts/06_score_prompt.md` を確認 |
+| TOP3が表示されない | `prompts/07_top3_tobe_prompt.md` の反映を確認 |
 | HTMLが真っ白 | ブラウザの開発者ツールでコンソールエラーを確認 |
 | プレースホルダーが残る | `node scripts/render_outputs.mjs --date YYYYMMDD` を再実行 |
 | draw.io図が表示されない | `viewer.diagrams.net` への接続を確認 |

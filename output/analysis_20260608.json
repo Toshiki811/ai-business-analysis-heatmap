@@ -18,7 +18,8 @@
     "to_be_tasks_generated_count": 0,
     "to_be_tasks_cell_count": 55,
     "schema_version": "2026-06-11",
-    "schema_normalized_at": "2026-06-08"
+    "schema_normalized_at": "2026-06-08",
+    "asis_flow_details_source": "asis_flows_20260608.json"
   },
   "summary": {
     "insights": [
@@ -2780,7 +2781,7 @@
       "人手の負担": "中",
       "現状課題": "承認前後の差替え・再確認が発生しやすい。",
       "AI導入余地": "中",
-      "確認事項": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
+      "確認事項": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する\n質問: 支払承認が却下された場合の差戻し先と再承認の手順を教えてください / 回答例: 起案した事務職員へ差戻し、修正後に会計責任者が再承認する",
       "クライアント回答": "",
       "区分": "仮案",
       "task_id": "task_66ee42d988",
@@ -2791,7 +2792,8 @@
       "マトリクス横軸": "承認・決裁",
       "ヒートマップグループ": "作成・承認",
       "ヒートマップステップ": "承認・決裁",
-      "matrix_axis": "承認・決裁"
+      "matrix_axis": "承認・決裁",
+      "question_source": "asis_detail"
     },
     {
       "業務分類": "支払・契約事務",
@@ -4487,7 +4489,7 @@
           "actor": "担当者・業務部門",
           "description": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する。",
           "issue": "承認前後の差替え・再確認が発生しやすい。",
-          "question": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
+          "question": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する\n質問: 支払承認が却下された場合の差戻し先と再承認の手順を教えてください / 回答例: 起案した事務職員へ差戻し、修正後に会計責任者が再承認する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",
@@ -5257,6 +5259,7 @@
       "flow_file": "output/flows/asis_経理体制_帳簿管理__経理体制整備_20260608.drawio",
       "category_flow_key": "asis_経理体制_帳簿管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_bdf12e113a",
         "task_6bb7fabf0a",
@@ -5349,6 +5352,7 @@
       "flow_file": "output/flows/asis_経理体制_帳簿管理__帳簿_帳票管理_20260608.drawio",
       "category_flow_key": "asis_経理体制_帳簿管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_33480cf300",
         "task_04318987f7",
@@ -5441,6 +5445,7 @@
       "flow_file": "output/flows/asis_予算管理__当初予算編成_20260608.drawio",
       "category_flow_key": "asis_予算管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_0a90c73e99",
         "task_73de01a8c8",
@@ -5513,6 +5518,7 @@
       "flow_file": "output/flows/asis_予算管理__補正予算管理_20260608.drawio",
       "category_flow_key": "asis_予算管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_4d0a270dc2",
         "task_87816e16f9"
@@ -5565,6 +5571,7 @@
       "flow_file": "output/flows/asis_収納事務__請求_収納_20260608.drawio",
       "category_flow_key": "asis_収納事務_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_bec138b16a",
         "task_167914ffc9",
@@ -5637,6 +5644,7 @@
       "flow_file": "output/flows/asis_収納事務__現金収納_20260608.drawio",
       "category_flow_key": "asis_収納事務_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_bd2a8d4dec",
         "task_598fed440a",
@@ -5709,6 +5717,7 @@
       "flow_file": "output/flows/asis_収納事務__会計伝票作成_20260608.drawio",
       "category_flow_key": "asis_収納事務_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_574ea5f5f4",
         "task_fc20397da1"
@@ -5761,6 +5770,7 @@
       "flow_file": "output/flows/asis_支払_契約事務__支払処理_20260608.drawio",
       "category_flow_key": "asis_支払_契約事務_20260608",
       "category_update_note": "",
+      "detail": true,
       "source_task_ids": [
         "task_bce7aae0a8",
         "task_d6eb261125",
@@ -5819,7 +5829,7 @@
           "actor": "担当者・業務部門",
           "description": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する。",
           "issue": "承認前後の差替え・再確認が発生しやすい。",
-          "question": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する",
+          "question": "質問: インターネットバンキングの作成者IDと承認者IDの分離状況を確認したい。 / 回答例: 担当者が作成し、会計責任者が承認する\n質問: 支払承認が却下された場合の差戻し先と再承認の手順を教えてください / 回答例: 起案した事務職員へ差戻し、修正後に会計責任者が再承認する",
           "resolved_note": "",
           "update_note": "",
           "answer_impact": "",
@@ -5873,6 +5883,7 @@
       "flow_file": "output/flows/asis_支払_契約事務__契約事務_20260608.drawio",
       "category_flow_key": "asis_支払_契約事務_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_79c1d3cde3",
         "task_42d02d4028",
@@ -5965,6 +5976,7 @@
       "flow_file": "output/flows/asis_現金管理__小口現金支払_20260608.drawio",
       "category_flow_key": "asis_現金管理_20260608",
       "category_update_note": "",
+      "detail": true,
       "source_task_ids": [
         "task_e44a7ffc7d",
         "task_63a173a8f6",
@@ -6037,6 +6049,7 @@
       "flow_file": "output/flows/asis_現金管理__現金残高確認_20260608.drawio",
       "category_flow_key": "asis_現金管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_d3e24895e6",
         "task_ea36498d26"
@@ -6089,6 +6102,7 @@
       "flow_file": "output/flows/asis_人件費支払__給与支払_20260608.drawio",
       "category_flow_key": "asis_人件費支払_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_df7e27289c",
         "task_32389e3796",
@@ -6201,6 +6215,7 @@
       "flow_file": "output/flows/asis_人件費支払__賞与_年末調整_20260608.drawio",
       "category_flow_key": "asis_人件費支払_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_be778eee5e",
         "task_8a76aaff61"
@@ -6253,6 +6268,7 @@
       "flow_file": "output/flows/asis_人件費支払__社会保険_源泉_20260608.drawio",
       "category_flow_key": "asis_人件費支払_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_116ab67f2d"
       ],
@@ -6285,6 +6301,7 @@
       "flow_file": "output/flows/asis_資産_負債管理__債権債務管理_20260608.drawio",
       "category_flow_key": "asis_資産_負債管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_37dc206e99",
         "task_0f7610a01a",
@@ -6357,6 +6374,7 @@
       "flow_file": "output/flows/asis_資産_負債管理__実地棚卸_20260608.drawio",
       "category_flow_key": "asis_資産_負債管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_91b6e55884",
         "task_5f0c4a839e",
@@ -6429,6 +6447,7 @@
       "flow_file": "output/flows/asis_資産_負債管理__固定資産管理_20260608.drawio",
       "category_flow_key": "asis_資産_負債管理_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_293d373267",
         "task_6ca3315b9a",
@@ -6501,6 +6520,7 @@
       "flow_file": "output/flows/asis_決算_報告__月次報告_20260608.drawio",
       "category_flow_key": "asis_決算_報告_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_7a578e5e3c",
         "task_c99ab46bba",
@@ -6573,6 +6593,7 @@
       "flow_file": "output/flows/asis_決算_報告__年次決算_20260608.drawio",
       "category_flow_key": "asis_決算_報告_20260608",
       "category_update_note": "",
+      "detail": false,
       "source_task_ids": [
         "task_bf2442c396",
         "task_6a6745fb8a",
@@ -6926,5 +6947,390 @@
       }
     ]
   },
-  "as_is_category_updates": {}
+  "as_is_category_updates": {},
+  "asis_flow_details": [
+    {
+      "category": "支払・契約事務",
+      "business_type": "支払処理",
+      "actors": [
+        "事務職員",
+        "会計責任者",
+        "出納職員",
+        "会計システム"
+      ],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "支払案件発生",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "物品の購入又は役務の提供を受けるときは支払稟議により起案する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "購入・支払の起案",
+          "actor": "事務職員",
+          "description": "見積書・納品書をもとに支払稟議書を起案する",
+          "inputs": [
+            "見積書",
+            "納品書"
+          ],
+          "outputs": [
+            "支払稟議書"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 1,
+            "タスク名": "購入・支払起案"
+          },
+          "confidence": "explicit",
+          "source_quote": "支払稟議により起案し、会計責任者の承認を得る",
+          "task_id": "task_bce7aae0a8",
+          "matrix_axis": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
+          "minutes": 20,
+          "burden": "中"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "請求書と納品書の照合",
+          "actor": "事務職員",
+          "description": "請求書原本と納品書・発注内容を突合し、金額・数量・取引先を確認する",
+          "inputs": [
+            "請求書原本",
+            "納品書"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 2,
+            "タスク名": "請求書確認"
+          },
+          "confidence": "explicit",
+          "source_quote": "請求書の内容を納品書等と照合のうえ確認する",
+          "task_id": "task_d6eb261125",
+          "matrix_axis": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
+          "minutes": 25,
+          "burden": "高"
+        },
+        {
+          "id": "n04",
+          "node_type": "decision",
+          "label": "照合結果の判定",
+          "actor": "事務職員",
+          "condition": "請求内容と納品内容が一致するか",
+          "branches": [
+            {
+              "label": "一致",
+              "target": "n06"
+            },
+            {
+              "label": "不一致",
+              "target": "n05",
+              "edge_type": "exception"
+            }
+          ],
+          "confidence": "explicit",
+          "source_quote": "内容に相違がある場合は取引先に照会する"
+        },
+        {
+          "id": "n05",
+          "node_type": "exception",
+          "label": "取引先へ照会・修正依頼",
+          "actor": "事務職員",
+          "description": "差異内容を取引先へ照会し、修正後の請求書を受領する",
+          "branches": [
+            {
+              "label": "修正後再照合",
+              "target": "n03",
+              "edge_type": "return"
+            }
+          ],
+          "confidence": "explicit",
+          "source_quote": "内容に相違がある場合は取引先に照会する"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "支払情報の承認申請",
+          "actor": "事務職員",
+          "description": "支払伝票を起票し、支払稟議書・請求書を添えて会計責任者へ回付する",
+          "inputs": [
+            "支払稟議書",
+            "請求書原本"
+          ],
+          "outputs": [
+            "支払伝票"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 3,
+            "タスク名": "支払情報承認"
+          },
+          "confidence": "explicit",
+          "source_quote": "会計責任者の承認を得て支払を行う",
+          "task_id": "task_66ee42d988",
+          "matrix_axis": "承認・決裁",
+          "heatmap_group": "作成・承認",
+          "heatmap_step": "承認・決裁",
+          "minutes": 15,
+          "burden": "中"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "会計責任者の承認",
+          "actor": "会計責任者",
+          "condition": "支払内容を承認するか",
+          "branches": [
+            {
+              "label": "承認",
+              "target": "n09"
+            },
+            {
+              "label": "差戻し",
+              "target": "n08",
+              "edge_type": "return"
+            }
+          ],
+          "confidence": "inferred",
+          "hearing_item": "支払承認が却下された場合の差戻し先と再承認の手順を教えてください",
+          "hearing_answer_example": "起案した事務職員へ差戻し、修正後に会計責任者が再承認する"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "差戻し内容の修正",
+          "actor": "事務職員",
+          "description": "指摘内容を修正し、再度承認申請を行う",
+          "branches": [
+            {
+              "label": "再申請",
+              "target": "n07",
+              "edge_type": "return"
+            }
+          ],
+          "confidence": "inferred"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "振込実行",
+          "actor": "出納職員",
+          "description": "承認済み支払伝票をもとにインターネットバンキングで振込を実行する",
+          "inputs": [
+            "支払伝票"
+          ],
+          "outputs": [
+            "振込控"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 4,
+            "タスク名": "振込実行"
+          },
+          "confidence": "explicit",
+          "source_quote": "支払は原則として口座振込により行う",
+          "task_id": "task_ec7e9781d8",
+          "matrix_axis": "実行・支払",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "実行・支払",
+          "minutes": 20,
+          "burden": "高"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "支払伝票の会計システム入力",
+          "actor": "事務職員",
+          "description": "振込控と請求書をもとに会計システムへ仕訳を入力する",
+          "inputs": [
+            "振込控",
+            "請求書原本"
+          ],
+          "outputs": [
+            "仕訳データ"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 5,
+            "タスク名": "支払伝票入力"
+          },
+          "confidence": "explicit",
+          "source_quote": "支払の都度、会計帳簿に記帳する",
+          "task_id": "task_feb4c205b5",
+          "matrix_axis": "システム入力",
+          "heatmap_group": "入力・実行",
+          "heatmap_step": "システム入力",
+          "minutes": 15,
+          "burden": "高"
+        },
+        {
+          "id": "n11",
+          "node_type": "end",
+          "label": "支払完了",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "支払の都度、会計帳簿に記帳する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n07",
+          "question": "支払承認が却下された場合の差戻し先と再承認の手順を教えてください",
+          "answer_example": "起案した事務職員へ差戻し、修正後に会計責任者が再承認する",
+          "reason": "マニュアルに承認却下時の差戻し手順の記載がない"
+        }
+      ],
+      "unmodeled_notes": [
+        "緊急支払・前払の特例手続はマニュアルに記載がないためフロー化していない"
+      ],
+      "flow_key": "asis_支払_契約事務__支払処理_20260608",
+      "flow_file": "output/flows/asis_支払_契約事務__支払処理_20260608.drawio"
+    },
+    {
+      "category": "現金管理",
+      "business_type": "小口現金支払",
+      "actors": [
+        "事務職員",
+        "出納職員"
+      ],
+      "nodes": [
+        {
+          "id": "m01",
+          "node_type": "start",
+          "label": "小口支払申請",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "小口現金から支払うときは申請書により行う"
+        },
+        {
+          "id": "m02",
+          "node_type": "process",
+          "label": "小口支払申請の受付",
+          "actor": "事務職員",
+          "description": "小口現金支払申請書と領収書を受け付ける",
+          "inputs": [
+            "小口現金支払申請書",
+            "領収書"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "小口現金支払",
+            "タスク順": 1,
+            "タスク名": "小口支払申請受付"
+          },
+          "confidence": "explicit",
+          "source_quote": "小口現金から支払うときは申請書により行う",
+          "task_id": "task_e44a7ffc7d",
+          "matrix_axis": "受付・起案",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "受付・起案",
+          "minutes": 10,
+          "burden": "中"
+        },
+        {
+          "id": "m03",
+          "node_type": "decision",
+          "label": "上限額の判定",
+          "actor": "事務職員",
+          "condition": "申請額が小口現金の上限額以内か",
+          "branches": [
+            {
+              "label": "以内",
+              "target": "m04"
+            },
+            {
+              "label": "超過",
+              "target": "m05",
+              "edge_type": "exception"
+            }
+          ],
+          "confidence": "explicit",
+          "source_quote": "上限額を超える支払は通常の支払手続による"
+        },
+        {
+          "id": "m04",
+          "node_type": "process",
+          "label": "証憑確認・現金支払",
+          "actor": "出納職員",
+          "description": "領収書等の証憑を確認し、小口現金から支払う",
+          "inputs": [
+            "領収書"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "小口現金支払",
+            "タスク順": 2,
+            "タスク名": "証憑確認"
+          },
+          "next": "m06",
+          "confidence": "explicit",
+          "source_quote": "証憑書類を確認のうえ支払を行う",
+          "task_id": "task_63a173a8f6",
+          "matrix_axis": "内容確認",
+          "heatmap_group": "準備・受付",
+          "heatmap_step": "内容確認",
+          "minutes": 10,
+          "burden": "高"
+        },
+        {
+          "id": "m05",
+          "node_type": "exception",
+          "label": "通常の支払手続へ回付",
+          "actor": "事務職員",
+          "description": "支払稟議による通常の支払処理に切り替える",
+          "next": "m07",
+          "confidence": "explicit",
+          "source_quote": "上限額を超える支払は通常の支払手続による"
+        },
+        {
+          "id": "m06",
+          "node_type": "process",
+          "label": "小口現金出納帳の記入",
+          "actor": "出納職員",
+          "description": "支払内容を小口現金出納帳に記入し、残高を更新する",
+          "outputs": [
+            "小口現金出納帳"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "小口現金支払",
+            "タスク順": 3,
+            "タスク名": "小口現金出納帳記入"
+          },
+          "confidence": "explicit",
+          "source_quote": "支払の都度、小口現金出納帳に記帳する",
+          "task_id": "task_cf26dd09b2",
+          "matrix_axis": "記録・保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・保管",
+          "minutes": 10,
+          "burden": "中"
+        },
+        {
+          "id": "m07",
+          "node_type": "end",
+          "label": "処理完了",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "支払の都度、小口現金出納帳に記帳する"
+        }
+      ],
+      "hearing_items": [],
+      "unmodeled_notes": [],
+      "flow_key": "asis_現金管理__小口現金支払_20260608",
+      "flow_file": "output/flows/asis_現金管理__小口現金支払_20260608.drawio"
+    }
+  ]
 }

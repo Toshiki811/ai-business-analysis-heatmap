@@ -158,6 +158,29 @@ function verifyAnalysis(analysis, analysisPath) {
     warnings.push(`schema normalization would adjust JSON before render: ${JSON.stringify(stats)}`);
   }
 
+  const detailFlows = Array.isArray(normalized.asis_flow_details) ? normalized.asis_flow_details : [];
+  if (detailFlows.length > 0) {
+    let sourceNodes = 0;
+    let linkedNodes = 0;
+    for (const flow of detailFlows) {
+      for (const node of Array.isArray(flow.nodes) ? flow.nodes : []) {
+        if (!node.source_task) continue;
+        sourceNodes += 1;
+        if (node.task_id) linkedNodes += 1;
+      }
+    }
+    if (sourceNodes > 0 && linkedNodes / sourceNodes < 0.8) {
+      warnings.push(`asis_flow_details task link rate is low: ${linkedNodes}/${sourceNodes} nodes resolved to matrix_tasks`);
+    }
+  }
+
+  const cellsWithUseCase = normalized.heatmap_cells.filter((cell) => String(cell.ai_use_case || '').trim());
+  const templatePhrase = /確認観点(の)?整理|記録作成|根拠資料との照合/;
+  const templated = cellsWithUseCase.filter((cell) => templatePhrase.test(String(cell.ai_use_case || ''))).length;
+  if (cellsWithUseCase.length > 0 && templated / cellsWithUseCase.length > 0.5) {
+    warnings.push(`ai_use_case looks templated on ${templated}/${cellsWithUseCase.length} cells (generic boilerplate phrases); regenerate with input→process→output specifics`);
+  }
+
   return {
     analysisPath,
     errors,
@@ -172,7 +195,7 @@ function verifyAnalysis(analysis, analysisPath) {
   };
 }
 
-function verifyHtml(htmlPath, dateKey) {
+function verifyHtml(htmlPath, dateKey, analysis) {
   const errors = [];
   const warnings = [];
 
@@ -197,6 +220,13 @@ function verifyHtml(htmlPath, dateKey) {
   if (topToBeEmbedded < 3) addError(errors, 'TOP3 To-Be draw.io entries are not all embedded');
   if (asIsEmbedded === 0) addError(errors, 'No date-matched As-Is draw.io entries appear to be embedded');
   if (!html.includes('viewer.diagrams.net')) warnings.push('viewer.diagrams.net reference was not found; draw.io preview may not work');
+
+  const detailFlows = Array.isArray(analysis?.asis_flow_details) ? analysis.asis_flow_details : [];
+  const detailDecisionCount = detailFlows.reduce((count, flow) =>
+    count + (Array.isArray(flow.nodes) ? flow.nodes.filter((node) => node.node_type === 'decision').length : 0), 0);
+  if (detailDecisionCount > 0 && !html.includes('rhombus')) {
+    warnings.push('asis_flow_details contains decision nodes but no rhombus shapes are embedded in HTML');
+  }
 
   return {
     htmlPath,
@@ -230,7 +260,7 @@ const { dateKey } = resolveAnalysisDate(analysisPath, args, analysis);
 const htmlPath = path.join(root, 'output', `analysis_${dateKey}.html`);
 
 const analysisResult = verifyAnalysis(analysis, analysisPath);
-const htmlResult = args['skip-html'] ? null : verifyHtml(htmlPath, dateKey);
+const htmlResult = args['skip-html'] ? null : verifyHtml(htmlPath, dateKey, analysis);
 const allErrors = [
   ...analysisResult.errors,
   ...(htmlResult ? htmlResult.errors : [])

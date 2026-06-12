@@ -1,3 +1,5 @@
+import { fallbackMatrixTaskKey, matrixTaskKey } from './client_input.mjs';
+
 function compactText(value, maxLength = 80) {
   const text = String(value || '').replace(/\s+/g, ' ').trim();
   if (text.length <= maxLength) return text;
@@ -112,12 +114,103 @@ function questionAnsweredByTaskText(task) {
 function shouldKeepQuestion(task) {
   const question = String(task['確認事項'] || '').trim();
   if (!question) return false;
+  // 詳細As-Isフロー抽出由来の質問は分岐・例外の確認なので常に保持する
+  if (task.question_source === 'asis_detail') return true;
   if (String(task['クライアント回答'] || '').trim()) return true;
   if (/（確認不要）/.test(question)) return false;
   if (questionAnsweredByTaskText(task)) return false;
   if (hasFlowChangingQuestion(question)) return true;
   if (hasNonFlowQuestion(question)) return false;
   return true;
+}
+
+function nodeWithSourceTask(flow, item) {
+  const nodes = Array.isArray(flow.nodes) ? flow.nodes : [];
+  const index = nodes.findIndex((candidate) => String(candidate.id || '') === String(item.node_id || ''));
+  if (index < 0) return null;
+  // 判断・例外ノードに source_task がない場合は直前の作業ノードへ遡って紐づける
+  for (let i = index; i >= 0; i -= 1) {
+    if (nodes[i].source_task || nodes[i].task_id) return nodes[i];
+  }
+  return nodes[index];
+}
+
+function detailQuestionTargetTask(analysis, flow, item) {
+  const tasks = Array.isArray(analysis.matrix_tasks) ? analysis.matrix_tasks : [];
+  const node = nodeWithSourceTask(flow, item);
+  const source = node?.source_task;
+  if (source && typeof source === 'object') {
+    const fullKey = matrixTaskKey({
+      '業務分類': source['業務分類'],
+      '業務種別': source['業務種別'],
+      'タスク順': source['タスク順'],
+      'マトリクス横軸': source['マトリクス横軸'] || '',
+      'タスク名': source['タスク名']
+    });
+    const fallbackKey = fallbackMatrixTaskKey({
+      '業務分類': source['業務分類'],
+      '業務種別': source['業務種別'],
+      'タスク名': source['タスク名']
+    });
+    const byKey = tasks.find((task) => matrixTaskKey(task) === fullKey)
+      || tasks.find((task) => fallbackMatrixTaskKey(task) === fallbackKey);
+    if (byKey) return byKey;
+  }
+  if (node?.task_id) {
+    const byId = tasks.find((task) => task.task_id === node.task_id);
+    if (byId) return byId;
+  }
+  // ノード単位で解決できない場合は業務種別の先頭タスクへ起票する
+  return tasks.find((task) =>
+    String(task['業務分類'] || '') === String(flow.category || '') &&
+    String(task['業務種別'] || '') === String(flow.business_type || ''));
+}
+
+function questionAlreadyAsked(analysis, task, questionText) {
+  const normalized = String(questionText || '').trim();
+  if (!normalized) return true;
+  // 確認事項は複数質問を改行連結で持つ場合があるため全文で照合する
+  if (String(task['確認事項'] || '').includes(normalized)) return true;
+  if (String(task.as_is_resolved_question || '').includes(normalized)) return true;
+  const resolvedQuestions = Array.isArray(analysis.resolved_questions) ? analysis.resolved_questions : [];
+  return resolvedQuestions.some((resolved) =>
+    (resolved.category || '') === (task['業務分類'] || '') &&
+    (resolved.task_type || '') === (task['業務種別'] || '') &&
+    extractQuestionText(resolved.question).includes(normalized));
+}
+
+export function fileDetailFlowQuestions(analysis) {
+  let filed = 0;
+  for (const flow of Array.isArray(analysis.asis_flow_details) ? analysis.asis_flow_details : []) {
+    const items = [
+      ...(Array.isArray(flow.hearing_items) ? flow.hearing_items : []),
+      ...((flow.nodes || [])
+        .filter((node) => String(node.hearing_item || '').trim())
+        .map((node) => ({
+          node_id: node.id,
+          question: node.hearing_item,
+          answer_example: node.hearing_answer_example || ''
+        })))
+    ];
+    const seenQuestions = new Set();
+    for (const item of items) {
+      const questionText = String(item.question || '').trim();
+      if (!questionText || seenQuestions.has(questionText)) continue;
+      seenQuestions.add(questionText);
+      const task = detailQuestionTargetTask(analysis, flow, item);
+      if (!task) continue;
+      if (String(task['クライアント回答'] || '').trim()) continue;
+      if (String(task['区分'] || '') === 'ヒアリング済' && !String(task['確認事項'] || '').trim()) continue;
+      if (questionAlreadyAsked(analysis, task, questionText)) continue;
+      const example = String(item.answer_example || '').trim() || buildAnswerExample(questionText);
+      const entry = `質問: ${questionText} / 回答例: ${example}`;
+      const existing = String(task['確認事項'] || '').trim();
+      task['確認事項'] = existing ? `${existing}\n${entry}` : entry;
+      task.question_source = 'asis_detail';
+      filed += 1;
+    }
+  }
+  return filed;
 }
 
 export function suppressNonFlowQuestions(analysis) {

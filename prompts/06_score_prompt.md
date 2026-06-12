@@ -1,8 +1,8 @@
-# 05 スコアリングプロンプト
+# 06 スコアリングプロンプト
 
 ## 目的
 
-`flow_axes`、業務整理マトリクス、ヒアリング後CSVをもとに、AI導入効果の `heatmap_cells` を生成する。
+`flow_axes`、業務整理マトリクス、詳細As-Isフロー、ヒアリング後CSVをもとに、各セルの自動化手段を判定し、AI導入効果の `heatmap_cells` を生成する。
 
 この工程ではTOP3フロー設計、draw.io生成、HTML生成は行わない。
 
@@ -10,6 +10,7 @@
 
 - `output/flow_axes_YYYYMMDD.json`
 - `output/matrix_YYYYMMDD.md`
+- `output/asis_flows_YYYYMMDD.json`（存在する場合。自動化手段判定の材料として使う）
 - `input/normalized/` 内の全 `.md` / `.txt` ファイル
 - `input/source/client_input_filled.csv` または `input/source/client_input_filled_YYYYMMDD.csv`（存在する場合）
 
@@ -59,14 +60,44 @@
 旧CSVに `As-Isフロー更新内容` が存在する場合は、互換入力として業務分類単位の反映メモへ移行してよい。
 旧CSVに `発生頻度` や `AI導入余地_ヒアリング後` が存在する場合だけ任意で参照してよい。新規CSVではこの2列を要求しない。
 
+## 自動化手段（automation_type）の判定
+
+スコアリングの前に、各セルの対象タスクに最も適した自動化手段を以下の判定フローで決定する。「AIを使えるか」ではなく「最も安く確実に自動化できる手段は何か」で判定する。
+
+```text
+Q1 判断条件がマニュアル・規程に明文化され、ルール化可能か（金額閾値、期日、科目対応表、チェックリスト）
+ └ YES → Q1a 既存システムの設定・標準機能で実現できるか
+          ├ YES → system_config（既存システム設定）
+          └ NO  → rule_based（ルールベース・条件分岐の実装）
+Q2 構造化データ間の転記・入力・突合が主作業か（CSV→システム入力、台帳間の転記）
+ └ YES → rpa（RPA・システム間連携）
+Q3 非構造文書（PDF・紙・自由記述）の読解・要約・下書き・チェックが主作業か
+ └ YES → generative_ai（生成AI）
+Q4 複数資料・複数システムを横断し、中間判断を挟む多段処理か
+ └ YES → ai_agent（AIエージェント）
+いずれにも該当しない / 判断が属人的で自動化に不適 → manual（人手維持）
+```
+
+判定材料:
+
+- `output/asis_flows_YYYYMMDD.json` の `decision` ノードで `confidence: "explicit"` の分岐条件が付いているタスクは、判断ルールが明文化されている強いシグナルとして Q1 を YES 寄りに判定する。
+- 逆に、判断基準がマニュアルに書かれておらず担当者の経験に依存するタスクは、安易に `ai_agent` とせず `generative_ai`（人のレビュー前提の下書き支援）か `manual` を検討する。
+- `ai_agent` は「複数ツールの呼び出し・中間判断・例外振り分けを連続して行う必然性」が説明できる場合に限定する。単発の下書き生成・照合は `generative_ai` とする。
+
+各セルには以下を必ず記録する。
+
+- `automation_type`: 上記6種のいずれか
+- `automation_reason`: 判定フローのどの質問でどう分類したか（例: 「金額上限と承認権限が経理規程に明文化されておりルール化可能。会計システムの承認ワークフロー設定で実現できるため system_config」）
+
 ## スコア計算式
 
 ```text
 AI導入効果スコア =
-  作業時間削減インパクト × 0.45
-+ 作業頻度・件数       × 0.25
-+ 実装容易性           × 0.20
+  作業時間削減インパクト × 0.40
++ 作業頻度・件数       × 0.20
++ 実装容易性           × 0.15
 + 品質改善・ミス削減効果 × 0.10
++ AI適合度             × 0.15
 ```
 
 各評価軸は1〜5点で評価し、最大5.0を100点に換算する。
@@ -77,6 +108,20 @@ AI導入効果スコア =
 | 作業頻度・件数 | 毎日50件以上 | 毎日10〜50件 | 週数回/数件 | 月数回 | ほぼ発生しない |
 | 実装容易性 | 既存APIで即実装可 | 軽微なカスタマイズ | 中程度の開発 | 大規模開発 | 技術的に困難 |
 | 品質改善・ミス削減効果 | ミスが頻発・重大 | 時々ミスがある | 品質ばらつき | ほぼ安定 | 改善不要 |
+| AI適合度 | — | — | — | — | — |
+
+AI適合度（`ai_fit_score`）は `automation_type` から機械的に決める。
+
+| automation_type | ai_fit_score | 意味 |
+|---|---|---|
+| `ai_agent` | 5 | AIでなければ自動化できない多段判断 |
+| `generative_ai` | 4 | 非構造文書の読解・生成にAIが必要 |
+| `rpa` | 2 | AIなしで自動化可能（連携実装で足りる） |
+| `system_config` | 2 | AIなしで自動化可能（設定で足りる） |
+| `rule_based` | 1〜2 | ルール実装で足りる。AI導入の効果は低い |
+| `manual` | 1 | 自動化自体が不適 |
+
+これにより、ルールベース・設定で足りる業務はAI導入効果スコアが自然に下がる。ヒートマップの表示は従来通り `低` / `中` / `高` のみとし、`automation_type` はセル詳細・To-Be提案で使う。
 
 ## effect_level
 
@@ -103,9 +148,17 @@ AI導入効果スコア =
   "frequency_score": 4,
   "implementation_ease_score": 4,
   "quality_impact_score": 3,
+  "ai_fit_score": 4,
+  "automation_type": "generative_ai",
+  "automation_reason": "請求書PDFの読解・突合が主作業で、判定フローQ3に該当",
   "estimated_time_saved": "1件あたり5〜10分",
   "development_scale": "小",
-  "ai_use_case": "AIで何をするか",
+  "ai_use_case": "AIで何をするか（ai_use_case_detailの3要素を1文に連結）",
+  "ai_use_case_detail": {
+    "input": "処理対象の入力（例: 請求書PDF 月20件）",
+    "process": "処理内容（例: 金額・取引先・期日の抽出と購買台帳との突合）",
+    "output": "出力形式（例: 差異一覧CSVと不一致理由コメント）"
+  },
   "to_be_tasks": [
     {
       "actor": "Human | AI | Human Review | System",
@@ -124,6 +177,13 @@ AI導入効果スコア =
 ```
 
 `to_be_tasks` は全 `heatmap_cells` に2〜5件作成する。AIに任せる作業、人がレビューする作業、既存システムが処理する作業を分け、表形式で読める粒度にする。TOP3以外も簡易To-Be案を必ず持たせるが、draw.ioフロー化は後続工程のTOP3に限定する。
+
+## `ai_use_case` の記述ルール
+
+- `ai_use_case_detail` の `input` → `process` → `output` を具体的に書き、`ai_use_case` はその3要素を1文に連結したものにする。
+- 「確認観点の整理、記録作成、根拠資料との照合をAIで支援」のような、どのセルにも当てはまるテンプレート文言は禁止する。対象タスク固有の資料名・システム名・件数を必ず含める。
+- `automation_type` が `rule_based` / `system_config` / `rpa` のセルは、`ai_use_case` に「AIではなく◯◯（設定・ルール実装・連携）での自動化を推奨」と明記し、AI導入を装わない。
+- `to_be_tasks` も `automation_type` と整合させる。`rule_based` / `system_config` のセルに「AIが下書き生成」のようなタスクを書かない。
 
 ## `matrix_tasks` のAs-Is紐づけフィールド
 

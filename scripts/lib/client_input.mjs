@@ -71,7 +71,7 @@ function clientInputTaskKey(row) {
   ].map((value) => String(value || '').trim()).join('|||');
 }
 
-function matrixTaskKey(task) {
+export function matrixTaskKey(task) {
   return [
     task['業務分類'] || '',
     task['業務種別'] || '',
@@ -89,7 +89,7 @@ function fallbackClientInputTaskKey(row) {
   ].map((value) => String(value || '').trim()).join('|||');
 }
 
-function fallbackMatrixTaskKey(task) {
+export function fallbackMatrixTaskKey(task) {
   return [
     task['業務分類'] || '',
     task['業務種別'] || '',

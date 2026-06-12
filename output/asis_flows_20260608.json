@@ -1,0 +1,235 @@
+{
+  "metadata": {
+    "created_at": "2026-06-08",
+    "source_documents": ["keirijimumanyuaru.pdf"],
+    "schema": "asis_flow_detail_v1",
+    "note": "詳細As-Isフロー抽出のサンプル。prompts/04_asis_detail_prompt.md の出力例を兼ねる。"
+  },
+  "flows": [
+    {
+      "category": "支払・契約事務",
+      "business_type": "支払処理",
+      "actors": ["事務職員", "会計責任者", "出納職員", "会計システム"],
+      "nodes": [
+        {
+          "id": "n01",
+          "node_type": "start",
+          "label": "支払案件発生",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "物品の購入又は役務の提供を受けるときは支払稟議により起案する"
+        },
+        {
+          "id": "n02",
+          "node_type": "process",
+          "label": "購入・支払の起案",
+          "actor": "事務職員",
+          "description": "見積書・納品書をもとに支払稟議書を起案する",
+          "inputs": ["見積書", "納品書"],
+          "outputs": ["支払稟議書"],
+          "source_task": { "業務分類": "支払・契約事務", "業務種別": "支払処理", "タスク順": 1, "タスク名": "購入・支払起案" },
+          "confidence": "explicit",
+          "source_quote": "支払稟議により起案し、会計責任者の承認を得る"
+        },
+        {
+          "id": "n03",
+          "node_type": "process",
+          "label": "請求書と納品書の照合",
+          "actor": "事務職員",
+          "description": "請求書原本と納品書・発注内容を突合し、金額・数量・取引先を確認する",
+          "inputs": ["請求書原本", "納品書"],
+          "source_task": { "業務分類": "支払・契約事務", "業務種別": "支払処理", "タスク順": 2, "タスク名": "請求書確認" },
+          "confidence": "explicit",
+          "source_quote": "請求書の内容を納品書等と照合のうえ確認する"
+        },
+        {
+          "id": "n04",
+          "node_type": "decision",
+          "label": "照合結果の判定",
+          "actor": "事務職員",
+          "condition": "請求内容と納品内容が一致するか",
+          "branches": [
+            { "label": "一致", "target": "n06" },
+            { "label": "不一致", "target": "n05", "edge_type": "exception" }
+          ],
+          "confidence": "explicit",
+          "source_quote": "内容に相違がある場合は取引先に照会する"
+        },
+        {
+          "id": "n05",
+          "node_type": "exception",
+          "label": "取引先へ照会・修正依頼",
+          "actor": "事務職員",
+          "description": "差異内容を取引先へ照会し、修正後の請求書を受領する",
+          "branches": [
+            { "label": "修正後再照合", "target": "n03", "edge_type": "return" }
+          ],
+          "confidence": "explicit",
+          "source_quote": "内容に相違がある場合は取引先に照会する"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
+          "label": "支払情報の承認申請",
+          "actor": "事務職員",
+          "description": "支払伝票を起票し、支払稟議書・請求書を添えて会計責任者へ回付する",
+          "inputs": ["支払稟議書", "請求書原本"],
+          "outputs": ["支払伝票"],
+          "source_task": { "業務分類": "支払・契約事務", "業務種別": "支払処理", "タスク順": 3, "タスク名": "支払情報承認" },
+          "confidence": "explicit",
+          "source_quote": "会計責任者の承認を得て支払を行う"
+        },
+        {
+          "id": "n07",
+          "node_type": "decision",
+          "label": "会計責任者の承認",
+          "actor": "会計責任者",
+          "condition": "支払内容を承認するか",
+          "branches": [
+            { "label": "承認", "target": "n09" },
+            { "label": "差戻し", "target": "n08", "edge_type": "return" }
+          ],
+          "confidence": "inferred",
+          "hearing_item": "支払承認が却下された場合の差戻し先と再承認の手順を教えてください",
+          "hearing_answer_example": "起案した事務職員へ差戻し、修正後に会計責任者が再承認する"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "差戻し内容の修正",
+          "actor": "事務職員",
+          "description": "指摘内容を修正し、再度承認申請を行う",
+          "branches": [
+            { "label": "再申請", "target": "n07", "edge_type": "return" }
+          ],
+          "confidence": "inferred"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "振込実行",
+          "actor": "出納職員",
+          "description": "承認済み支払伝票をもとにインターネットバンキングで振込を実行する",
+          "inputs": ["支払伝票"],
+          "outputs": ["振込控"],
+          "source_task": { "業務分類": "支払・契約事務", "業務種別": "支払処理", "タスク順": 4, "タスク名": "振込実行" },
+          "confidence": "explicit",
+          "source_quote": "支払は原則として口座振込により行う"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "支払伝票の会計システム入力",
+          "actor": "事務職員",
+          "description": "振込控と請求書をもとに会計システムへ仕訳を入力する",
+          "inputs": ["振込控", "請求書原本"],
+          "outputs": ["仕訳データ"],
+          "source_task": { "業務分類": "支払・契約事務", "業務種別": "支払処理", "タスク順": 5, "タスク名": "支払伝票入力" },
+          "confidence": "explicit",
+          "source_quote": "支払の都度、会計帳簿に記帳する"
+        },
+        {
+          "id": "n11",
+          "node_type": "end",
+          "label": "支払完了",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "支払の都度、会計帳簿に記帳する"
+        }
+      ],
+      "hearing_items": [
+        {
+          "node_id": "n07",
+          "question": "支払承認が却下された場合の差戻し先と再承認の手順を教えてください",
+          "answer_example": "起案した事務職員へ差戻し、修正後に会計責任者が再承認する",
+          "reason": "マニュアルに承認却下時の差戻し手順の記載がない"
+        }
+      ],
+      "unmodeled_notes": [
+        "緊急支払・前払の特例手続はマニュアルに記載がないためフロー化していない"
+      ]
+    },
+    {
+      "category": "現金管理",
+      "business_type": "小口現金支払",
+      "actors": ["事務職員", "出納職員"],
+      "nodes": [
+        {
+          "id": "m01",
+          "node_type": "start",
+          "label": "小口支払申請",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "小口現金から支払うときは申請書により行う"
+        },
+        {
+          "id": "m02",
+          "node_type": "process",
+          "label": "小口支払申請の受付",
+          "actor": "事務職員",
+          "description": "小口現金支払申請書と領収書を受け付ける",
+          "inputs": ["小口現金支払申請書", "領収書"],
+          "source_task": { "業務分類": "現金管理", "業務種別": "小口現金支払", "タスク順": 1, "タスク名": "小口支払申請受付" },
+          "confidence": "explicit",
+          "source_quote": "小口現金から支払うときは申請書により行う"
+        },
+        {
+          "id": "m03",
+          "node_type": "decision",
+          "label": "上限額の判定",
+          "actor": "事務職員",
+          "condition": "申請額が小口現金の上限額以内か",
+          "branches": [
+            { "label": "以内", "target": "m04" },
+            { "label": "超過", "target": "m05", "edge_type": "exception" }
+          ],
+          "confidence": "explicit",
+          "source_quote": "上限額を超える支払は通常の支払手続による"
+        },
+        {
+          "id": "m04",
+          "node_type": "process",
+          "label": "証憑確認・現金支払",
+          "actor": "出納職員",
+          "description": "領収書等の証憑を確認し、小口現金から支払う",
+          "inputs": ["領収書"],
+          "source_task": { "業務分類": "現金管理", "業務種別": "小口現金支払", "タスク順": 2, "タスク名": "証憑確認" },
+          "next": "m06",
+          "confidence": "explicit",
+          "source_quote": "証憑書類を確認のうえ支払を行う"
+        },
+        {
+          "id": "m05",
+          "node_type": "exception",
+          "label": "通常の支払手続へ回付",
+          "actor": "事務職員",
+          "description": "支払稟議による通常の支払処理に切り替える",
+          "next": "m07",
+          "confidence": "explicit",
+          "source_quote": "上限額を超える支払は通常の支払手続による"
+        },
+        {
+          "id": "m06",
+          "node_type": "process",
+          "label": "小口現金出納帳の記入",
+          "actor": "出納職員",
+          "description": "支払内容を小口現金出納帳に記入し、残高を更新する",
+          "outputs": ["小口現金出納帳"],
+          "source_task": { "業務分類": "現金管理", "業務種別": "小口現金支払", "タスク順": 3, "タスク名": "小口現金出納帳記入" },
+          "confidence": "explicit",
+          "source_quote": "支払の都度、小口現金出納帳に記帳する"
+        },
+        {
+          "id": "m07",
+          "node_type": "end",
+          "label": "処理完了",
+          "actor": "事務職員",
+          "confidence": "explicit",
+          "source_quote": "支払の都度、小口現金出納帳に記帳する"
+        }
+      ],
+      "hearing_items": [],
+      "unmodeled_notes": []
+    }
+  ]
+}

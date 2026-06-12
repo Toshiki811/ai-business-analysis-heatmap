@@ -10,10 +10,11 @@
 
 1. `flow_axes_YYYYMMDD.json` - 業務分類別マトリクス横軸・ヒートマップ2段横軸・縦軸
 2. `matrix_YYYYMMDD.md` - 業務整理マトリクス
-3. `client_input_YYYYMMDD.csv` - クライアント入力用CSV
-4. `analysis_YYYYMMDD.json` - 業務分析結果の構造化データ
-5. `analysis_YYYYMMDD.html` - ヒートマップ、TOP3 To-Be業務フロー、業務分類別As-Isフローを閲覧できる単一HTML
-6. `output/flows/*.drawio` - 業務分類別As-Is / TOP3 To-Be 業務フロー
+3. `asis_flows_YYYYMMDD.json` - 業務種別ごとの詳細As-Isフロー（分岐・差戻し・例外・入出力帳票）
+4. `client_input_YYYYMMDD.csv` - クライアント入力用CSV
+5. `analysis_YYYYMMDD.json` - 業務分析結果の構造化データ
+6. `analysis_YYYYMMDD.html` - ヒートマップ、TOP3 To-Be業務フロー、業務分類別As-Isフローを閲覧できる単一HTML
+7. `output/flows/*.drawio` - 業務分類別As-Is / TOP3 To-Be 業務フロー
 
 ## 実行手順
 
@@ -41,35 +42,36 @@
 
 初回はすべて仮案として出力する。確認事項はフロー改善に直結するものだけに限定する。
 
-### Step 5: クライアント入力用CSVを生成する
+### Step 5: 詳細As-Isフローを抽出する
 
-`prompts/04_client_csv_prompt.md` の指示に従い、`output/matrix_YYYYMMDD.md` から `output/client_input_YYYYMMDD.csv` を生成する。
+`prompts/04_asis_detail_prompt.md` の指示に従い、業務種別ごとの詳細As-Isフロー（分岐・差戻し・例外処理・実担当者・入出力帳票）を `output/asis_flows_YYYYMMDD.json` に保存する。
+
+- マニュアル原文に根拠のある分岐は `confidence: "explicit"` + `source_quote`、根拠のない推定分岐は `confidence: "inferred"` + `hearing_item`（確認質問）にする。
+- `hearing_items` は `render_outputs.mjs` 実行時に業務整理マトリクスの確認事項へ自動転記され、クライアント入力CSVに載る。
+- このファイルが存在する業務種別は、As-Is draw.io が詳細フロー（動的スイムレーン・判断ひし形・書類シンボル・凡例付き）として描画される。存在しない業務種別は従来どおり `matrix_tasks` からの直列フローで描画される。
+
+### Step 6: クライアント入力用CSVを生成する
+
+`prompts/05_client_csv_prompt.md` の指示に従い、`output/matrix_YYYYMMDD.md` と `output/asis_flows_YYYYMMDD.json` の `hearing_items` から `output/client_input_YYYYMMDD.csv` を生成する。
 
 クライアントが記入したCSVは `input/source/client_input_filled.csv` または `input/source/client_input_filled_YYYYMMDD.csv` として保存する。
 CSVには確認事項への `クライアント回答` と、As-Isフローへ直接反映する業務分類単位の自由記入欄 `As-Isフロー更新内容_業務分類` を含める。旧CSVの `As-Isフロー更新内容` は互換入力として扱う。`発生頻度` と `AI導入余地_ヒアリング後` は新規CSVの入力欄としては作成しない。
 
-### Step 6: スコアリングを実行する
+### Step 7: スコアリングを実行する
 
-`prompts/05_score_prompt.md` の指示に従い、`output/analysis_YYYYMMDD.json` を生成する。
+`prompts/06_score_prompt.md` の指示に従い、各セルの自動化手段（`automation_type`: ルールベース / 既存システム設定 / RPA / 生成AI / AIエージェント / 人手維持）を判定したうえで `output/analysis_YYYYMMDD.json` を生成する。
 
-`input/source/client_input_filled*.csv` が存在する場合は、最新更新日時のファイルを選び、実測値を仮置き値より優先する。
+- ルールベース・設定で足りる業務は `ai_fit_score` が低くなり、AI導入効果スコアが自然に下がる。
+- `input/source/client_input_filled*.csv` が存在する場合は、最新更新日時のファイルを選び、実測値を仮置き値より優先する。
 
-### Step 7: TOP3のTo-Beフローを設計する
+### Step 8: TOP3のTo-Beフローを設計する
 
-`prompts/06_top3_flow_prompt.md` の指示に従い、スコア上位3件を選定し、`output/analysis_YYYYMMDD.json` の `top3` と `heatmap_cells[].is_top3` を更新する。
+`prompts/07_top3_tobe_prompt.md` の指示に従い、スコア上位3件を選定し、`output/analysis_YYYYMMDD.json` の `top3` と `heatmap_cells[].is_top3` を更新する。
 
-To-Beには `Human` / `AI` / `Human Review` / `System` を使用する。
+- To-Beには `Human` / `AI` / `Human Review` / `System` を使用する。
+- 各施策に `implementation_blueprint`（ツール・参照データ・判断基準・失敗時挙動・人の確認ポイント）を作成する。`automation_type` が `rule_based` / `system_config` の施策は「AI導入ではなく設定・ルール実装を推奨」と明記する。
 
-TOP3専用のAs-Isフローは作成しない。As-IsはStep 8の業務分類別・業務種別別フローで確認する。
-
-### Step 8: 業務分類別 As-Is draw.io を生成する
-
-`scripts/render_outputs.mjs` は `matrix_tasks` から As-Is draw.io を自動生成するため、通常はこのStepをスキップしてStep 9に進んでよい。
-
-draw.io のノード配置・分岐・スイムレーンを手動で調整したい場合のみ `prompts/07_asis_drawio_prompt.md` を参照する。
-手動生成したファイルは次回の `render_outputs.mjs` 実行時に上書きされるため、変更を恒久反映するには `analysis_YYYYMMDD.json` の `matrix_tasks` または `as_is_category_updates` を修正すること。
-
-出力先: `output/flows/asis_<業務分類>_YYYYMMDD.drawio`
+TOP3専用のAs-Isフローは作成しない。As-IsはStep 5の業務種別別詳細フローで確認する。
 
 ### Step 9: HTMLを生成する
 
@@ -90,7 +92,9 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 このコマンドは以下を実行する。
 
 - 最新の `client_input_filled*.csv` があれば `クライアント回答` と業務分類単位の `As-Isフロー更新内容_業務分類` を反映
+- `output/asis_flows_YYYYMMDD.json` があれば `analysis.asis_flow_details` へマージし、`hearing_items` を確認事項へ自動転記
 - 回答済み確認事項を `resolved_questions` に反映
+- 詳細フローがある業務種別は詳細As-Is draw.io（動的レーン・分岐・書類・凡例）、ない業務種別は従来の直列As-Is draw.io を生成
 - TOP3の `top<N>_to_be.drawio` を再生成
 - `metadata.created_at` と同じ日付の `asis_*.drawio` をHTMLに埋め込み
 - `output/analysis_YYYYMMDD.html` を生成
@@ -101,24 +105,23 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 
 ## 分析ルール
 
-- 業務フローは2段階で整理する。
-  - 上段: 大分類フロー（5〜8フェーズ）
-  - 下段: 具体ステップ（各フェーズに2〜4ステップ）
 - 業務カテゴリーは入力文書から実態に合わせて抽出する（5〜8カテゴリー）。
 - 業務整理マトリクスの横軸は、業務分類ごとに作成する。横軸名・順番は他の業務分類と一致しなくてよい。
-- マトリクス横軸は今のタスク粒度を維持し、原則として業務分類内の具体タスク名に近い粒度にする。
-- ヒートマップの横軸は、各業務分類のタスクを抽象化・グループ化して `大分類グループ / 抽象ステップ` の2段にする。
+- マトリクス横軸はマニュアルの節・手順見出しに相当する実工程粒度にする（1業務種別あたり5〜10工程）。タスクは「1タスク=1主体・1対象・1成果物」で分割し、業務種別あたり5〜15行を目安にする。
+- ヒートマップの横軸は、各業務分類のタスクを抽象化・グループ化して `大分類グループ / 抽象ステップ` の2段にする（業務分類間の比較可能性のため、こちらは抽象軸を維持する）。
 - `matrix_tasks` には `マトリクス横軸`、`ヒートマップグループ`、`ヒートマップステップ` を持たせ、業務整理マトリクスとヒートマップの対応を明示する。
 - 業務分類に該当しないタスクとのセルは `heatmap_cells` に含めない。
 - ヒートマップのセルには「低」「中」「高」のみ表示する。
 - スコア評価軸の詳細はTOP3モーダルの詳細情報タブにのみ表示する。
-- AI導入効果は以下の4軸で評価する。
-  - 作業時間削減インパクト（ウェイト45%）
-  - 作業頻度・件数（ウェイト25%）
-  - 実装容易性（ウェイト20%）
+- 各セルには自動化手段 `automation_type`（rule_based / system_config / rpa / generative_ai / ai_agent / manual）を判定基準付きで付与する。判定フローは `prompts/06_score_prompt.md` を正本とする。
+- AI導入効果は以下の5軸で評価する。
+  - 作業時間削減インパクト（ウェイト40%）
+  - 作業頻度・件数（ウェイト20%）
+  - 実装容易性（ウェイト15%）
   - 品質改善・ミス削減効果（ウェイト10%）
-- TOP3についてはTo-Be業務フローを必ず作成する。TOP3クリック時はAs-Isフローを表示しない。
-- As-Isフローは業務分類別・業務種別別フローとして作成し、条件分岐、例外処理、差戻し、再承認が想定される場合は判断ノード（ひし形）と分岐矢印で表現する。
+  - AI適合度（ウェイト15%。automation_typeから機械的に決まり、ルールベースで足りる業務はスコアが下がる）
+- TOP3についてはTo-Be業務フローと `implementation_blueprint` を必ず作成する。TOP3クリック時はAs-Isフローを表示しない。
+- 詳細As-Isフロー（`asis_flows_YYYYMMDD.json`）は業務種別ごとに作成し、分岐・差戻し・例外処理は判断ノード（ひし形）と分岐矢印、入出力帳票は書類シンボルで表現する。マニュアルに根拠のない分岐は推定（点線）+確認質問として扱う。
 - To-Beフローも条件分岐、AI判定、人手レビュー、差戻し、例外処理が想定される場合は判断ノード（ひし形）と分岐矢印で表現する。
 - スコアの根拠と前提条件を `reason` フィールドに必ず記載する。
 - ヒアリング後CSVが存在する場合は実測値を仮置き値より優先してスコアリングに使用する。
@@ -135,10 +138,10 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 │   ├── 01_normalize_prompt.md
 │   ├── 02_flow_axes_prompt.md
 │   ├── 03_matrix_prompt.md
-│   ├── 04_client_csv_prompt.md
-│   ├── 05_score_prompt.md
-│   ├── 06_top3_flow_prompt.md
-│   ├── 07_asis_drawio_prompt.md
+│   ├── 04_asis_detail_prompt.md
+│   ├── 05_client_csv_prompt.md
+│   ├── 06_score_prompt.md
+│   ├── 07_top3_tobe_prompt.md
 │   └── 08_render_prompt.md
 ├── scripts/
 │   ├── render_outputs.mjs
@@ -149,6 +152,7 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 ├── output/
 │   ├── flow_axes_YYYYMMDD.json
 │   ├── matrix_YYYYMMDD.md
+│   ├── asis_flows_YYYYMMDD.json
 │   ├── client_input_YYYYMMDD.csv
 │   ├── analysis_YYYYMMDD.json
 │   ├── analysis_YYYYMMDD.html
@@ -162,10 +166,10 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 |---|---|
 | `input/source/` が空 | ドキュメントをコピーして再実行 |
 | マトリクスが生成されない | `prompts/03_matrix_prompt.md` を参照して再実行 |
-| CSVが生成されない | `prompts/04_client_csv_prompt.md` を参照して再実行 |
-| As-Is フロー図が draw.io で開けない | XMLが壊れていないか確認し、`prompts/07_asis_drawio_prompt.md` を再参照 |
-| JSONが生成されない | `prompts/05_score_prompt.md` を参照して再実行 |
-| TOP3が表示されない | `prompts/06_top3_flow_prompt.md` の出力が `analysis_YYYYMMDD.json` に反映されているか確認 |
+| CSVが生成されない | `prompts/05_client_csv_prompt.md` を参照して再実行 |
+| 詳細As-Isフローが描画されない | `output/asis_flows_YYYYMMDD.json` の日付・`category`/`business_type` の一致を確認し、`node scripts/verify_outputs.mjs --date YYYYMMDD` で契約を確認 |
+| JSONが生成されない | `prompts/06_score_prompt.md` を参照して再実行 |
+| TOP3が表示されない | `prompts/07_top3_tobe_prompt.md` の出力が `analysis_YYYYMMDD.json` に反映されているか確認 |
 | HTMLが真っ白 | ブラウザの開発者ツールでコンソールエラーを確認 |
 | プレースホルダーが残る | `node scripts/render_outputs.mjs --date YYYYMMDD` を再実行 |
 | ヒアリング後の値が反映されない | `client_input_filled*.csv` が `input/source/` に配置されているか確認 |

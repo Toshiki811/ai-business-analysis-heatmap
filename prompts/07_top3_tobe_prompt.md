@@ -1,8 +1,8 @@
-# 06 TOP3選定・As-Is/To-Beフロー設計プロンプト
+# 07 TOP3選定・To-Beフロー設計プロンプト
 
 ## 目的
 
-`output/analysis_YYYYMMDD.json` の `heatmap_cells` からTOP3を選定し、各施策のTo-Be業務フローをJSONに追加する。
+`output/analysis_YYYYMMDD.json` の `heatmap_cells` からTOP3を選定し、各施策のTo-Be業務フローと実装設計（implementation_blueprint）をJSONに追加する。
 
 TOP3モーダルではAs-Isフローを表示しない。現状業務（As-Is）は業務整理マトリクス側の業務分類別・業務種別別フローで確認する。
 
@@ -12,6 +12,7 @@ TOP3モーダルではAs-Isフローを表示しない。現状業務（As-Is）
 
 - `output/analysis_YYYYMMDD.json`
 - `output/matrix_YYYYMMDD.md`
+- `output/asis_flows_YYYYMMDD.json`（存在する場合。To-Beフローの分岐・例外設計の土台として使う）
 - `input/source/client_input_filled.csv` または `input/source/client_input_filled_YYYYMMDD.csv`（存在する場合）
 
 ## 出力
@@ -52,10 +53,18 @@ TOP3モーダルではAs-Isフローを表示しない。現状業務（As-Is）
   "target_business_type": "対象業務種別",
   "target_heatmap_group": "対象ヒートマップグループ",
   "target_flow_step": "対象ヒートマップステップ",
+  "automation_type": "対象セルのheatmap_cells[].automation_typeと一致させる",
   "current_issue": "現状課題",
-  "ai_solution": "AI導入の具体策",
+  "ai_solution": "導入の具体策（automation_typeに応じて出し分ける）",
   "expected_effect": "期待効果",
   "risks": "リスク・注意点",
+  "implementation_blueprint": {
+    "tools": ["会計システム（仕訳CSV取込）", "Excel/CSV入出力"],
+    "data_sources": ["購買台帳", "経理規程の科目対応表"],
+    "decision_rules": ["金額1万円超は会計責任者承認へ回す", "台帳と不一致の場合は人手確認キューへ"],
+    "failure_behavior": "抽出信頼度が閾値未満・突合不能の場合は自動処理を停止し、対象を担当者の確認リストに積む",
+    "human_checkpoints": ["登録前の差異一覧確認", "月次でのサンプリング検証"]
+  },
   "to_be_flow": [
     {
       "id": "step-id",
@@ -89,6 +98,19 @@ TOP3モーダルではAs-Isフローを表示しない。現状業務（As-Is）
 - `AI`: AIが自動処理する作業
 - `Human Review`: AIの処理結果を人間が確認・承認する作業
 - `System`: 既存システムが自動処理する作業
+
+## automation_type に応じた出し分けルール
+
+- `ai_agent` の場合: `implementation_blueprint` の5項目（`tools`、`data_sources`、`decision_rules`、`failure_behavior`、`human_checkpoints`）をすべて必須とする。エージェントが「どのツールを」「どの判断基準で」「失敗時にどう振る舞うか」を現場担当者が読んで運用イメージできる粒度で書く。
+- `generative_ai` の場合: `implementation_blueprint` を作成し、特に `data_sources`（読解対象の資料）と `human_checkpoints`（人がレビューするポイント）を必須とする。
+- `rule_based` / `system_config` / `rpa` の場合: `ai_solution` の冒頭に「AI導入ではなく◯◯（システム設定 / ルール実装 / RPA連携）を推奨」と明記する。`to_be_flow` の actor は `System` と `Human` を中心にし、`AI` actor を使わない。`implementation_blueprint` は `tools` と `decision_rules`（設定・ルール化する条件表）を中心に書く。
+- TOP3に `rule_based` / `system_config` のセルが入った場合でも、無理にAI施策へ書き換えない。「すぐ自動化できる」こと自体が施策価値である。
+
+## To-Beフローの具体性ルール
+
+- `to_be_flow[].description` には「何を入力に何を出力するか」を含める（例: 「請求書PDFから金額・取引先・期日を抽出し、突合結果一覧を出力」）。「AIが支援する」のような抽象表現だけのステップは禁止。
+- AIステップには必ず後続に `Human Review` ステップまたは判断ノードを置き、AIの出力を無確認で確定させるフローにしない。
+- `failure_behavior` に書いた例外時挙動は、`to_be_flow` 上でも判断ノード+例外分岐として表現する。
 
 ## 注意事項
 

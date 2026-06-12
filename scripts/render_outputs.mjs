@@ -11,6 +11,8 @@ import {
   buildDrawioMap,
   applyLatestClientInput,
   ensureHeatmapToBeTasks,
+  fileDetailFlowQuestions,
+  mergeAsIsFlowDetails,
   normalizeAnalysisSchema,
   renderHtml,
   resolveQuestions,
@@ -52,6 +54,8 @@ const htmlPath = path.join(root, 'output', `analysis_${dateKey}.html`);
 
 const schemaStats = normalizeAnalysisSchema(analysis);
 const clientInputStats = applyLatestClientInput(analysis, root);
+const detailStats = mergeAsIsFlowDetails(analysis, root, dateKey);
+const filedQuestions = fileDetailFlowQuestions(analysis);
 const resolved = resolveQuestions(analysis);
 const writtenAsIsDrawio = writeAsIsDrawio(analysis, flowsDir, dateKey);
 const writtenDrawio = writeTop3Drawio(analysis, flowsDir);
@@ -65,6 +69,10 @@ console.log(`Analysis: ${analysisPath}`);
 console.log(`Schema normalized: ${JSON.stringify(schemaStats)}`);
 if (clientInputStats.file) {
   console.log(`Client input applied: ${clientInputStats.file} (${clientInputStats.applied}/${clientInputStats.rows} rows)`);
+}
+if (detailStats.flows > 0) {
+  console.log(`As-Is detail flows: ${detailStats.flows} business type(s) (linked nodes ${detailStats.linked_nodes}/${detailStats.source_task_nodes})`);
+  console.log(`Detail-flow hearing items filed: ${filedQuestions}`);
 }
 console.log(`Resolved questions: ${resolved.length}`);
 console.log(`As-Is draw.io files written: ${writtenAsIsDrawio.length}`);

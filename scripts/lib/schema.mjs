@@ -1,3 +1,46 @@
+export const AUTOMATION_TYPES = ['rule_based', 'system_config', 'rpa', 'generative_ai', 'ai_agent', 'manual'];
+
+const AUTOMATION_TYPE_ALIASES = new Map([
+  ['rule_based', 'rule_based'],
+  ['rulebased', 'rule_based'],
+  ['ルールベース', 'rule_based'],
+  ['system_config', 'system_config'],
+  ['既存システム設定', 'system_config'],
+  ['システム設定', 'system_config'],
+  ['rpa', 'rpa'],
+  ['rpa/連携', 'rpa'],
+  ['generative_ai', 'generative_ai'],
+  ['gen_ai', 'generative_ai'],
+  ['生成ai', 'generative_ai'],
+  ['生成AI', 'generative_ai'],
+  ['ai_agent', 'ai_agent'],
+  ['aiエージェント', 'ai_agent'],
+  ['エージェント', 'ai_agent'],
+  ['manual', 'manual'],
+  ['人手維持', 'manual'],
+  ['人手', 'manual']
+]);
+
+const AUTOMATION_TYPE_LABELS = {
+  rule_based: 'ルールベース',
+  system_config: '既存システム設定',
+  rpa: 'RPA/連携',
+  generative_ai: '生成AI',
+  ai_agent: 'AIエージェント',
+  manual: '人手維持'
+};
+
+export function normalizeAutomationType(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return AUTOMATION_TYPE_ALIASES.get(raw) || AUTOMATION_TYPE_ALIASES.get(raw.toLowerCase()) || raw;
+}
+
+export function automationTypeLabel(value) {
+  const key = normalizeAutomationType(value);
+  return AUTOMATION_TYPE_LABELS[key] || String(value || '');
+}
+
 export function getTaskMinutes(task) {
   return task['1件あたり所要時間_分_ヒアリング後'] || task['所要時間_分'] || task['1件あたり所要時間_分'] || task.estimated_minutes || '';
 }
@@ -136,13 +179,14 @@ export function normalizeAnalysisSchema(analysis) {
   }
 
   for (const cell of analysis.heatmap_cells) {
-    const before = [cell.heatmap_group, cell.effect_level].join('|');
+    const before = [cell.heatmap_group, cell.effect_level, cell.automation_type].join('|');
     cell.category = cell.category || cell['業務分類'] || '';
     cell.business_type = cell.business_type || cell['業務種別'] || '';
     cell.flow_step = cell.flow_step || cell['ヒートマップステップ'] || cell.common_step || '';
     cell.heatmap_group = cell.heatmap_group || inferHeatmapGroup(analysis, cell.flow_step);
     cell.effect_level = normalizeEffectLevel(cell.effect_level);
-    const after = [cell.heatmap_group, cell.effect_level].join('|');
+    if (cell.automation_type) cell.automation_type = normalizeAutomationType(cell.automation_type);
+    const after = [cell.heatmap_group, cell.effect_level, cell.automation_type].join('|');
     if (before !== after) stats.heatmap_cells_normalized += 1;
   }
 
@@ -169,6 +213,60 @@ export function normalizeAnalysisSchema(analysis) {
   return stats;
 }
 
+function validateAsIsFlowDetails(analysis, errors, warnings) {
+  const flows = Array.isArray(analysis.asis_flow_details) ? analysis.asis_flow_details : [];
+  if (flows.length === 0) return;
+
+  const taskPairs = new Set((analysis.matrix_tasks || []).map((task) =>
+    `${String(task['業務分類'] || '').trim()}|||${String(task['業務種別'] || '').trim()}`
+  ));
+
+  flows.forEach((flow, flowIndex) => {
+    const label = `asis_flow_details[${flowIndex}] (${flow.category || '?'} / ${flow.business_type || '?'})`;
+    if (!String(flow.category || '').trim() || !String(flow.business_type || '').trim()) {
+      errors.push(`${label} missing category or business_type`);
+    } else if (!taskPairs.has(`${String(flow.category).trim()}|||${String(flow.business_type).trim()}`)) {
+      errors.push(`${label} does not match any matrix_tasks 業務分類/業務種別`);
+    }
+
+    const nodes = Array.isArray(flow.nodes) ? flow.nodes : [];
+    if (nodes.length === 0) {
+      errors.push(`${label} has no nodes`);
+      return;
+    }
+
+    const ids = new Set();
+    for (const node of nodes) {
+      const id = String(node.id || '').trim();
+      if (!id) errors.push(`${label} has a node without id`);
+      else if (ids.has(id)) errors.push(`${label} duplicate node id: ${id}`);
+      else ids.add(id);
+    }
+
+    nodes.forEach((node, nodeIndex) => {
+      const nodeLabel = `${label} nodes[${nodeIndex}] (${node.id || '?'})`;
+      const branches = Array.isArray(node.branches) ? node.branches : [];
+      if (node.node_type === 'decision') {
+        if (!String(node.condition || '').trim()) errors.push(`${nodeLabel} decision missing condition`);
+        if (branches.length < 2) errors.push(`${nodeLabel} decision needs at least 2 branches`);
+        if (node.confidence === 'inferred' && !String(node.hearing_item || '').trim()) {
+          errors.push(`${nodeLabel} inferred decision missing hearing_item`);
+        }
+      }
+      for (const branch of branches) {
+        const target = String(branch.target || '').trim();
+        if (!target) errors.push(`${nodeLabel} branch missing target`);
+        else if (!ids.has(target)) errors.push(`${nodeLabel} branch target not found: ${target}`);
+      }
+      const next = String(node.next || '').trim();
+      if (next && !ids.has(next)) errors.push(`${nodeLabel} next target not found: ${next}`);
+      if (node.confidence === 'explicit' && !String(node.source_quote || '').trim() && !String(node.client_answer || '').trim()) {
+        warnings.push(`${nodeLabel} explicit node has no source_quote/client_answer`);
+      }
+    });
+  });
+}
+
 export function validateAnalysisContract(analysis) {
   const errors = [];
   const warnings = [];
@@ -185,6 +283,7 @@ export function validateAnalysisContract(analysis) {
     }
   });
 
+  let automationTyped = 0;
   (analysis.heatmap_cells || []).forEach((cell, index) => {
     for (const key of ['category', 'business_type', 'heatmap_group', 'flow_step', 'reason', 'effect_level']) {
       if (!String(cell[key] || '').trim()) errors.push(`heatmap_cells[${index}] missing ${key}`);
@@ -192,7 +291,19 @@ export function validateAnalysisContract(analysis) {
     if (!['high', 'medium', 'low', '高', '中', '低'].includes(String(cell.effect_level || '').trim())) {
       errors.push(`heatmap_cells[${index}] invalid effect_level: ${cell.effect_level}`);
     }
+    if (cell.automation_type) {
+      automationTyped += 1;
+      if (!AUTOMATION_TYPES.includes(normalizeAutomationType(cell.automation_type))) {
+        errors.push(`heatmap_cells[${index}] invalid automation_type: ${cell.automation_type}`);
+      }
+    }
   });
+  const totalCells = (analysis.heatmap_cells || []).length;
+  if (automationTyped > 0 && automationTyped < totalCells) {
+    warnings.push(`automation_type set on ${automationTyped}/${totalCells} heatmap_cells; remaining cells fall back to legacy behavior`);
+  }
+
+  validateAsIsFlowDetails(analysis, errors, warnings);
 
   (analysis.top3 || []).forEach((item, index) => {
     for (const key of ['rank', 'title', 'target_category', 'target_business_type', 'target_heatmap_group', 'target_flow_step']) {

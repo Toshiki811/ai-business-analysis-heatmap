@@ -13,8 +13,7 @@
 3. `asis_flows_YYYYMMDD.json` - 業務種別ごとの詳細As-Isフロー（分岐・差戻し・例外・入出力帳票）
 4. `client_input_YYYYMMDD.csv` - クライアント入力用CSV
 5. `analysis_YYYYMMDD.json` - 業務分析結果の構造化データ
-6. `analysis_YYYYMMDD.html` - ヒートマップ、TOP3 To-Be業務フロー、業務分類別As-Isフローを閲覧できる単一HTML
-7. `output/flows/*.drawio` - 業務分類別As-Is / TOP3 To-Be 業務フロー
+6. `analysis_YYYYMMDD.html` - ヒートマップ、TOP3 To-Be業務フロー、業務分類別As-Isフローを閲覧できる単一HTML（フローは自前インラインSVGで描画。draw.io・外部ビューア非依存）
 
 ## 実行手順
 
@@ -44,12 +43,13 @@
 
 ### Step 5: 詳細As-Isフローを抽出する
 
-`prompts/04_asis_detail_prompt.md` の指示に従い、業務種別ごとの詳細As-Isフロー（分岐・差戻し・例外処理・実担当者・入出力帳票）を `output/asis_flows_YYYYMMDD.json` に保存する。
+`prompts/04_asis_detail_prompt.md` の指示に従い、業務種別ごとの詳細As-Isフロー（分岐・差戻し・例外処理・実担当者・入出力帳票）を `output/asis_flows_YYYYMMDD.json` に保存する。**作図ルールの正本は [`docs/asis_flow_guideline.md`](docs/asis_flow_guideline.md)。**
 
-- 詳細フローは**マトリクスの全業務種別分を作成する（スキップ禁止）**。1業務種別あたり10〜25ノード（6ノード以下は粗すぎ）。
+- 詳細フローは**マトリクスの全業務種別分を作成する（スキップ禁止）**。粒度はノード数の数合わせでなく分割トリガー（主体/ツール/媒体が変わる・待ち承認受け渡し・判断が入る）で決める。目安は業務種別あたり10〜25ノード（6ノード以下は粗すぎ）。
 - マニュアル原文に根拠のある分岐は `confidence: "explicit"` + `source_quote`、根拠のない推定分岐は `confidence: "inferred"` + `hearing_item`（確認質問）にする。
+- **分岐健全性**: decisionノードは出口2本以上・行き先2経路以上・各枝ラベル・condition必須。検証はゲートに集約し差戻しを逐次に乱立させない。`scripts/lib/flows.mjs` の `checkFlowStructure` が `verify_outputs.mjs` から自動検査し、違反はerrorで停止する（単体テスト: `node --test scripts/test/flow_structure.test.mjs`）。
 - `hearing_items` は業務種別あたり最低3件（うち実態確認 `question_type: "reality_check"` を1件以上）。`render_outputs.mjs` 実行時に業務整理マトリクスの確認事項へ自動転記され、クライアント入力CSVに載る。
-- このファイルが存在する業務種別は、As-Is draw.io が詳細フロー（動的スイムレーン・判断ひし形・書類シンボル・凡例付き）として描画される。存在しない業務種別は従来どおり `matrix_tasks` からの直列フローで描画される（粗くなるため詳細フロー欠落は `verify_outputs.mjs` が警告する）。
+- このファイルが存在する業務種別は、ブラウザ内の自前インラインSVGレンダラ（`templates/app/js/flow_svg.js`）が詳細フロー（動的スイムレーン・判断ひし形・書類シンボル・凡例付き）として描画する。存在しない業務種別は `matrix_tasks` からの直列フローで描画される（粗くなるため詳細フロー欠落は `verify_outputs.mjs` が警告する）。
 
 ### Step 6: クライアント入力用CSVを生成する
 
@@ -76,7 +76,7 @@ TOP3専用のAs-Isフローは作成しない。As-IsはStep 5の業務種別別
 
 ### Step 9: HTMLを生成する
 
-`prompts/08_render_prompt.md` の指示に従い、JSONとdraw.io XMLをテンプレートへ埋め込む。
+`prompts/08_render_prompt.md` の指示に従い、JSONとインラインSVGレンダラ（`templates/app/js/flow_svg.js`）をテンプレートへ埋め込む。
 
 推奨コマンド:
 
@@ -95,10 +95,8 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 - 最新の `client_input_filled*.csv` があれば `クライアント回答` と業務分類単位の `As-Isフロー更新内容_業務分類` を反映
 - `output/asis_flows_YYYYMMDD.json` があれば `analysis.asis_flow_details` へマージし、`hearing_items` を確認事項へ自動転記
 - 回答済み確認事項を `resolved_questions` に反映
-- 詳細フローがある業務種別は詳細As-Is draw.io（動的レーン・分岐・書類・凡例）、ない業務種別は従来の直列As-Is draw.io を生成
-- TOP3の `top<N>_to_be.drawio` を再生成
-- `metadata.created_at` と同じ日付の `asis_*.drawio` をHTMLに埋め込み
-- `output/analysis_YYYYMMDD.html` を生成
+- As-Is（詳細フロー、無い業務種別は直列フォールバック）とTOP3 To-Beのフローノードをページへ埋め込み、ブラウザ内で `flow_svg.js` がSVGスイムレーン図として描画する
+- `output/analysis_YYYYMMDD.html` を生成（draw.io・外部CDNビューア非依存の単一HTML）
 
 ### Step 10: ブラウザで確認する
 
@@ -147,18 +145,21 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 │   └── 08_render_prompt.md
 ├── scripts/
 │   ├── render_outputs.mjs
-│   └── lib/
+│   ├── verify_outputs.mjs
+│   ├── lib/                       # flows.mjs(checkFlowStructure) 等
+│   └── test/                      # flow_structure.test.mjs
 ├── templates/
 │   ├── heatmap_template.html
-│   └── 業務フロー図_テンプレート.drawio
+│   └── app/js/flow_svg.js         # 自前インラインSVGフローレンダラ
+├── docs/
+│   └── asis_flow_guideline.md     # As-Isフロー作図ルールの正本
 ├── output/
 │   ├── flow_axes_YYYYMMDD.json
 │   ├── matrix_YYYYMMDD.md
 │   ├── asis_flows_YYYYMMDD.json
 │   ├── client_input_YYYYMMDD.csv
 │   ├── analysis_YYYYMMDD.json
-│   ├── analysis_YYYYMMDD.html
-│   └── flows/
+│   └── analysis_YYYYMMDD.html
 └── AGENTS.md
 ```
 
@@ -175,7 +176,8 @@ node scripts/render_outputs.mjs --analysis output/analysis_YYYYMMDD.json
 | HTMLが真っ白 | ブラウザの開発者ツールでコンソールエラーを確認 |
 | プレースホルダーが残る | `node scripts/render_outputs.mjs --date YYYYMMDD` を再実行 |
 | ヒアリング後の値が反映されない | `client_input_filled*.csv` が `input/source/` に配置されているか確認 |
-| draw.io図が表示されない | インターネット接続を確認（`viewer.diagrams.net` への接続が必要） |
+| フロー図が表示されない | フローは自前インラインSVG（`templates/app/js/flow_svg.js`）で描画する。ブラウザのコンソールで `FlowSvg` 関連エラーを確認し、`node scripts/verify_outputs.mjs --date YYYYMMDD` で埋め込みを検証（インターネット接続は不要） |
+| 分岐が1本線・条件なしで警告/エラー | decisionの分岐健全性違反。`docs/asis_flow_guideline.md` §⑤に従い出口2本以上・2経路以上・condition・各枝ラベルを満たす |
 
 ## 将来の拡張予定
 

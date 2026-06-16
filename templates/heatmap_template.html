@@ -4443,6 +4443,32 @@ const ANALYSIS_DATA = /* ANALYSIS_DATA_PLACEHOLDER */;
       return { nodes };
     }
 
+    // 業務分類の全体像: その分類の各業務種別のasis_flow_detailsを束ねて1フローへ合成。
+    // 個々のAs-Isと同一ノードを使うため構造的に整合する(独立生成のcategory_flowsは使わない)。
+    // 各サブフローはstart→endの区切りを保ったまま縦に積まれ、スイムレーンを共有する。
+    function serialFlowFromDetails(category) {
+      const details = (ANALYSIS_DATA.asis_flow_details || [])
+        .filter(f => f.category === category && Array.isArray(f.nodes) && f.nodes.length);
+      if (!details.length) return null;
+      const actors = [];
+      const nodes = [];
+      details.forEach((f, fi) => {
+        (f.actors || []).forEach(a => { if (a && actors.indexOf(a) < 0) actors.push(a); });
+        const prefix = 'b' + fi + '_';
+        const remap = id => (id == null || String(id) === '') ? id : prefix + id;
+        (f.nodes || []).forEach(n => {
+          const nn = Object.assign({}, n);
+          nn.id = prefix + n.id;
+          if (n.next != null && String(n.next) !== '') nn.next = remap(n.next);
+          if (Array.isArray(n.branches)) {
+            nn.branches = n.branches.map(b => Object.assign({}, b, { target: remap(b.target) }));
+          }
+          nodes.push(nn);
+        });
+      });
+      return { category, actors, nodes };
+    }
+
     // As-Isフロー(ノードグラフ)取得: 詳細フローがあればそれ、無ければステップから直列合成
     function getAsIsFlow(category, businessType) {
       const cacheKey = category + '|||' + (businessType || '*');
@@ -4459,8 +4485,11 @@ const ANALYSIS_DATA = /* ANALYSIS_DATA_PLACEHOLDER */;
           if (bt) flow = serialFlowFromSteps(bt.steps, businessType);
         }
       } else {
-        const cat = (ANALYSIS_DATA.category_flows || []).find(f => f.category === category);
-        if (cat) flow = serialFlowFromSteps(cat.steps, category);
+        flow = serialFlowFromDetails(category);
+        if (!flow) {
+          const cat = (ANALYSIS_DATA.category_flows || []).find(f => f.category === category);
+          if (cat) flow = serialFlowFromSteps(cat.steps, category);
+        }
       }
       _asIsFlowCache.set(cacheKey, flow);
       return flow;

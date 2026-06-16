@@ -11,7 +11,7 @@ import {
   normalizeAnalysisSchema,
   validateAnalysisContract
 } from './lib/render.mjs';
-import { checkFlowStructure } from './lib/flows.mjs';
+import { checkFlowStructure, checkActorAlignment, buildTaskSubjectIndex } from './lib/flows.mjs';
 
 function usage() {
   return [
@@ -189,6 +189,8 @@ function verifyAnalysis(analysis, analysisPath) {
   if (missingDetailFlows.length > 0) {
     warnings.push(`asis_flow_details missing for ${missingDetailFlows.length} business type(s) (rendered as coarse serial flow): ${missingDetailFlows.map((key) => key.replace('|||', ' / ')).join(', ')}`);
   }
+  // マトリクスの業務内容詳細の主語(=主作業主体)を source_task キー単位でインデックス化(actorズレ検出に使う)
+  const taskSubjectIndex = buildTaskSubjectIndex(normalized.matrix_tasks);
   detailFlows.forEach((flow) => {
     const nodeCount = Array.isArray(flow.nodes) ? flow.nodes.length : 0;
     if (nodeCount > 0 && nodeCount < 8) {
@@ -196,6 +198,8 @@ function verifyAnalysis(analysis, analysisPath) {
     }
     // 分岐健全性(decision出口2本以上・2経路以上・condition・差戻し過多)。正本は docs/asis_flow_guideline.md。
     checkFlowStructure(flow, errors, warnings);
+    // 主作業主体(actor=スイムレーン)のズレ検出。細分化でノードの担当が本来の主体からズレるのを防ぐ。
+    checkActorAlignment(flow, taskSubjectIndex, errors, warnings);
   });
 
   // 業務種別が1つしかない業務分類(1:1構成)を警告する

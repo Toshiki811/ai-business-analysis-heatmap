@@ -5295,7 +5295,8 @@
           "node_type": "start",
           "label": "経理体制整備 開始",
           "actor": "理事長",
-          "description": "年度初めまたは人事異動時に経理体制の整備を開始する"
+          "description": "年度初めまたは人事異動時に経理体制の整備を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -5325,13 +5326,9 @@
         {
           "id": "n03",
           "node_type": "process",
-          "label": "辞令・任命記録の作成",
+          "label": "辞令の作成・交付",
           "actor": "理事長",
           "description": "任命結果を辞令または理事会議事録に記録し、職務分掌規程へ反映する",
-          "outputs": [
-            "辞令",
-            "理事会議事録"
-          ],
           "source_task": {
             "業務分類": "経理体制・帳簿管理",
             "業務種別": "経理体制整備",
@@ -5350,7 +5347,32 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "担当範囲・権限境界の確認",
+          "label": "職務分掌規程への反映",
+          "actor": "理事長",
+          "description": "任命結果を辞令または理事会議事録に記録し、職務分掌規程へ反映する",
+          "outputs": [
+            "辞令",
+            "理事会議事録"
+          ],
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 1,
+            "タスク名": "経理担当者任命"
+          },
+          "confidence": "inferred",
+          "next": "n05",
+          "task_id": "task_d783d0a7",
+          "matrix_axis": "担当者任命",
+          "heatmap_group": "承認・確認",
+          "heatmap_step": "承認・確認",
+          "minutes": "30（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "職務分掌規程の確認",
           "actor": "会計責任者",
           "description": "会計責任者が各サービス区分の担当範囲と権限委譲の境界（金額上限等）を職務分掌規程と照らして確認する",
           "inputs": [
@@ -5365,7 +5387,7 @@
           },
           "source_quote": "会計責任者が出納職員を監督し、各サービス区分の担当範囲を確認する",
           "confidence": "explicit",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_cfba8d80",
           "matrix_axis": "職務分掌確認",
           "heatmap_group": "情報収集・照合",
@@ -5374,7 +5396,29 @@
           "burden": "低"
         },
         {
-          "id": "n05",
+          "id": "n06",
+          "node_type": "process",
+          "label": "担当範囲・権限境界の確認",
+          "actor": "会計責任者",
+          "description": "会計責任者が各サービス区分の担当範囲と権限委譲の境界（金額上限等）を職務分掌規程と照らして確認する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 2,
+            "タスク名": "職務分掌範囲確認"
+          },
+          "source_quote": "会計責任者が出納職員を監督し、各サービス区分の担当範囲を確認する",
+          "confidence": "explicit",
+          "next": "n07",
+          "task_id": "task_cfba8d80",
+          "matrix_axis": "職務分掌確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "20（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n07",
           "node_type": "decision",
           "label": "規程と実態の一致確認",
           "actor": "会計責任者",
@@ -5387,19 +5431,19 @@
           },
           "confidence": "inferred",
           "condition": "規程の担当区分と実際の業務分担が一致するか",
+          "hearing_item": "職務分掌規程と実際の担当が異なる場合（兼務等）の取り扱い・規程改定の手順を教えてください",
+          "hearing_answer_example": "兼務はやむを得ない場合のみ理事長承認とし、年度末に規程を見直す",
           "branches": [
             {
               "label": "一致",
-              "target": "n07"
+              "target": "n09"
             },
             {
               "label": "不一致",
-              "target": "n06",
+              "target": "n08",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "職務分掌規程と実際の担当が異なる場合（兼務等）の取り扱い・規程改定の手順を教えてください",
-          "hearing_answer_example": "兼務はやむを得ない場合のみ理事長承認とし、年度末に規程を見直す",
           "task_id": "task_cfba8d80",
           "matrix_axis": "職務分掌確認",
           "heatmap_group": "情報収集・照合",
@@ -5408,7 +5452,7 @@
           "burden": "低"
         },
         {
-          "id": "n06",
+          "id": "n08",
           "node_type": "exception",
           "label": "規程改定・分担調整",
           "actor": "会計責任者",
@@ -5423,7 +5467,7 @@
             "タスク名": "職務分掌範囲確認"
           },
           "confidence": "inferred",
-          "next": "n07",
+          "next": "n09",
           "task_id": "task_cfba8d80",
           "matrix_axis": "職務分掌確認",
           "heatmap_group": "情報収集・照合",
@@ -5432,9 +5476,9 @@
           "burden": "低"
         },
         {
-          "id": "n07",
+          "id": "n09",
           "node_type": "process",
-          "label": "出納業務の定期照合",
+          "label": "出納記録の収集",
           "actor": "会計責任者",
           "description": "会計責任者が出納職員の業務遂行状況（出納記録・試算表等）を定期的に照合し確認する",
           "inputs": [
@@ -5449,7 +5493,7 @@
           },
           "source_quote": "会計責任者が出納職員の業務遂行状況を定期的に確認し",
           "confidence": "explicit",
-          "next": "n08",
+          "next": "n10",
           "task_id": "task_11e0e191",
           "matrix_axis": "監督体制確認",
           "heatmap_group": "承認・確認",
@@ -5458,7 +5502,29 @@
           "burden": "低"
         },
         {
-          "id": "n08",
+          "id": "n10",
+          "node_type": "process",
+          "label": "帳簿・規程との照合",
+          "actor": "会計責任者",
+          "description": "会計責任者が出納職員の業務遂行状況（出納記録・試算表等）を定期的に照合し確認する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "経理体制整備",
+            "タスク順": 3,
+            "タスク名": "監督体制定期確認"
+          },
+          "source_quote": "会計責任者が出納職員の業務遂行状況を定期的に確認し",
+          "confidence": "explicit",
+          "next": "n11",
+          "task_id": "task_11e0e191",
+          "matrix_axis": "監督体制確認",
+          "heatmap_group": "承認・確認",
+          "heatmap_step": "承認・確認",
+          "minutes": "30（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n11",
           "node_type": "decision",
           "label": "業務逸脱の有無判定",
           "actor": "会計責任者",
@@ -5471,19 +5537,19 @@
           },
           "confidence": "inferred",
           "condition": "出納記録と帳簿・規程の照合結果が一致するか",
+          "hearing_item": "内部牽制チェックで逸脱が見つかった場合の是正指示・記録の手順を教えてください",
+          "hearing_answer_example": "会計責任者が是正指示を文書で出し、対応結果を翌月のチェックで確認する",
           "branches": [
             {
               "label": "逸脱なし",
-              "target": "n10"
+              "target": "n13"
             },
             {
               "label": "逸脱あり",
-              "target": "n09",
+              "target": "n12",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "内部牽制チェックで逸脱が見つかった場合の是正指示・記録の手順を教えてください",
-          "hearing_answer_example": "会計責任者が是正指示を文書で出し、対応結果を翌月のチェックで確認する",
           "task_id": "task_11e0e191",
           "matrix_axis": "監督体制確認",
           "heatmap_group": "承認・確認",
@@ -5492,7 +5558,7 @@
           "burden": "低"
         },
         {
-          "id": "n09",
+          "id": "n12",
           "node_type": "exception",
           "label": "是正指示・対応確認",
           "actor": "会計責任者",
@@ -5504,7 +5570,7 @@
             "タスク名": "監督体制定期確認"
           },
           "confidence": "inferred",
-          "next": "n07",
+          "next": "n09",
           "task_id": "task_11e0e191",
           "matrix_axis": "監督体制確認",
           "heatmap_group": "承認・確認",
@@ -5513,7 +5579,7 @@
           "burden": "低"
         },
         {
-          "id": "n10",
+          "id": "n13",
           "node_type": "end",
           "label": "経理体制整備 完了",
           "actor": "会計責任者",
@@ -5529,14 +5595,14 @@
           "reason": "マニュアルに任命記録の方法の記載がなく、実態の確認が必要"
         },
         {
-          "node_id": "n05",
+          "node_id": "n07",
           "question_type": "branch_confirmation",
           "question": "職務分掌規程と実際の担当が異なる場合（兼務等）の取り扱い・規程改定の手順を教えてください",
           "answer_example": "兼務はやむを得ない場合のみ理事長承認とし、年度末に規程を見直す",
           "reason": "マニュアルに規程と実態の不一致時の扱いの記載がない"
         },
         {
-          "node_id": "n08",
+          "node_id": "n11",
           "question_type": "branch_confirmation",
           "question": "内部牽制チェックで逸脱が見つかった場合の是正指示・記録の手順を教えてください",
           "answer_example": "会計責任者が是正指示を文書で出し、対応結果を翌月のチェックで確認する",
@@ -5562,7 +5628,8 @@
           "node_type": "start",
           "label": "帳簿・帳票管理 開始",
           "actor": "出納職員",
-          "description": "年度初めまたは設定変更時に帳簿・帳票の整備を開始する"
+          "description": "年度初めまたは設定変更時に帳簿・帳票の整備を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -5616,7 +5683,7 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "勘定科目・サービス区分設定の確認",
+          "label": "会計システム設定の確認",
           "actor": "出納職員",
           "description": "会計システムの勘定科目・サービス区分の設定内容を年度の事業内容と照らして確認する",
           "inputs": [
@@ -5640,6 +5707,28 @@
         },
         {
           "id": "n05",
+          "node_type": "process",
+          "label": "勘定科目・サービス区分の点検",
+          "actor": "出納職員",
+          "description": "会計システムの勘定科目・サービス区分の設定内容を年度の事業内容と照らして確認する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 2,
+            "タスク名": "会計システム設定確認"
+          },
+          "source_quote": "導入済み会計システムの勘定科目、サービス区分、帳票出力設定を確認する",
+          "confidence": "explicit",
+          "next": "n06",
+          "task_id": "task_ce16ff54",
+          "matrix_axis": "会計システム設定確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "60（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n06",
           "node_type": "decision",
           "label": "設定変更の要否判定",
           "actor": "出納職員",
@@ -5652,18 +5741,18 @@
           },
           "confidence": "inferred",
           "condition": "現行設定と年度の事業内容が一致するか",
+          "hearing_item": "会計システムの設定変更（科目追加・区分変更）の承認・反映手順を教えてください",
+          "hearing_answer_example": "担当者が変更案を作成し、会計責任者承認後にシステムへ反映する",
           "branches": [
             {
               "label": "変更不要",
-              "target": "n09"
+              "target": "n10"
             },
             {
               "label": "変更必要",
-              "target": "n06"
+              "target": "n07"
             }
           ],
-          "hearing_item": "会計システムの設定変更（科目追加・区分変更）の承認・反映手順を教えてください",
-          "hearing_answer_example": "担当者が変更案を作成し、会計責任者承認後にシステムへ反映する",
           "task_id": "task_ce16ff54",
           "matrix_axis": "会計システム設定確認",
           "heatmap_group": "情報収集・照合",
@@ -5672,7 +5761,7 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "process",
           "label": "設定変更案の作成",
           "actor": "出納職員",
@@ -5687,7 +5776,7 @@
             "タスク名": "会計システム設定確認"
           },
           "confidence": "inferred",
-          "next": "n07",
+          "next": "n08",
           "task_id": "task_ce16ff54",
           "matrix_axis": "会計システム設定確認",
           "heatmap_group": "情報収集・照合",
@@ -5696,7 +5785,7 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "decision",
           "label": "設定変更の承認判定",
           "actor": "会計責任者",
@@ -5712,19 +5801,19 @@
           },
           "confidence": "inferred",
           "condition": "変更内容が妥当か（科目体系・規程適合）",
+          "hearing_item": "設定変更が差戻しになった場合の修正・再承認の手順を教えてください",
+          "hearing_answer_example": "出納職員が変更案を修正し、会計責任者が再確認のうえ承認する",
           "branches": [
             {
               "label": "承認",
-              "target": "n08"
+              "target": "n09"
             },
             {
               "label": "差戻し",
-              "target": "n06",
+              "target": "n07",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "設定変更が差戻しになった場合の修正・再承認の手順を教えてください",
-          "hearing_answer_example": "出納職員が変更案を修正し、会計責任者が再確認のうえ承認する",
           "task_id": "task_ce16ff54",
           "matrix_axis": "会計システム設定確認",
           "heatmap_group": "情報収集・照合",
@@ -5733,7 +5822,7 @@
           "burden": "中"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "process",
           "label": "会計システムへの設定反映",
           "actor": "出納職員",
@@ -5748,7 +5837,7 @@
             "タスク名": "会計システム設定確認"
           },
           "confidence": "inferred",
-          "next": "n09",
+          "next": "n10",
           "task_id": "task_ce16ff54",
           "matrix_axis": "会計システム設定確認",
           "heatmap_group": "情報収集・照合",
@@ -5757,9 +5846,9 @@
           "burden": "中"
         },
         {
-          "id": "n09",
+          "id": "n10",
           "node_type": "process",
-          "label": "帳票の出力テスト",
+          "label": "帳票の出力テスト実行",
           "actor": "会計責任者",
           "description": "会計責任者が試算表・元帳等の帳票を会計システムから出力し、内容に誤りがないか確認する",
           "inputs": [
@@ -5774,7 +5863,7 @@
           },
           "source_quote": "帳票出力設定を確認する",
           "confidence": "explicit",
-          "next": "n10",
+          "next": "n11",
           "task_id": "task_a919dc49",
           "matrix_axis": "帳票出力確認",
           "heatmap_group": "承認・確認",
@@ -5783,7 +5872,29 @@
           "burden": "低"
         },
         {
-          "id": "n10",
+          "id": "n11",
+          "node_type": "process",
+          "label": "出力帳票の内容点検",
+          "actor": "会計責任者",
+          "description": "会計責任者が試算表・元帳等の帳票を会計システムから出力し、内容に誤りがないか確認する",
+          "source_task": {
+            "業務分類": "経理体制・帳簿管理",
+            "業務種別": "帳簿・帳票管理",
+            "タスク順": 3,
+            "タスク名": "帳票出力テスト確認"
+          },
+          "source_quote": "帳票出力設定を確認する",
+          "confidence": "explicit",
+          "next": "n12",
+          "task_id": "task_a919dc49",
+          "matrix_axis": "帳票出力確認",
+          "heatmap_group": "承認・確認",
+          "heatmap_step": "内容確認",
+          "minutes": "30（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n12",
           "node_type": "decision",
           "label": "出力内容の確認判定",
           "actor": "会計責任者",
@@ -5796,19 +5907,19 @@
           },
           "confidence": "inferred",
           "condition": "帳票の出力内容に誤りがないか",
+          "hearing_item": "帳票出力に誤りが見つかった場合の設定修正の担当と手順を教えてください",
+          "hearing_answer_example": "出納職員が設定を修正し、会計責任者が再出力で確認する",
           "branches": [
             {
               "label": "問題なし",
-              "target": "n12"
+              "target": "n14"
             },
             {
               "label": "誤りあり",
-              "target": "n11",
+              "target": "n13",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "帳票出力に誤りが見つかった場合の設定修正の担当と手順を教えてください",
-          "hearing_answer_example": "出納職員が設定を修正し、会計責任者が再出力で確認する",
           "task_id": "task_a919dc49",
           "matrix_axis": "帳票出力確認",
           "heatmap_group": "承認・確認",
@@ -5817,7 +5928,7 @@
           "burden": "低"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "exception",
           "label": "設定の再修正",
           "actor": "出納職員",
@@ -5829,7 +5940,7 @@
             "タスク名": "帳票出力テスト確認"
           },
           "confidence": "inferred",
-          "next": "n09",
+          "next": "n10",
           "task_id": "task_a919dc49",
           "matrix_axis": "帳票出力確認",
           "heatmap_group": "承認・確認",
@@ -5838,7 +5949,7 @@
           "burden": "低"
         },
         {
-          "id": "n12",
+          "id": "n14",
           "node_type": "end",
           "label": "帳簿・帳票管理 完了",
           "actor": "会計責任者",
@@ -5847,14 +5958,14 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n05",
+          "node_id": "n06",
           "question_type": "branch_confirmation",
           "question": "会計システムの設定変更（科目追加・区分変更）の承認・反映手順を教えてください",
           "answer_example": "担当者が変更案を作成し、会計責任者承認後にシステムへ反映する",
           "reason": "マニュアルに設定変更の承認手順の記載がない"
         },
         {
-          "node_id": "n10",
+          "node_id": "n12",
           "question_type": "branch_confirmation",
           "question": "帳票出力に誤りが見つかった場合の設定修正の担当と手順を教えてください",
           "answer_example": "出納職員が設定を修正し、会計責任者が再出力で確認する",
@@ -5887,7 +5998,8 @@
           "node_type": "start",
           "label": "当初予算編成 開始",
           "actor": "予算管理責任者",
-          "description": "次年度予算の編成作業を開始する"
+          "description": "次年度予算の編成作業を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -5953,6 +6065,8 @@
           },
           "confidence": "inferred",
           "condition": "全部門の資料が提出期限内に揃ったか",
+          "hearing_item": "予算要求が期限までに提出されない部門への督促・対応手順を教えてください",
+          "hearing_answer_example": "予算管理責任者が期限翌日にリマインドし、1週間遅延で理事長へ報告する",
           "branches": [
             {
               "label": "期限内",
@@ -5964,8 +6078,6 @@
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "予算要求が期限までに提出されない部門への督促・対応手順を教えてください",
-          "hearing_answer_example": "予算管理責任者が期限翌日にリマインドし、1週間遅延で理事長へ報告する",
           "task_id": "task_17ce36b7",
           "matrix_axis": "事業計画情報収集",
           "heatmap_group": "情報収集・照合",
@@ -6021,15 +6133,12 @@
         {
           "id": "n07",
           "node_type": "process",
-          "label": "収入・支出予算の積算",
+          "label": "収入予算の積算",
           "actor": "予算管理責任者",
           "description": "勘定科目単位で収入予算・支出予算を積算し、法人全体またはサービス区分ごとに集計する。Excelまたは会計システムを使用",
           "inputs": [
             "予算要求様式",
             "前年度試算表"
-          ],
-          "outputs": [
-            "予算積算表"
           ],
           "source_task": {
             "業務分類": "予算管理",
@@ -6050,7 +6159,54 @@
         {
           "id": "n08",
           "node_type": "process",
-          "label": "予算案資料の作成",
+          "label": "支出予算の積算",
+          "actor": "予算管理責任者",
+          "description": "勘定科目単位で収入予算・支出予算を積算し、法人全体またはサービス区分ごとに集計する。Excelまたは会計システムを使用",
+          "outputs": [
+            "予算積算表"
+          ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 2,
+            "タスク名": "資金収支予算案作成"
+          },
+          "source_quote": "勘定科目単位で収入予算・支出予算を積算し",
+          "confidence": "explicit",
+          "next": "n09",
+          "task_id": "task_ad6e0365",
+          "matrix_axis": "予算案作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "180（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "勘定科目別予算案の作成",
+          "actor": "予算管理責任者",
+          "description": "積算結果をもとに理事会提出用の資金収支予算案資料を作成する",
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "当初予算編成",
+            "タスク順": 2,
+            "タスク名": "資金収支予算案作成"
+          },
+          "source_quote": "法人全体またはサービス区分ごとに予算案を作成する",
+          "confidence": "explicit",
+          "next": "n10",
+          "task_id": "task_ad6e0365",
+          "matrix_axis": "予算案作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "180（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "予算案資料の取りまとめ",
           "actor": "予算管理責任者",
           "description": "積算結果をもとに理事会提出用の資金収支予算案資料を作成する",
           "outputs": [
@@ -6064,7 +6220,7 @@
           },
           "source_quote": "法人全体またはサービス区分ごとに予算案を作成する",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_ad6e0365",
           "matrix_axis": "予算案作成",
           "heatmap_group": "計算・作成",
@@ -6073,7 +6229,7 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "decision",
           "label": "理事長の事前確認",
           "actor": "理事長",
@@ -6089,19 +6245,19 @@
           },
           "confidence": "inferred",
           "condition": "予算案の内容が理事会提出に足るか",
+          "hearing_item": "理事会提出前に予算案の修正が入る場合の修正・再確認の手順を教えてください",
+          "hearing_answer_example": "修正要求があれば予算管理責任者が修正し、理事長確認後に再提出する",
           "branches": [
             {
               "label": "提出可",
-              "target": "n11"
+              "target": "n13"
             },
             {
               "label": "修正指示",
-              "target": "n10",
+              "target": "n12",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "理事会提出前に予算案の修正が入る場合の修正・再確認の手順を教えてください",
-          "hearing_answer_example": "修正要求があれば予算管理責任者が修正し、理事長確認後に再提出する",
           "task_id": "task_07bac538",
           "matrix_axis": "理事会承認",
           "heatmap_group": "承認・確認",
@@ -6110,7 +6266,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "exception",
           "label": "予算案の修正",
           "actor": "予算管理責任者",
@@ -6125,7 +6281,7 @@
             "タスク名": "予算理事会承認"
           },
           "confidence": "inferred",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_07bac538",
           "matrix_axis": "理事会承認",
           "heatmap_group": "承認・確認",
@@ -6134,7 +6290,7 @@
           "burden": "中"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "process",
           "label": "理事会への提出・審議",
           "actor": "理事長",
@@ -6150,7 +6306,7 @@
           },
           "source_quote": "理事長が編成した予算について理事会の承認を得て確定する",
           "confidence": "explicit",
-          "next": "n12",
+          "next": "n14",
           "task_id": "task_07bac538",
           "matrix_axis": "理事会承認",
           "heatmap_group": "承認・確認",
@@ -6159,7 +6315,7 @@
           "burden": "中"
         },
         {
-          "id": "n12",
+          "id": "n14",
           "node_type": "decision",
           "label": "理事会の承認判定",
           "actor": "理事会",
@@ -6175,19 +6331,19 @@
           },
           "confidence": "inferred",
           "condition": "理事会が予算案を承認するか",
+          "hearing_item": "理事会で予算案が差戻しになった場合の修正・再上程の手順を教えてください",
+          "hearing_answer_example": "指摘事項を修正し、臨時理事会または書面決議で再承認を得る",
           "branches": [
             {
               "label": "承認",
-              "target": "n13"
+              "target": "n15"
             },
             {
               "label": "差戻し",
-              "target": "n10",
+              "target": "n12",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "理事会で予算案が差戻しになった場合の修正・再上程の手順を教えてください",
-          "hearing_answer_example": "指摘事項を修正し、臨時理事会または書面決議で再承認を得る",
           "task_id": "task_07bac538",
           "matrix_axis": "理事会承認",
           "heatmap_group": "承認・確認",
@@ -6196,7 +6352,7 @@
           "burden": "中"
         },
         {
-          "id": "n13",
+          "id": "n15",
           "node_type": "process",
           "label": "確定予算のシステム登録",
           "actor": "予算管理責任者",
@@ -6215,7 +6371,7 @@
           },
           "source_quote": "承認済み予算を会計システムの予算管理機能へ入力する",
           "confidence": "explicit",
-          "next": "n14",
+          "next": "n16",
           "task_id": "task_0056155d",
           "matrix_axis": "予算確定登録",
           "heatmap_group": "システム入力",
@@ -6224,7 +6380,7 @@
           "burden": "中"
         },
         {
-          "id": "n14",
+          "id": "n16",
           "node_type": "end",
           "label": "当初予算編成 完了",
           "actor": "予算管理責任者",
@@ -6240,7 +6396,7 @@
           "reason": "マニュアルに提出遅延時の対応の記載がない"
         },
         {
-          "node_id": "n12",
+          "node_id": "n14",
           "question_type": "branch_confirmation",
           "question": "理事会で予算案が差戻しになった場合の修正・再上程の手順を教えてください",
           "answer_example": "指摘事項を修正し、臨時理事会または書面決議で再承認を得る",
@@ -6274,12 +6430,13 @@
           "node_type": "start",
           "label": "補正予算管理 開始",
           "actor": "予算管理責任者",
-          "description": "予算執行中の定例確認として補正予算管理を開始する"
+          "description": "予算執行中の定例確認として補正予算管理を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
           "node_type": "process",
-          "label": "予算対実績の照合",
+          "label": "予算執行データの抽出",
           "actor": "予算管理責任者",
           "description": "月次試算表と予算管理表を照合し、会計システムの予算対実績レポートで執行状況を確認する",
           "inputs": [
@@ -6304,6 +6461,28 @@
         },
         {
           "id": "n03",
+          "node_type": "process",
+          "label": "予算対実績の照合",
+          "actor": "予算管理責任者",
+          "description": "月次試算表と予算管理表を照合し、会計システムの予算対実績レポートで執行状況を確認する",
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 1,
+            "タスク名": "予算執行差異確認"
+          },
+          "source_quote": "予算執行中に予算額との乖離や変更事由がないか確認する",
+          "confidence": "explicit",
+          "next": "n04",
+          "task_id": "task_aaef3add",
+          "matrix_axis": "予算差異確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "60（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n04",
           "node_type": "decision",
           "label": "乖離・変更事由の有無判定",
           "actor": "予算管理責任者",
@@ -6320,11 +6499,11 @@
           "branches": [
             {
               "label": "なし",
-              "target": "n10"
+              "target": "n12"
             },
             {
               "label": "あり",
-              "target": "n04"
+              "target": "n05"
             }
           ],
           "task_id": "task_aaef3add",
@@ -6335,7 +6514,7 @@
           "burden": "中"
         },
         {
-          "id": "n04",
+          "id": "n05",
           "node_type": "process",
           "label": "乖離原因の調査",
           "actor": "予算管理責任者",
@@ -6350,7 +6529,7 @@
             "タスク名": "予算執行差異確認"
           },
           "confidence": "inferred",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_aaef3add",
           "matrix_axis": "予算差異確認",
           "heatmap_group": "情報収集・照合",
@@ -6359,14 +6538,36 @@
           "burden": "中"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "process",
-          "label": "補正予算案の積算",
+          "label": "補正対象科目の特定",
           "actor": "予算管理責任者",
           "description": "変更事由をもとに補正後の収入・支出予算を科目単位で積算する。Excelを使用",
           "inputs": [
             "差異分析メモ"
           ],
+          "source_task": {
+            "業務分類": "予算管理",
+            "業務種別": "補正予算管理",
+            "タスク順": 2,
+            "タスク名": "補正予算案作成"
+          },
+          "source_quote": "変更事由がある場合に補正予算を作成し",
+          "confidence": "explicit",
+          "next": "n07",
+          "task_id": "task_27b46363",
+          "matrix_axis": "補正予算案作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "120（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "補正額の積算",
+          "actor": "予算管理責任者",
+          "description": "変更事由をもとに補正後の収入・支出予算を科目単位で積算する。Excelを使用",
           "outputs": [
             "補正積算表"
           ],
@@ -6378,7 +6579,7 @@
           },
           "source_quote": "変更事由がある場合に補正予算を作成し",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n08",
           "task_id": "task_27b46363",
           "matrix_axis": "補正予算案作成",
           "heatmap_group": "計算・作成",
@@ -6387,7 +6588,7 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n08",
           "node_type": "process",
           "label": "補正予算案資料の作成",
           "actor": "予算管理責任者",
@@ -6402,7 +6603,7 @@
             "タスク名": "補正予算案作成"
           },
           "confidence": "inferred",
-          "next": "n07",
+          "next": "n09",
           "task_id": "task_27b46363",
           "matrix_axis": "補正予算案作成",
           "heatmap_group": "計算・作成",
@@ -6411,7 +6612,7 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n09",
           "node_type": "process",
           "label": "理事会への提出",
           "actor": "予算管理責任者",
@@ -6427,7 +6628,7 @@
           },
           "source_quote": "補正予算案を理事会へ提出し承認を得て確定する",
           "confidence": "explicit",
-          "next": "n08",
+          "next": "n10",
           "task_id": "task_45ec0f0b",
           "matrix_axis": "理事会提出・承認",
           "heatmap_group": "承認・確認",
@@ -6436,7 +6637,7 @@
           "burden": "中"
         },
         {
-          "id": "n08",
+          "id": "n10",
           "node_type": "decision",
           "label": "理事会の承認判定",
           "actor": "理事会",
@@ -6452,19 +6653,19 @@
           },
           "confidence": "inferred",
           "condition": "理事会が補正予算案を承認するか",
+          "hearing_item": "補正予算が理事会で差戻しになった場合、または次回理事会まで承認が間に合わない場合の執行手順を教えてください",
+          "hearing_answer_example": "緊急時は理事長専決で先行執行し、直近の理事会で事後承認を得る",
           "branches": [
             {
               "label": "承認",
-              "target": "n09"
+              "target": "n11"
             },
             {
               "label": "差戻し",
-              "target": "n06",
+              "target": "n08",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "補正予算が理事会で差戻しになった場合、または次回理事会まで承認が間に合わない場合の執行手順を教えてください",
-          "hearing_answer_example": "緊急時は理事長専決で先行執行し、直近の理事会で事後承認を得る",
           "task_id": "task_45ec0f0b",
           "matrix_axis": "理事会提出・承認",
           "heatmap_group": "承認・確認",
@@ -6473,7 +6674,7 @@
           "burden": "中"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "process",
           "label": "補正予算のシステム反映",
           "actor": "予算管理責任者",
@@ -6491,7 +6692,7 @@
             "タスク名": "補正予算理事会承認"
           },
           "confidence": "inferred",
-          "next": "n10",
+          "next": "n12",
           "task_id": "task_45ec0f0b",
           "matrix_axis": "理事会提出・承認",
           "heatmap_group": "承認・確認",
@@ -6500,7 +6701,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "end",
           "label": "補正予算管理 完了",
           "actor": "予算管理責任者",
@@ -6509,14 +6710,14 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n03",
+          "node_id": "n04",
           "question_type": "branch_confirmation",
           "question": "補正予算を検討する乖離のしきい値（例: 予算額の±10%）や判断基準は規程に定まっていますか",
           "answer_example": "経理規程で予算額の10%以上の乖離が生じた場合に補正予算を検討する旨を定めている",
           "reason": "マニュアルに補正要否の判断基準の記載がない"
         },
         {
-          "node_id": "n08",
+          "node_id": "n10",
           "question_type": "branch_confirmation",
           "question": "補正予算が理事会で差戻しになった場合、または次回理事会まで承認が間に合わない場合の執行手順を教えてください",
           "answer_example": "緊急時は理事長専決で先行執行し、直近の理事会で事後承認を得る",
@@ -6547,7 +6748,8 @@
           "node_type": "start",
           "label": "請求・収納 開始",
           "actor": "出納職員",
-          "description": "月次の請求サイクルとして請求・収納業務を開始する"
+          "description": "月次の請求サイクルとして請求・収納業務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -6600,12 +6802,9 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "請求データの作成",
+          "label": "請求対象・単価の確認",
           "actor": "出納職員",
           "description": "請求システムで補助金・利用料・サービス報酬などの請求データを作成する",
-          "outputs": [
-            "請求データ"
-          ],
           "source_task": {
             "業務分類": "収納事務",
             "業務種別": "請求・収納",
@@ -6625,6 +6824,31 @@
         {
           "id": "n05",
           "node_type": "process",
+          "label": "請求データの作成",
+          "actor": "出納職員",
+          "description": "請求システムで補助金・利用料・サービス報酬などの請求データを作成する",
+          "outputs": [
+            "請求データ"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 1,
+            "タスク名": "請求データ作成"
+          },
+          "source_quote": "請求データを請求システム等で作成する",
+          "confidence": "explicit",
+          "next": "n06",
+          "task_id": "task_154555f4",
+          "matrix_axis": "請求データ作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
           "label": "請求内容の確認",
           "actor": "出納職員",
           "description": "請求額・利用者負担・補助金等の内容を利用実績と照らして確認する",
@@ -6640,7 +6864,7 @@
           },
           "source_quote": "請求額、利用者負担、補助金等の内容を確認する",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_2587cd10",
           "matrix_axis": "請求内容確認",
           "heatmap_group": "情報収集・照合",
@@ -6649,7 +6873,7 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "decision",
           "label": "請求内容の照合判定",
           "actor": "出納職員",
@@ -6662,19 +6886,19 @@
           },
           "confidence": "inferred",
           "condition": "請求額・対象者・補助金区分が利用実績と一致するか",
+          "hearing_item": "請求内容に誤りが見つかった場合の修正・再確認の手順を教えてください",
+          "hearing_answer_example": "出納職員が請求システム上で修正し、修正箇所を再確認してから発行する",
           "branches": [
             {
               "label": "一致",
-              "target": "n08"
+              "target": "n09"
             },
             {
               "label": "不一致",
-              "target": "n07",
+              "target": "n08",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "請求内容に誤りが見つかった場合の修正・再確認の手順を教えてください",
-          "hearing_answer_example": "出納職員が請求システム上で修正し、修正箇所を再確認してから発行する",
           "task_id": "task_2587cd10",
           "matrix_axis": "請求内容確認",
           "heatmap_group": "情報収集・照合",
@@ -6683,7 +6907,7 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "exception",
           "label": "請求データの修正",
           "actor": "出納職員",
@@ -6695,7 +6919,7 @@
             "タスク名": "請求内容確認"
           },
           "confidence": "inferred",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_2587cd10",
           "matrix_axis": "請求内容確認",
           "heatmap_group": "情報収集・照合",
@@ -6704,7 +6928,7 @@
           "burden": "中"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "process",
           "label": "請求書の出力",
           "actor": "出納職員",
@@ -6720,7 +6944,7 @@
           },
           "source_quote": "請求書または請求書兼領収書を発行し",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n10",
           "task_id": "task_efecd7f0",
           "matrix_axis": "請求書発行",
           "heatmap_group": "計算・作成",
@@ -6729,7 +6953,7 @@
           "burden": "低"
         },
         {
-          "id": "n09",
+          "id": "n10",
           "node_type": "process",
           "label": "利用者・関係機関への送付",
           "actor": "出納職員",
@@ -6745,7 +6969,7 @@
           },
           "source_quote": "利用者・関係機関へ送付する",
           "confidence": "explicit",
-          "next": "n10",
+          "next": "n11",
           "task_id": "task_efecd7f0",
           "matrix_axis": "請求書発行",
           "heatmap_group": "計算・作成",
@@ -6754,7 +6978,7 @@
           "burden": "低"
         },
         {
-          "id": "n10",
+          "id": "n11",
           "node_type": "process",
           "label": "入金の確認",
           "actor": "出納職員",
@@ -6762,34 +6986,6 @@
           "inputs": [
             "預金通帳",
             "入金明細"
-          ],
-          "source_task": {
-            "業務分類": "収納事務",
-            "業務種別": "請求・収納",
-            "タスク順": 4,
-            "タスク名": "入金確認・照合"
-          },
-          "confidence": "inferred",
-          "next": "n11",
-          "task_id": "task_b11a83ad",
-          "matrix_axis": "入金確認",
-          "heatmap_group": "情報収集・照合",
-          "heatmap_step": "情報収集・照合",
-          "minutes": "20（仮）",
-          "burden": "中"
-        },
-        {
-          "id": "n11",
-          "node_type": "process",
-          "label": "請求リストとの照合・消込",
-          "actor": "出納職員",
-          "description": "入金額と請求リストを照合し、入金消込を行う",
-          "inputs": [
-            "請求リスト",
-            "入金明細"
-          ],
-          "outputs": [
-            "消込済み請求リスト"
           ],
           "source_task": {
             "業務分類": "収納事務",
@@ -6808,6 +7004,55 @@
         },
         {
           "id": "n12",
+          "node_type": "process",
+          "label": "入金データの取得",
+          "actor": "出納職員",
+          "description": "入金額と請求リストを照合し、入金消込を行う",
+          "inputs": [
+            "請求リスト",
+            "入金明細"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 4,
+            "タスク名": "入金確認・照合"
+          },
+          "confidence": "inferred",
+          "next": "n13",
+          "task_id": "task_b11a83ad",
+          "matrix_axis": "入金確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "20（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n13",
+          "node_type": "process",
+          "label": "請求リストとの照合・消込",
+          "actor": "出納職員",
+          "description": "入金額と請求リストを照合し、入金消込を行う",
+          "outputs": [
+            "消込済み請求リスト"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "請求・収納",
+            "タスク順": 4,
+            "タスク名": "入金確認・照合"
+          },
+          "confidence": "inferred",
+          "next": "n14",
+          "task_id": "task_b11a83ad",
+          "matrix_axis": "入金確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "20（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n14",
           "node_type": "decision",
           "label": "期日内入金の判定",
           "actor": "出納職員",
@@ -6820,19 +7065,19 @@
           },
           "confidence": "inferred",
           "condition": "請求全件が支払期日内に入金されたか",
+          "hearing_item": "未入金が発生した場合の督促手順（連絡方法・タイミング・記録）を教えてください",
+          "hearing_answer_example": "期日翌日に電話確認し、督促記録を請求リストの備考に残す",
           "branches": [
             {
               "label": "全件入金",
-              "target": "n14"
+              "target": "n16"
             },
             {
               "label": "未入金あり",
-              "target": "n13",
+              "target": "n15",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "未入金が発生した場合の督促手順（連絡方法・タイミング・記録）を教えてください",
-          "hearing_answer_example": "期日翌日に電話確認し、督促記録を請求リストの備考に残す",
           "task_id": "task_b11a83ad",
           "matrix_axis": "入金確認",
           "heatmap_group": "情報収集・照合",
@@ -6841,7 +7086,7 @@
           "burden": "中"
         },
         {
-          "id": "n13",
+          "id": "n15",
           "node_type": "exception",
           "label": "未入金者への督促",
           "actor": "出納職員",
@@ -6853,7 +7098,7 @@
             "タスク名": "入金確認・照合"
           },
           "confidence": "inferred",
-          "next": "n10",
+          "next": "n11",
           "task_id": "task_b11a83ad",
           "matrix_axis": "入金確認",
           "heatmap_group": "情報収集・照合",
@@ -6862,7 +7107,7 @@
           "burden": "中"
         },
         {
-          "id": "n14",
+          "id": "n16",
           "node_type": "end",
           "label": "請求・収納 完了",
           "actor": "出納職員",
@@ -6878,21 +7123,21 @@
           "reason": "マニュアルにデータ連携方法の記載がなく、転記作業の有無でフローが変わるため"
         },
         {
-          "node_id": "n06",
+          "node_id": "n07",
           "question_type": "branch_confirmation",
           "question": "請求内容に誤りが見つかった場合の修正・再確認の手順を教えてください",
           "answer_example": "出納職員が請求システム上で修正し、修正箇所を再確認してから発行する",
           "reason": "マニュアルに請求誤り時の対応の記載がない"
         },
         {
-          "node_id": "n12",
+          "node_id": "n14",
           "question_type": "branch_confirmation",
           "question": "未入金が発生した場合の督促手順（連絡方法・タイミング・記録）を教えてください",
           "answer_example": "期日翌日に電話確認し、督促記録を請求リストの備考に残す",
           "reason": "マニュアルに未入金時の対応の記載がない"
         },
         {
-          "node_id": "n08",
+          "node_id": "n09",
           "question_type": "reality_check",
           "question": "請求書の発行前に出納職員以外の確認・承認は実際にはありますか",
           "answer_example": "金額の大きい行政請求のみ会計責任者が発行前に確認している",
@@ -6916,7 +7161,8 @@
           "node_type": "start",
           "label": "現金収納 開始",
           "actor": "利用者",
-          "description": "利用者または関係者からの現金持参により収納業務を開始する"
+          "description": "利用者または関係者からの現金持参により収納業務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -6979,6 +7225,8 @@
           },
           "confidence": "inferred",
           "condition": "受領金額が請求額・収納名目と一致するか",
+          "hearing_item": "受領額が請求額と一致しない場合（過不足）の対応手順を教えてください",
+          "hearing_answer_example": "その場で本人へ確認し、不足分は後日受領、過剰分は即時返金する",
           "branches": [
             {
               "label": "一致",
@@ -6990,8 +7238,6 @@
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "受領額が請求額と一致しない場合（過不足）の対応手順を教えてください",
-          "hearing_answer_example": "その場で本人へ確認し、不足分は後日受領、過剰分は即時返金する",
           "task_id": "task_74611c53",
           "matrix_axis": "現金受領",
           "heatmap_group": "情報収集・照合",
@@ -7023,12 +7269,9 @@
         {
           "id": "n06",
           "node_type": "process",
-          "label": "領収書の発行・手渡し",
+          "label": "領収書の作成",
           "actor": "出納職員",
           "description": "福祉サービス利用者負担金の収納時に領収書を発行し利用者へ手渡す",
-          "outputs": [
-            "領収書"
-          ],
           "source_task": {
             "業務分類": "収納事務",
             "業務種別": "現金収納",
@@ -7048,6 +7291,31 @@
         {
           "id": "n07",
           "node_type": "process",
+          "label": "領収書の発行・手渡し",
+          "actor": "出納職員",
+          "description": "福祉サービス利用者負担金の収納時に領収書を発行し利用者へ手渡す",
+          "outputs": [
+            "領収書"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 2,
+            "タスク名": "領収書発行"
+          },
+          "source_quote": "福祉サービス利用者負担金の収納時に領収書を発行する",
+          "confidence": "explicit",
+          "next": "n08",
+          "task_id": "task_317eb3cf",
+          "matrix_axis": "領収書発行",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "文書・帳票作成",
+          "minutes": "5（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
           "label": "領収書控えの保管",
           "actor": "出納職員",
           "description": "領収書控えを連番管理で保管する",
@@ -7061,7 +7329,7 @@
             "タスク名": "領収書発行"
           },
           "confidence": "inferred",
-          "next": "n08",
+          "next": "n09",
           "task_id": "task_317eb3cf",
           "matrix_axis": "領収書発行",
           "heatmap_group": "計算・作成",
@@ -7070,14 +7338,11 @@
           "burden": "低"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "process",
-          "label": "預入準備（金種確認・入金票作成）",
+          "label": "金種の確認・集計",
           "actor": "出納職員",
           "description": "収納現金の金種を確認し、金融機関への入金票を作成する",
-          "outputs": [
-            "入金票"
-          ],
           "source_task": {
             "業務分類": "収納事務",
             "業務種別": "現金収納",
@@ -7085,31 +7350,6 @@
             "タスク名": "収納現金預入"
           },
           "confidence": "inferred",
-          "next": "n09",
-          "task_id": "task_29f7f3ab",
-          "matrix_axis": "預入処理",
-          "heatmap_group": "システム入力",
-          "heatmap_step": "システム入力",
-          "minutes": "30（仮）",
-          "burden": "低"
-        },
-        {
-          "id": "n09",
-          "node_type": "process",
-          "label": "金融機関への預入",
-          "actor": "出納職員",
-          "description": "収納した現金を経理規程の期日内に金融機関へ預け入れる",
-          "inputs": [
-            "入金票"
-          ],
-          "source_task": {
-            "業務分類": "収納事務",
-            "業務種別": "現金収納",
-            "タスク順": 3,
-            "タスク名": "収納現金預入"
-          },
-          "source_quote": "収納した現金を経理規程の期日内に金融機関へ預け入れる",
-          "confidence": "explicit",
           "next": "n10",
           "task_id": "task_29f7f3ab",
           "matrix_axis": "預入処理",
@@ -7121,11 +7361,11 @@
         {
           "id": "n10",
           "node_type": "process",
-          "label": "入金明細の取得・保管",
+          "label": "入金票の作成",
           "actor": "出納職員",
-          "description": "振込票・入金明細を取得し、領収書控えとともに保管する",
+          "description": "収納現金の金種を確認し、金融機関への入金票を作成する",
           "outputs": [
-            "入金明細"
+            "入金票"
           ],
           "source_task": {
             "業務分類": "収納事務",
@@ -7144,6 +7384,55 @@
         },
         {
           "id": "n11",
+          "node_type": "process",
+          "label": "金融機関への預入",
+          "actor": "出納職員",
+          "description": "収納した現金を経理規程の期日内に金融機関へ預け入れる",
+          "inputs": [
+            "入金票"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 3,
+            "タスク名": "収納現金預入"
+          },
+          "source_quote": "収納した現金を経理規程の期日内に金融機関へ預け入れる",
+          "confidence": "explicit",
+          "next": "n12",
+          "task_id": "task_29f7f3ab",
+          "matrix_axis": "預入処理",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "30（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n12",
+          "node_type": "process",
+          "label": "入金明細の取得・保管",
+          "actor": "出納職員",
+          "description": "振込票・入金明細を取得し、領収書控えとともに保管する",
+          "outputs": [
+            "入金明細"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "現金収納",
+            "タスク順": 3,
+            "タスク名": "収納現金預入"
+          },
+          "confidence": "inferred",
+          "next": "n13",
+          "task_id": "task_29f7f3ab",
+          "matrix_axis": "預入処理",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "30（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n13",
           "node_type": "end",
           "label": "現金収納 完了",
           "actor": "出納職員",
@@ -7166,7 +7455,7 @@
           "reason": "マニュアルに金額不一致時の対応の記載がない"
         },
         {
-          "node_id": "n09",
+          "node_id": "n11",
           "question_type": "reality_check",
           "question": "現金の預入は実際には経理規程の期日どおりに行えていますか。週次等でまとめて預け入れていませんか",
           "answer_example": "規程上は翌営業日だが、実際は週2回まとめて預け入れている",
@@ -7189,7 +7478,8 @@
           "node_type": "start",
           "label": "会計伝票作成 開始",
           "actor": "出納職員",
-          "description": "入金確認の完了を受けて収納伝票の作成を開始する"
+          "description": "入金確認の完了を受けて収納伝票の作成を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -7243,12 +7533,9 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "収納伝票の入力",
+          "label": "仕訳科目の選択",
           "actor": "出納職員",
           "description": "会計システムで収納に係る会計伝票（日付・科目・金額・摘要）を入力する",
-          "outputs": [
-            "収納伝票"
-          ],
           "source_task": {
             "業務分類": "収納事務",
             "業務種別": "会計伝票作成",
@@ -7267,6 +7554,31 @@
         },
         {
           "id": "n05",
+          "node_type": "process",
+          "label": "収納伝票の入力",
+          "actor": "出納職員",
+          "description": "会計システムで収納に係る会計伝票（日付・科目・金額・摘要）を入力する",
+          "outputs": [
+            "収納伝票"
+          ],
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 1,
+            "タスク名": "収納伝票会計入力"
+          },
+          "source_quote": "入金確認後、会計システムで収納に係る会計伝票を作成する",
+          "confidence": "explicit",
+          "next": "n06",
+          "task_id": "task_c45a7d99",
+          "matrix_axis": "収納伝票入力",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "10（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n06",
           "node_type": "decision",
           "label": "入力内容の登録前確認",
           "actor": "出納職員",
@@ -7282,19 +7594,19 @@
           },
           "confidence": "inferred",
           "condition": "伝票の科目・金額が入金明細と一致するか",
+          "hearing_item": "伝票入力の誤りに気づいた場合の訂正手順（訂正伝票・上書き等）を教えてください",
+          "hearing_answer_example": "登録前は修正入力、登録後は赤伝票で訂正し履歴を残す",
           "branches": [
             {
               "label": "一致",
-              "target": "n07"
+              "target": "n08"
             },
             {
               "label": "不一致",
-              "target": "n06",
+              "target": "n07",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "伝票入力の誤りに気づいた場合の訂正手順（訂正伝票・上書き等）を教えてください",
-          "hearing_answer_example": "登録前は修正入力、登録後は赤伝票で訂正し履歴を残す",
           "task_id": "task_c45a7d99",
           "matrix_axis": "収納伝票入力",
           "heatmap_group": "システム入力",
@@ -7303,7 +7615,7 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "exception",
           "label": "伝票の修正",
           "actor": "出納職員",
@@ -7315,7 +7627,7 @@
             "タスク名": "収納伝票会計入力"
           },
           "confidence": "inferred",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_c45a7d99",
           "matrix_axis": "収納伝票入力",
           "heatmap_group": "システム入力",
@@ -7324,7 +7636,7 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "process",
           "label": "伝票の登録・確定",
           "actor": "出納職員",
@@ -7339,7 +7651,7 @@
             "タスク名": "収納伝票会計入力"
           },
           "confidence": "inferred",
-          "next": "n08",
+          "next": "n09",
           "task_id": "task_c45a7d99",
           "matrix_axis": "収納伝票入力",
           "heatmap_group": "システム入力",
@@ -7348,9 +7660,9 @@
           "burden": "中"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "process",
-          "label": "証憑の整理",
+          "label": "証憑の点検",
           "actor": "出納職員",
           "description": "領収書控え・入金明細・会計伝票を突合し整理する",
           "inputs": [
@@ -7365,7 +7677,7 @@
           },
           "source_quote": "領収書控え、入金明細、会計伝票を整理して保管する",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n10",
           "task_id": "task_558998ef",
           "matrix_axis": "収納証憑保管",
           "heatmap_group": "記録・報告",
@@ -7374,7 +7686,29 @@
           "burden": "低"
         },
         {
-          "id": "n09",
+          "id": "n10",
+          "node_type": "process",
+          "label": "証憑の整理",
+          "actor": "出納職員",
+          "description": "領収書控え・入金明細・会計伝票を突合し整理する",
+          "source_task": {
+            "業務分類": "収納事務",
+            "業務種別": "会計伝票作成",
+            "タスク順": 2,
+            "タスク名": "収納証憑整理・保管"
+          },
+          "source_quote": "領収書控え、入金明細、会計伝票を整理して保管する",
+          "confidence": "explicit",
+          "next": "n11",
+          "task_id": "task_558998ef",
+          "matrix_axis": "収納証憑保管",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "保管・管理",
+          "minutes": "10（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n11",
           "node_type": "process",
           "label": "月別ファイルへの保管",
           "actor": "出納職員",
@@ -7389,7 +7723,7 @@
             "タスク名": "収納証憑整理・保管"
           },
           "confidence": "inferred",
-          "next": "n10",
+          "next": "n12",
           "task_id": "task_558998ef",
           "matrix_axis": "収納証憑保管",
           "heatmap_group": "記録・報告",
@@ -7398,7 +7732,7 @@
           "burden": "低"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "end",
           "label": "会計伝票作成 完了",
           "actor": "出納職員",
@@ -7414,14 +7748,14 @@
           "reason": "マニュアルの「入金確認後」と実際の入力タイミングの乖離を確認するため"
         },
         {
-          "node_id": "n05",
+          "node_id": "n06",
           "question_type": "branch_confirmation",
           "question": "伝票入力の誤りに気づいた場合の訂正手順（訂正伝票・上書き等）を教えてください",
           "answer_example": "登録前は修正入力、登録後は赤伝票で訂正し履歴を残す",
           "reason": "マニュアルに伝票訂正の手順の記載がない"
         },
         {
-          "node_id": "n07",
+          "node_id": "n08",
           "question_type": "branch_confirmation",
           "question": "収納伝票の登録後に出納職員以外による承認・確認ステップは実際にはありますか",
           "answer_example": "月次で会計責任者が仕訳日記帳を確認しており、伝票単位の承認はない",
@@ -7446,21 +7780,18 @@
           "node_type": "start",
           "label": "支払処理 開始",
           "actor": "担当者",
-          "description": "物品購入や修繕工事などの発注前に支払処理を開始する"
+          "description": "物品購入や修繕工事などの発注前に支払処理を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
           "node_type": "process",
-          "label": "稟議書・購入依頼書の作成",
+          "label": "購入内容・見積の確認",
           "actor": "担当者",
           "description": "担当者が物品購入や修繕工事の内容・金額・理由を記載した稟議書または購入依頼書を作成する",
           "inputs": [
             "購入仕様書",
             "見積書"
-          ],
-          "outputs": [
-            "稟議書",
-            "購入依頼書"
           ],
           "source_task": {
             "業務分類": "支払・契約事務",
@@ -7480,6 +7811,32 @@
         },
         {
           "id": "n03",
+          "node_type": "process",
+          "label": "稟議書・購入依頼書の起票",
+          "actor": "担当者",
+          "description": "担当者が物品購入や修繕工事の内容・金額・理由を記載した稟議書または購入依頼書を作成する",
+          "outputs": [
+            "稟議書",
+            "購入依頼書"
+          ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 1,
+            "タスク名": "購入・支払起案"
+          },
+          "source_quote": "物品購入や修繕工事などの発注前に稟議書・購入依頼書で起案する",
+          "confidence": "explicit",
+          "next": "n04",
+          "task_id": "task_9b37214e",
+          "matrix_axis": "購入・支払起案",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "受付・申請",
+          "minutes": "15（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n04",
           "node_type": "decision",
           "label": "起案承認判定",
           "actor": "会計責任者",
@@ -7496,10 +7853,12 @@
           },
           "confidence": "inferred",
           "condition": "起案内容が妥当か（金額・目的・規程適合）",
+          "hearing_item": "起案承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
+          "hearing_answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する",
           "branches": [
             {
               "label": "承認",
-              "target": "n05"
+              "target": "n06"
             },
             {
               "label": "差戻し",
@@ -7507,8 +7866,6 @@
               "edge_type": "return"
             }
           ],
-          "hearing_item": "起案承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
-          "hearing_answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する",
           "task_id": "task_9b37214e",
           "matrix_axis": "購入・支払起案",
           "heatmap_group": "情報収集・照合",
@@ -7517,7 +7874,7 @@
           "burden": "中"
         },
         {
-          "id": "n04",
+          "id": "n05",
           "node_type": "exception",
           "label": "起案修正対応",
           "actor": "担当者",
@@ -7532,7 +7889,7 @@
             "タスク名": "購入・支払起案"
           },
           "confidence": "inferred",
-          "next": "n03",
+          "next": "n04",
           "task_id": "task_9b37214e",
           "matrix_axis": "購入・支払起案",
           "heatmap_group": "情報収集・照合",
@@ -7541,7 +7898,7 @@
           "burden": "中"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "process",
           "label": "請求書・証憑の受領",
           "actor": "出納職員",
@@ -7560,7 +7917,7 @@
           },
           "source_quote": "請求書、契約書、稟議書、購入依頼書、納品書等を照合し",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_7ab90b0a",
           "matrix_axis": "請求書照合",
           "heatmap_group": "情報収集・照合",
@@ -7569,9 +7926,9 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "process",
-          "label": "請求書・納品書・稟議書の照合",
+          "label": "請求書記載内容の確認",
           "actor": "出納職員",
           "description": "出納職員が請求書の金額・品目・支払先と、納品書・稟議書・契約書の内容を照合し必要事項（振込先口座・支払期日等）を確認する",
           "inputs": [
@@ -7589,7 +7946,7 @@
           },
           "source_quote": "必要事項を確認する",
           "confidence": "explicit",
-          "next": "n07",
+          "next": "n08",
           "task_id": "task_7ab90b0a",
           "matrix_axis": "請求書照合",
           "heatmap_group": "情報収集・照合",
@@ -7598,7 +7955,29 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n08",
+          "node_type": "process",
+          "label": "納品書・稟議書との金額・数量突合",
+          "actor": "出納職員",
+          "description": "出納職員が請求書の金額・品目・支払先と、納品書・稟議書・契約書の内容を照合し必要事項（振込先口座・支払期日等）を確認する",
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 2,
+            "タスク名": "請求書照合"
+          },
+          "source_quote": "必要事項を確認する",
+          "confidence": "explicit",
+          "next": "n09",
+          "task_id": "task_7ab90b0a",
+          "matrix_axis": "請求書照合",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "20（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n09",
           "node_type": "decision",
           "label": "照合一致判定",
           "actor": "出納職員",
@@ -7611,19 +7990,19 @@
           },
           "confidence": "inferred",
           "condition": "請求書と稟議書・納品書の金額・品目・支払先が一致しているか",
+          "hearing_item": "請求書と稟議書・納品書の内容が一致しない場合の確認先（担当者・取引先）と対応手順を教えてください",
+          "hearing_answer_example": "出納職員が担当者または取引先に問い合わせ、修正請求書または稟議書の差替えで対応する",
           "branches": [
             {
               "label": "一致",
-              "target": "n09"
+              "target": "n11"
             },
             {
               "label": "不一致",
-              "target": "n08",
+              "target": "n10",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "請求書と稟議書・納品書の内容が一致しない場合の確認先（担当者・取引先）と対応手順を教えてください",
-          "hearing_answer_example": "出納職員が担当者または取引先に問い合わせ、修正請求書または稟議書の差替えで対応する",
           "task_id": "task_7ab90b0a",
           "matrix_axis": "請求書照合",
           "heatmap_group": "情報収集・照合",
@@ -7632,7 +8011,7 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n10",
           "node_type": "exception",
           "label": "不一致対応（担当者・取引先照会）",
           "actor": "出納職員",
@@ -7644,7 +8023,7 @@
             "タスク名": "請求書照合"
           },
           "confidence": "inferred",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_7ab90b0a",
           "matrix_axis": "請求書照合",
           "heatmap_group": "情報収集・照合",
@@ -7653,14 +8032,36 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "process",
-          "label": "支払情報の作成",
+          "label": "支払情報の入力",
           "actor": "出納職員",
           "description": "出納職員が照合済みの請求書をもとに支払情報（支払先・口座・金額・支払日）を支払一覧表に作成する",
           "inputs": [
             "照合済み請求書"
           ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 3,
+            "タスク名": "支払承認"
+          },
+          "source_quote": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する",
+          "confidence": "explicit",
+          "next": "n12",
+          "task_id": "task_93525139",
+          "matrix_axis": "支払承認",
+          "heatmap_group": "承認・確認",
+          "heatmap_step": "承認・確認",
+          "minutes": "10（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n12",
+          "node_type": "process",
+          "label": "振込先・金額の確認",
+          "actor": "出納職員",
+          "description": "出納職員が照合済みの請求書をもとに支払情報（支払先・口座・金額・支払日）を支払一覧表に作成する",
           "outputs": [
             "支払一覧表"
           ],
@@ -7672,7 +8073,7 @@
           },
           "source_quote": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する",
           "confidence": "explicit",
-          "next": "n10",
+          "next": "n13",
           "task_id": "task_93525139",
           "matrix_axis": "支払承認",
           "heatmap_group": "承認・確認",
@@ -7681,7 +8082,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n13",
           "node_type": "process",
           "label": "支払情報の承認依頼",
           "actor": "会計責任者",
@@ -7698,7 +8099,7 @@
           },
           "source_quote": "担当者が作成した支払情報を会計責任者が請求書と照合して承認する",
           "confidence": "explicit",
-          "next": "n11",
+          "next": "n14",
           "task_id": "task_93525139",
           "matrix_axis": "支払承認",
           "heatmap_group": "承認・確認",
@@ -7707,7 +8108,7 @@
           "burden": "中"
         },
         {
-          "id": "n11",
+          "id": "n14",
           "node_type": "decision",
           "label": "支払承認判定",
           "actor": "会計責任者",
@@ -7720,19 +8121,19 @@
           },
           "confidence": "inferred",
           "condition": "支払情報の内容が正確で承認要件を満たしているか",
+          "hearing_item": "支払承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
+          "hearing_answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する",
           "branches": [
             {
               "label": "承認",
-              "target": "n12"
+              "target": "n15"
             },
             {
               "label": "差戻し",
-              "target": "n09",
+              "target": "n11",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "支払承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
-          "hearing_answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する",
           "task_id": "task_93525139",
           "matrix_axis": "支払承認",
           "heatmap_group": "承認・確認",
@@ -7741,14 +8142,36 @@
           "burden": "中"
         },
         {
-          "id": "n12",
+          "id": "n15",
           "node_type": "process",
-          "label": "振込実行",
+          "label": "振込データの作成",
           "actor": "出納職員",
           "description": "出納職員が承認済み支払一覧表をもとに総合振込またはインターネットバンキングで振込を実行する。振込控えを取得する。",
           "inputs": [
             "承認済み支払一覧表"
           ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 4,
+            "タスク名": "振込実行"
+          },
+          "source_quote": "承認済み支払情報をもとに総合振込またはインターネットバンキングで支払を実行する",
+          "confidence": "explicit",
+          "next": "n16",
+          "task_id": "task_0a67cad2",
+          "matrix_axis": "振込実行",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "15（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n16",
+          "node_type": "process",
+          "label": "振込の実行・送信",
+          "actor": "出納職員",
+          "description": "出納職員が承認済み支払一覧表をもとに総合振込またはインターネットバンキングで振込を実行する。振込控えを取得する。",
           "outputs": [
             "振込控え"
           ],
@@ -7760,7 +8183,7 @@
           },
           "source_quote": "承認済み支払情報をもとに総合振込またはインターネットバンキングで支払を実行する",
           "confidence": "explicit",
-          "next": "n13",
+          "next": "n17",
           "task_id": "task_0a67cad2",
           "matrix_axis": "振込実行",
           "heatmap_group": "システム入力",
@@ -7769,15 +8192,37 @@
           "burden": "中"
         },
         {
-          "id": "n13",
+          "id": "n17",
           "node_type": "process",
-          "label": "支払伝票の会計システム入力",
+          "label": "支払仕訳の会計システム入力",
           "actor": "出納職員",
           "description": "出納職員が振込実行後、会計システムで支払に係る会計伝票（支払金額・勘定科目・補助科目）を作成・入力する",
           "inputs": [
             "振込控え",
             "請求書"
           ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "支払処理",
+            "タスク順": 5,
+            "タスク名": "支払伝票入力"
+          },
+          "source_quote": "会計システムで支払に係る会計伝票を作成する",
+          "confidence": "explicit",
+          "next": "n18",
+          "task_id": "task_9acb03ac",
+          "matrix_axis": "支払伝票入力",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "10（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n18",
+          "node_type": "process",
+          "label": "支払伝票の出力",
+          "actor": "出納職員",
+          "description": "出納職員が振込実行後、会計システムで支払に係る会計伝票（支払金額・勘定科目・補助科目）を作成・入力する",
           "outputs": [
             "支払伝票"
           ],
@@ -7789,7 +8234,7 @@
           },
           "source_quote": "会計システムで支払に係る会計伝票を作成する",
           "confidence": "explicit",
-          "next": "n14",
+          "next": "n19",
           "task_id": "task_9acb03ac",
           "matrix_axis": "支払伝票入力",
           "heatmap_group": "システム入力",
@@ -7798,7 +8243,7 @@
           "burden": "中"
         },
         {
-          "id": "n14",
+          "id": "n19",
           "node_type": "process",
           "label": "証憑の整理・保管",
           "actor": "出納職員",
@@ -7815,7 +8260,7 @@
             "タスク名": "支払伝票入力"
           },
           "confidence": "inferred",
-          "next": "n15",
+          "next": "n20",
           "task_id": "task_9acb03ac",
           "matrix_axis": "支払伝票入力",
           "heatmap_group": "システム入力",
@@ -7824,7 +8269,7 @@
           "burden": "中"
         },
         {
-          "id": "n15",
+          "id": "n20",
           "node_type": "end",
           "label": "支払処理 完了",
           "actor": "出納職員",
@@ -7833,21 +8278,21 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n03",
+          "node_id": "n04",
           "question": "購入・支払起案の承認フロー（金額別の承認者・決裁権限）を教えてください",
           "answer_example": "5万円未満は会計責任者承認、5万円以上は理事長承認が必要",
           "reason": "マニュアルに金額別の承認権限の記述がない",
           "question_type": "branch_confirmation"
         },
         {
-          "node_id": "n11",
+          "node_id": "n14",
           "question": "支払承認が却下された場合の差戻し先と修正後の再承認手順を教えてください",
           "answer_example": "起案担当者へ差戻し、修正後に会計責任者が再承認する",
           "reason": "マニュアルに承認却下時の処理フローの記述がない",
           "question_type": "branch_confirmation"
         },
         {
-          "node_id": "n12",
+          "node_id": "n15",
           "question_type": "reality_check",
           "question": "振込は実際には承認の都度実行していますか。月内の支払日にまとめて実行していますか",
           "answer_example": "月2回の支払日にまとめて実行している",
@@ -7874,7 +8319,8 @@
           "node_type": "start",
           "label": "契約事務 開始",
           "actor": "契約担当者",
-          "description": "物品調達・業務委託等の契約案件発生により契約事務を開始する"
+          "description": "物品調達・業務委託等の契約案件発生により契約事務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -7904,6 +8350,28 @@
         },
         {
           "id": "n03",
+          "node_type": "process",
+          "label": "契約金額・仕様の確認",
+          "actor": "契約担当者",
+          "description": "契約の金額・内容・期間を整理し、経理規程・契約規程の該当条文を確認する",
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 1,
+            "タスク名": "契約方式確認"
+          },
+          "source_quote": "契約金額・内容に応じた手続きを確認する",
+          "confidence": "explicit",
+          "next": "n04",
+          "task_id": "task_d04226dc",
+          "matrix_axis": "契約種類確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "15（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n04",
           "node_type": "decision",
           "label": "契約方式の判定",
           "actor": "契約担当者",
@@ -7920,11 +8388,11 @@
           "branches": [
             {
               "label": "随意契約",
-              "target": "n05"
+              "target": "n06"
             },
             {
               "label": "入札契約",
-              "target": "n04",
+              "target": "n05",
               "edge_type": "exception"
             }
           ],
@@ -7936,7 +8404,7 @@
           "burden": "中"
         },
         {
-          "id": "n04",
+          "id": "n05",
           "node_type": "exception",
           "label": "入札手続の実施",
           "actor": "契約担当者",
@@ -7948,7 +8416,7 @@
             "タスク名": "契約方式確認"
           },
           "confidence": "inferred",
-          "next": "n08",
+          "next": "n09",
           "task_id": "task_d04226dc",
           "matrix_axis": "契約種類確認",
           "heatmap_group": "情報収集・照合",
@@ -7957,7 +8425,7 @@
           "burden": "中"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "process",
           "label": "見積依頼（原則3社以上）",
           "actor": "契約担当者",
@@ -7973,7 +8441,7 @@
           },
           "source_quote": "随意契約では原則3社以上など必要社数の見積を徴取し",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_abbe2859",
           "matrix_axis": "見積徴取・比較",
           "heatmap_group": "情報収集・照合",
@@ -7982,7 +8450,7 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "decision",
           "label": "必要社数の見積回収判定",
           "actor": "契約担当者",
@@ -7998,19 +8466,19 @@
           },
           "confidence": "inferred",
           "condition": "必要社数の見積書が期限内に揃ったか",
+          "hearing_item": "見積が3社集まらない場合の取り扱い（理由書作成・少数社での続行等）を教えてください",
+          "hearing_answer_example": "市場に業者が少ない場合は理由書を作成し会計責任者の承認を得て2社で進める",
           "branches": [
             {
               "label": "揃った",
-              "target": "n08"
+              "target": "n09"
             },
             {
               "label": "不足",
-              "target": "n07",
+              "target": "n08",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "見積が3社集まらない場合の取り扱い（理由書作成・少数社での続行等）を教えてください",
-          "hearing_answer_example": "市場に業者が少ない場合は理由書を作成し会計責任者の承認を得て2社で進める",
           "task_id": "task_abbe2859",
           "matrix_axis": "見積徴取・比較",
           "heatmap_group": "情報収集・照合",
@@ -8019,7 +8487,7 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "exception",
           "label": "追加徴取・理由書作成",
           "actor": "契約担当者",
@@ -8034,7 +8502,7 @@
             "タスク名": "見積徴取・比較検討"
           },
           "confidence": "inferred",
-          "next": "n08",
+          "next": "n09",
           "task_id": "task_abbe2859",
           "matrix_axis": "見積徴取・比較",
           "heatmap_group": "情報収集・照合",
@@ -8043,14 +8511,36 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "process",
-          "label": "見積比較・契約先候補の選定",
+          "label": "見積内容の比較",
           "actor": "契約担当者",
           "description": "見積書の金額・条件を比較表に整理し、契約先候補を選定する",
           "inputs": [
             "見積書"
           ],
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 2,
+            "タスク名": "見積徴取・比較検討"
+          },
+          "source_quote": "必要社数の見積を徴取し比較する",
+          "confidence": "explicit",
+          "next": "n10",
+          "task_id": "task_abbe2859",
+          "matrix_axis": "見積徴取・比較",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "契約先候補の選定",
+          "actor": "契約担当者",
+          "description": "見積書の金額・条件を比較表に整理し、契約先候補を選定する",
           "outputs": [
             "見積比較表"
           ],
@@ -8062,7 +8552,7 @@
           },
           "source_quote": "必要社数の見積を徴取し比較する",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_abbe2859",
           "matrix_axis": "見積徴取・比較",
           "heatmap_group": "情報収集・照合",
@@ -8071,7 +8561,7 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "decision",
           "label": "契約先決定の承認判定",
           "actor": "会計責任者",
@@ -8087,19 +8577,19 @@
           },
           "confidence": "inferred",
           "condition": "契約先・契約条件が妥当か（金額・規程適合）",
+          "hearing_item": "契約先決定の承認者は誰ですか。金額により承認者（会計責任者・理事長）が変わりますか",
+          "hearing_answer_example": "100万円未満は会計責任者、100万円以上は理事長が決裁する",
           "branches": [
             {
               "label": "承認",
-              "target": "n10"
+              "target": "n12"
             },
             {
               "label": "差戻し",
-              "target": "n08",
+              "target": "n09",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "契約先決定の承認者は誰ですか。金額により承認者（会計責任者・理事長）が変わりますか",
-          "hearing_answer_example": "100万円未満は会計責任者、100万円以上は理事長が決裁する",
           "task_id": "task_abbe2859",
           "matrix_axis": "見積徴取・比較",
           "heatmap_group": "情報収集・照合",
@@ -8108,7 +8598,29 @@
           "burden": "高"
         },
         {
-          "id": "n10",
+          "id": "n12",
+          "node_type": "process",
+          "label": "契約条件の確定",
+          "actor": "契約担当者",
+          "description": "契約先決定後、標準契約書または業者指定様式で契約書を作成する",
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 3,
+            "タスク名": "契約書作成"
+          },
+          "source_quote": "標準契約書または業者指定様式で契約書を作成する",
+          "confidence": "explicit",
+          "next": "n13",
+          "task_id": "task_99d1447b",
+          "matrix_axis": "契約書作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "文書・帳票作成",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n13",
           "node_type": "process",
           "label": "契約書の作成",
           "actor": "契約担当者",
@@ -8124,7 +8636,7 @@
           },
           "source_quote": "標準契約書または業者指定様式で契約書を作成する",
           "confidence": "explicit",
-          "next": "n11",
+          "next": "n14",
           "task_id": "task_99d1447b",
           "matrix_axis": "契約書作成",
           "heatmap_group": "計算・作成",
@@ -8133,7 +8645,7 @@
           "burden": "高"
         },
         {
-          "id": "n11",
+          "id": "n14",
           "node_type": "process",
           "label": "契約書の署名・捺印",
           "actor": "取引先",
@@ -8151,7 +8663,7 @@
             "タスク名": "契約書作成"
           },
           "confidence": "inferred",
-          "next": "n12",
+          "next": "n15",
           "task_id": "task_99d1447b",
           "matrix_axis": "契約書作成",
           "heatmap_group": "計算・作成",
@@ -8160,9 +8672,9 @@
           "burden": "高"
         },
         {
-          "id": "n12",
+          "id": "n15",
           "node_type": "process",
-          "label": "納品・履行の確認",
+          "label": "納品物・報告書の受領",
           "actor": "契約担当者",
           "description": "納品書・納品物・業務報告書等で契約内容の履行を確認する",
           "inputs": [
@@ -8177,7 +8689,7 @@
           },
           "source_quote": "納品書、納品物、業務報告書等で契約履行を確認する",
           "confidence": "explicit",
-          "next": "n13",
+          "next": "n16",
           "task_id": "task_0442f54a",
           "matrix_axis": "履行確認",
           "heatmap_group": "情報収集・照合",
@@ -8186,7 +8698,29 @@
           "burden": "中"
         },
         {
-          "id": "n13",
+          "id": "n16",
+          "node_type": "process",
+          "label": "契約履行内容の確認",
+          "actor": "契約担当者",
+          "description": "納品書・納品物・業務報告書等で契約内容の履行を確認する",
+          "source_task": {
+            "業務分類": "支払・契約事務",
+            "業務種別": "契約事務",
+            "タスク順": 4,
+            "タスク名": "契約履行確認"
+          },
+          "source_quote": "納品書、納品物、業務報告書等で契約履行を確認する",
+          "confidence": "explicit",
+          "next": "n17",
+          "task_id": "task_0442f54a",
+          "matrix_axis": "履行確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "20（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n17",
           "node_type": "decision",
           "label": "履行内容の一致判定",
           "actor": "契約担当者",
@@ -8199,19 +8733,19 @@
           },
           "confidence": "inferred",
           "condition": "納品物・役務の内容が契約書と一致するか",
+          "hearing_item": "納品物が契約内容と異なる場合の対応（是正依頼・受領拒否・検収保留等）の手順を教えてください",
+          "hearing_answer_example": "契約担当者が業者へ是正を依頼し、再納品まで検収を保留する",
           "branches": [
             {
               "label": "一致",
-              "target": "n15"
+              "target": "n19"
             },
             {
               "label": "不一致",
-              "target": "n14",
+              "target": "n18",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "納品物が契約内容と異なる場合の対応（是正依頼・受領拒否・検収保留等）の手順を教えてください",
-          "hearing_answer_example": "契約担当者が業者へ是正を依頼し、再納品まで検収を保留する",
           "task_id": "task_0442f54a",
           "matrix_axis": "履行確認",
           "heatmap_group": "情報収集・照合",
@@ -8220,7 +8754,7 @@
           "burden": "中"
         },
         {
-          "id": "n14",
+          "id": "n18",
           "node_type": "exception",
           "label": "取引先への是正依頼",
           "actor": "契約担当者",
@@ -8232,7 +8766,7 @@
             "タスク名": "契約履行確認"
           },
           "confidence": "inferred",
-          "next": "n12",
+          "next": "n15",
           "task_id": "task_0442f54a",
           "matrix_axis": "履行確認",
           "heatmap_group": "情報収集・照合",
@@ -8241,7 +8775,7 @@
           "burden": "中"
         },
         {
-          "id": "n15",
+          "id": "n19",
           "node_type": "process",
           "label": "支払依頼書の起案",
           "actor": "契約担当者",
@@ -8256,7 +8790,7 @@
             "タスク名": "契約履行確認"
           },
           "confidence": "inferred",
-          "next": "n16",
+          "next": "n20",
           "task_id": "task_0442f54a",
           "matrix_axis": "履行確認",
           "heatmap_group": "情報収集・照合",
@@ -8265,7 +8799,7 @@
           "burden": "中"
         },
         {
-          "id": "n16",
+          "id": "n20",
           "node_type": "end",
           "label": "契約事務 完了",
           "actor": "契約担当者",
@@ -8274,21 +8808,21 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n03",
+          "node_id": "n04",
           "question_type": "branch_confirmation",
           "question": "随意契約を選択できる基準（金額上限等）は規程に明文化されていますか。基準超過時の手続は何ですか",
           "answer_example": "少額随意契約の上限金額を契約規程に定めており、上限超過は理事長の承認が必要",
           "reason": "マニュアルに契約方式の判断基準の記載がない"
         },
         {
-          "node_id": "n06",
+          "node_id": "n07",
           "question_type": "branch_confirmation",
           "question": "見積が3社集まらない場合の取り扱い（理由書作成・少数社での続行等）を教えてください",
           "answer_example": "市場に業者が少ない場合は理由書を作成し会計責任者の承認を得て2社で進める",
           "reason": "マニュアルの「原則3社以上」の例外時の扱いの記載がない"
         },
         {
-          "node_id": "n09",
+          "node_id": "n11",
           "question_type": "reality_check",
           "question": "契約先の決定は実際には誰が承認していますか。金額により承認者が変わる運用になっていますか",
           "answer_example": "実際は金額にかかわらず理事長が最終決裁している",
@@ -8314,7 +8848,8 @@
           "node_type": "start",
           "label": "小口現金支払 開始",
           "actor": "申請者",
-          "description": "申請者が小口現金での支払いを必要とする場面から開始"
+          "description": "申請者が小口現金での支払いを必要とする場面から開始",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -8344,7 +8879,7 @@
         {
           "id": "n03",
           "node_type": "process",
-          "label": "申請内容の受付・確認",
+          "label": "申請書の受付",
           "actor": "出納職員",
           "description": "出納職員が申請書の内容（支払目的・金額・申請者）を確認し、小口現金規程の対象かどうかを判断する",
           "inputs": [
@@ -8369,7 +8904,29 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "証憑（領収書）の確認",
+          "label": "申請内容の確認",
+          "actor": "出納職員",
+          "description": "出納職員が申請書の内容（支払目的・金額・申請者）を確認し、小口現金規程の対象かどうかを判断する",
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "小口現金支払",
+            "タスク順": 1,
+            "タスク名": "小口支払申請受付"
+          },
+          "source_quote": "小口現金から支払う申請や領収書を受け付ける",
+          "confidence": "explicit",
+          "next": "n05",
+          "task_id": "task_8d290829",
+          "matrix_axis": "小口支払申請受付",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "受付・申請",
+          "minutes": "5（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
+          "label": "領収書の確認",
           "actor": "出納職員",
           "description": "出納職員が提出された領収書の内容（支払内容・金額・日付・宛名）と承認有無を確認する",
           "inputs": [
@@ -8384,7 +8941,7 @@
           },
           "source_quote": "領収書、支払内容、承認有無を確認する",
           "confidence": "explicit",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_8a6c4c17",
           "matrix_axis": "証憑確認",
           "heatmap_group": "情報収集・照合",
@@ -8393,7 +8950,29 @@
           "burden": "低"
         },
         {
-          "id": "n05",
+          "id": "n06",
+          "node_type": "process",
+          "label": "支払内容・承認有無の確認",
+          "actor": "出納職員",
+          "description": "出納職員が提出された領収書の内容（支払内容・金額・日付・宛名）と承認有無を確認する",
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "小口現金支払",
+            "タスク順": 2,
+            "タスク名": "小口支払証憑確認"
+          },
+          "source_quote": "領収書、支払内容、承認有無を確認する",
+          "confidence": "explicit",
+          "next": "n07",
+          "task_id": "task_8a6c4c17",
+          "matrix_axis": "証憑確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "5（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n07",
           "node_type": "decision",
           "label": "証憑基準適合判定",
           "actor": "出納職員",
@@ -8406,19 +8985,19 @@
           },
           "confidence": "inferred",
           "condition": "領収書の宛名・承認印・金額が規程基準を満たしているか",
+          "hearing_item": "証憑確認基準（宛名・承認印等の必須要件）と不備時の差戻し手順を教えてください",
+          "hearing_answer_example": "宛名あり・承認印ありを必須とし、不備があれば申請者へ差戻して再提出を求める",
           "branches": [
             {
               "label": "基準を満たす",
-              "target": "n07"
+              "target": "n09"
             },
             {
               "label": "不備あり",
-              "target": "n06",
+              "target": "n08",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "証憑確認基準（宛名・承認印等の必須要件）と不備時の差戻し手順を教えてください",
-          "hearing_answer_example": "宛名あり・承認印ありを必須とし、不備があれば申請者へ差戻して再提出を求める",
           "task_id": "task_8a6c4c17",
           "matrix_axis": "証憑確認",
           "heatmap_group": "情報収集・照合",
@@ -8427,7 +9006,7 @@
           "burden": "低"
         },
         {
-          "id": "n06",
+          "id": "n08",
           "node_type": "exception",
           "label": "不備対応（申請者へ差戻し）",
           "actor": "出納職員",
@@ -8439,7 +9018,7 @@
             "タスク名": "小口支払証憑確認"
           },
           "confidence": "inferred",
-          "next": "n04",
+          "next": "n05",
           "task_id": "task_8a6c4c17",
           "matrix_axis": "証憑確認",
           "heatmap_group": "情報収集・照合",
@@ -8448,7 +9027,7 @@
           "burden": "低"
         },
         {
-          "id": "n07",
+          "id": "n09",
           "node_type": "process",
           "label": "小口現金の支払い",
           "actor": "出納職員",
@@ -8462,9 +9041,9 @@
             "タスク順": 2,
             "タスク名": "小口支払証憑確認"
           },
-          "confidence": "explicit",
           "source_quote": "小口現金から支払う",
-          "next": "n08",
+          "confidence": "explicit",
+          "next": "n10",
           "task_id": "task_8a6c4c17",
           "matrix_axis": "証憑確認",
           "heatmap_group": "情報収集・照合",
@@ -8473,7 +9052,7 @@
           "burden": "低"
         },
         {
-          "id": "n08",
+          "id": "n10",
           "node_type": "process",
           "label": "小口現金出納帳への記入",
           "actor": "出納職員",
@@ -8481,6 +9060,28 @@
           "inputs": [
             "領収書"
           ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "小口現金支払",
+            "タスク順": 3,
+            "タスク名": "出納帳記入・保管"
+          },
+          "source_quote": "小口現金出納帳に支払内容を記録し証憑を保管する",
+          "confidence": "explicit",
+          "next": "n11",
+          "task_id": "task_e56529c6",
+          "matrix_axis": "小口現金出納帳記入",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・報告",
+          "minutes": "5（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "証憑の保管",
+          "actor": "出納職員",
+          "description": "出納職員が小口現金出納帳に支払日・金額・科目・摘要を記入し、証憑を出納帳と一緒に綴り込んで保管する",
           "outputs": [
             "小口現金出納帳（記入済み）"
           ],
@@ -8492,7 +9093,7 @@
           },
           "source_quote": "小口現金出納帳に支払内容を記録し証憑を保管する",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n12",
           "task_id": "task_e56529c6",
           "matrix_axis": "小口現金出納帳記入",
           "heatmap_group": "記録・報告",
@@ -8501,7 +9102,7 @@
           "burden": "低"
         },
         {
-          "id": "n09",
+          "id": "n12",
           "node_type": "end",
           "label": "小口現金支払 完了",
           "actor": "出納職員",
@@ -8510,7 +9111,7 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n05",
+          "node_id": "n07",
           "question": "小口支払の証憑確認基準（宛名・承認印等の必須要件）と不備時の差戻し手順を教えてください",
           "answer_example": "宛名あり・承認印ありを必須とし、不備があれば申請者へ差戻して再提出を求める",
           "reason": "マニュアルに承認有無の確認基準と不備時の対応手順の記述がない",
@@ -8524,7 +9125,7 @@
           "reason": "申請タイミングの実態によりフロー順序が変わるため"
         },
         {
-          "node_id": "n07",
+          "node_id": "n09",
           "question_type": "branch_confirmation",
           "question": "小口現金で支払えない金額・内容だった場合の振替手順（通常の支払処理へ回す等）を教えてください",
           "answer_example": "1万円超は支払処理（振込）へ回している",
@@ -8548,17 +9149,15 @@
           "node_type": "start",
           "label": "現金残高確認 開始",
           "actor": "出納職員",
-          "description": "定例の現金実査として残高確認を開始する"
+          "description": "定例の現金実査として残高確認を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
           "node_type": "process",
-          "label": "金庫内現金の実査",
+          "label": "金種別現金の計数",
           "actor": "出納職員",
           "description": "金庫内の現金を金種別に数え、実査額を記録する",
-          "outputs": [
-            "実査メモ"
-          ],
           "source_task": {
             "業務分類": "現金管理",
             "業務種別": "現金残高確認",
@@ -8578,11 +9177,11 @@
         {
           "id": "n03",
           "node_type": "process",
-          "label": "小口現金出納帳との照合",
+          "label": "実査額の集計",
           "actor": "出納職員",
-          "description": "実査額と小口現金出納帳の残高を照合する",
-          "inputs": [
-            "小口現金出納帳"
+          "description": "金庫内の現金を金種別に数え、実査額を記録する",
+          "outputs": [
+            "実査メモ"
           ],
           "source_task": {
             "業務分類": "現金管理",
@@ -8590,7 +9189,7 @@
             "タスク順": 1,
             "タスク名": "現金実査・照合"
           },
-          "source_quote": "小口現金出納帳・会計帳簿と照合する",
+          "source_quote": "金庫内現金を数え",
           "confidence": "explicit",
           "next": "n04",
           "task_id": "task_7cefe57d",
@@ -8603,11 +9202,11 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "会計帳簿との照合",
+          "label": "小口現金出納帳との照合",
           "actor": "出納職員",
-          "description": "実査額と会計システムの現金勘定残高を照合する",
+          "description": "実査額と小口現金出納帳の残高を照合する",
           "inputs": [
-            "総勘定元帳"
+            "小口現金出納帳"
           ],
           "source_task": {
             "業務分類": "現金管理",
@@ -8627,6 +9226,31 @@
         },
         {
           "id": "n05",
+          "node_type": "process",
+          "label": "会計帳簿との照合",
+          "actor": "出納職員",
+          "description": "実査額と会計システムの現金勘定残高を照合する",
+          "inputs": [
+            "総勘定元帳"
+          ],
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 1,
+            "タスク名": "現金実査・照合"
+          },
+          "source_quote": "小口現金出納帳・会計帳簿と照合する",
+          "confidence": "explicit",
+          "next": "n06",
+          "task_id": "task_7cefe57d",
+          "matrix_axis": "現金実査",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "15（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n06",
           "node_type": "decision",
           "label": "残高差異の有無判定",
           "actor": "出納職員",
@@ -8643,11 +9267,11 @@
           "branches": [
             {
               "label": "一致",
-              "target": "n10"
+              "target": "n12"
             },
             {
               "label": "差異あり",
-              "target": "n06",
+              "target": "n07",
               "edge_type": "exception"
             }
           ],
@@ -8659,7 +9283,7 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "exception",
           "label": "差異原因の調査",
           "actor": "出納職員",
@@ -8676,7 +9300,7 @@
           },
           "source_quote": "残高差異がある場合は原因を調査し会計責任者へ報告する",
           "confidence": "explicit",
-          "next": "n07",
+          "next": "n08",
           "task_id": "task_97cfe2d4",
           "matrix_axis": "差異調査・報告",
           "heatmap_group": "記録・報告",
@@ -8685,7 +9309,29 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n08",
+          "node_type": "process",
+          "label": "差異内容の整理",
+          "actor": "出納職員",
+          "description": "調査結果を差異報告書にまとめ会計責任者へ報告する",
+          "source_task": {
+            "業務分類": "現金管理",
+            "業務種別": "現金残高確認",
+            "タスク順": 2,
+            "タスク名": "現金差異調査・報告"
+          },
+          "source_quote": "原因を調査し会計責任者へ報告する",
+          "confidence": "explicit",
+          "next": "n09",
+          "task_id": "task_97cfe2d4",
+          "matrix_axis": "差異調査・報告",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・報告",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n09",
           "node_type": "process",
           "label": "差異報告書の作成・報告",
           "actor": "出納職員",
@@ -8701,7 +9347,7 @@
           },
           "source_quote": "原因を調査し会計責任者へ報告する",
           "confidence": "explicit",
-          "next": "n08",
+          "next": "n10",
           "task_id": "task_97cfe2d4",
           "matrix_axis": "差異調査・報告",
           "heatmap_group": "記録・報告",
@@ -8710,7 +9356,7 @@
           "burden": "中"
         },
         {
-          "id": "n08",
+          "id": "n10",
           "node_type": "decision",
           "label": "原因解明の判定",
           "actor": "会計責任者",
@@ -8726,19 +9372,19 @@
           },
           "confidence": "inferred",
           "condition": "差異の原因が解明され帳簿修正で対応できるか",
+          "hearing_item": "調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください",
+          "hearing_answer_example": "会計責任者が理事長へ報告し、承認のうえ雑損失で処理する",
           "branches": [
             {
               "label": "解明済み",
-              "target": "n10"
+              "target": "n12"
             },
             {
               "label": "未解明",
-              "target": "n09",
+              "target": "n11",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください",
-          "hearing_answer_example": "会計責任者が理事長へ報告し、承認のうえ雑損失で処理する",
           "task_id": "task_97cfe2d4",
           "matrix_axis": "差異調査・報告",
           "heatmap_group": "記録・報告",
@@ -8747,7 +9393,7 @@
           "burden": "中"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "exception",
           "label": "理事長報告・損失処理",
           "actor": "会計責任者",
@@ -8759,7 +9405,7 @@
             "タスク名": "現金差異調査・報告"
           },
           "confidence": "inferred",
-          "next": "n10",
+          "next": "n12",
           "task_id": "task_97cfe2d4",
           "matrix_axis": "差異調査・報告",
           "heatmap_group": "記録・報告",
@@ -8768,7 +9414,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "process",
           "label": "実査結果の記録・保管",
           "actor": "出納職員",
@@ -8783,7 +9429,7 @@
             "タスク名": "現金実査・照合"
           },
           "confidence": "inferred",
-          "next": "n11",
+          "next": "n13",
           "task_id": "task_7cefe57d",
           "matrix_axis": "現金実査",
           "heatmap_group": "情報収集・照合",
@@ -8792,7 +9438,7 @@
           "burden": "中"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "end",
           "label": "現金残高確認 完了",
           "actor": "出納職員",
@@ -8808,14 +9454,14 @@
           "reason": "マニュアルに実査の立会・記録方法の記載がなく、実態の確認が必要"
         },
         {
-          "node_id": "n08",
+          "node_id": "n10",
           "question_type": "branch_confirmation",
           "question": "調査しても差異が解消しない場合の処理（雑損失計上等）の承認者と手順を教えてください",
           "answer_example": "会計責任者が理事長へ報告し、承認のうえ雑損失で処理する",
           "reason": "マニュアルに差異未解明時の処理の記載がない"
         },
         {
-          "node_id": "n05",
+          "node_id": "n06",
           "question_type": "branch_confirmation",
           "question": "差異が軽微な場合（数十円等）でも全件調査・報告していますか。金額による省略基準はありますか",
           "answer_example": "金額にかかわらず全件調査し、報告書を作成している",
@@ -8841,12 +9487,13 @@
           "node_type": "start",
           "label": "給与支払処理 開始",
           "actor": "出納職員",
-          "description": "給与支払月次処理を開始する（月次定例）"
+          "description": "給与支払月次処理を開始する（月次定例）",
+          "next": "n02"
         },
         {
           "id": "n02",
           "node_type": "process",
-          "label": "勤怠記録の収集",
+          "label": "各部門からの勤怠記録収集",
           "actor": "出納職員",
           "description": "出納職員が各部門から日報・勤怠記録（紙）を収集し、出勤日数・残業時間・有休使用などを確認する",
           "inputs": [
@@ -8872,6 +9519,28 @@
         {
           "id": "n03",
           "node_type": "process",
+          "label": "勤怠記録の不備確認",
+          "actor": "出納職員",
+          "description": "出納職員が各部門から日報・勤怠記録（紙）を収集し、出勤日数・残業時間・有休使用などを確認する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 1,
+            "タスク名": "勤怠情報収集"
+          },
+          "source_quote": "日報や勤怠情報を収集し給与計算の元データを整える",
+          "confidence": "explicit",
+          "next": "n04",
+          "task_id": "task_9f15324b",
+          "matrix_axis": "勤怠情報収集",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
           "label": "勤怠データのExcel集計",
           "actor": "出納職員",
           "description": "出納職員が収集した紙の勤怠記録を集計してExcelに手入力し、人員別の勤務時間一覧を作成する",
@@ -8890,7 +9559,7 @@
           },
           "source_quote": "給与計算の元データを整える",
           "confidence": "explicit",
-          "next": "n04",
+          "next": "n05",
           "task_id": "task_9f15324b",
           "matrix_axis": "勤怠情報収集",
           "heatmap_group": "情報収集・照合",
@@ -8899,9 +9568,9 @@
           "burden": "高"
         },
         {
-          "id": "n04",
+          "id": "n05",
           "node_type": "process",
-          "label": "給与計算システムへの勤怠入力",
+          "label": "勤怠データの入力",
           "actor": "出納職員",
           "description": "出納職員が勤怠集計表を参照しながら給与計算システムに出勤日数・残業時間・各種手当・控除情報を入力する",
           "inputs": [
@@ -8915,7 +9584,7 @@
           },
           "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
           "confidence": "explicit",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_76a0376a",
           "matrix_axis": "給与計算入力",
           "heatmap_group": "システム入力",
@@ -8924,9 +9593,53 @@
           "burden": "高"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "process",
-          "label": "給与計算の実行・明細確認",
+          "label": "手当・控除情報の入力",
+          "actor": "出納職員",
+          "description": "出納職員が勤怠集計表を参照しながら給与計算システムに出勤日数・残業時間・各種手当・控除情報を入力する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 2,
+            "タスク名": "給与計算入力"
+          },
+          "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
+          "confidence": "explicit",
+          "next": "n07",
+          "task_id": "task_76a0376a",
+          "matrix_axis": "給与計算入力",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n07",
+          "node_type": "process",
+          "label": "給与計算の実行",
+          "actor": "給与計算システム",
+          "description": "給与計算システムが入力データをもとに給与・控除・手取り金額を計算し、給与明細データを生成する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 2,
+            "タスク名": "給与計算入力"
+          },
+          "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
+          "confidence": "explicit",
+          "next": "n08",
+          "task_id": "task_76a0376a",
+          "matrix_axis": "給与計算入力",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "計算明細の確認",
           "actor": "給与計算システム",
           "description": "給与計算システムが入力データをもとに給与・控除・手取り金額を計算し、給与明細データを生成する",
           "outputs": [
@@ -8939,9 +9652,9 @@
             "タスク順": 2,
             "タスク名": "給与計算入力"
           },
-          "confidence": "explicit",
           "source_quote": "給与計算システムに勤怠・手当・控除情報を入力する",
-          "next": "n06",
+          "confidence": "explicit",
+          "next": "n09",
           "task_id": "task_76a0376a",
           "matrix_axis": "給与計算入力",
           "heatmap_group": "システム入力",
@@ -8950,7 +9663,7 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n09",
           "node_type": "process",
           "label": "給与計算データの承認依頼",
           "actor": "会計責任者",
@@ -8967,7 +9680,7 @@
           },
           "source_quote": "給料計算データについて会計責任者等が確認・承認する",
           "confidence": "explicit",
-          "next": "n07",
+          "next": "n10",
           "task_id": "task_2e638621",
           "matrix_axis": "給与計算データ承認",
           "heatmap_group": "承認・確認",
@@ -8976,7 +9689,7 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n10",
           "node_type": "decision",
           "label": "給与計算承認判定",
           "actor": "会計責任者",
@@ -8989,19 +9702,19 @@
           },
           "confidence": "inferred",
           "condition": "給与計算データに誤りや異常値がないか",
+          "hearing_item": "給与計算承認時のチェック項目（前月比較・社会保険額確認等）と、差戻し時の修正手順を教えてください",
+          "hearing_answer_example": "前月比で増減5%以上の項目を重点確認し計算明細と突合。差異がある場合は出納職員へ差戻して修正後に再承認する",
           "branches": [
             {
               "label": "承認",
-              "target": "n08"
+              "target": "n11"
             },
             {
               "label": "差戻し",
-              "target": "n04",
+              "target": "n05",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "給与計算承認時のチェック項目（前月比較・社会保険額確認等）と、差戻し時の修正手順を教えてください",
-          "hearing_answer_example": "前月比で増減5%以上の項目を重点確認し計算明細と突合。差異がある場合は出納職員へ差戻して修正後に再承認する",
           "task_id": "task_2e638621",
           "matrix_axis": "給与計算データ承認",
           "heatmap_group": "承認・確認",
@@ -9010,14 +9723,36 @@
           "burden": "中"
         },
         {
-          "id": "n08",
+          "id": "n11",
           "node_type": "process",
-          "label": "給与振込の実行",
+          "label": "振込データの作成",
           "actor": "出納職員",
           "description": "出納職員が承認済み給与データをもとにインターネットバンキングで給与振込を実行する。振込控えを保管する。",
           "inputs": [
             "承認済み支払一覧"
           ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 4,
+            "タスク名": "給与振込"
+          },
+          "source_quote": "承認済み給与データをもとに給与を支払う",
+          "confidence": "explicit",
+          "next": "n12",
+          "task_id": "task_0c823001",
+          "matrix_axis": "給与振込",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "20（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n12",
+          "node_type": "process",
+          "label": "給与振込の実行",
+          "actor": "出納職員",
+          "description": "出納職員が承認済み給与データをもとにインターネットバンキングで給与振込を実行する。振込控えを保管する。",
           "outputs": [
             "振込控え"
           ],
@@ -9029,7 +9764,7 @@
           },
           "source_quote": "承認済み給与データをもとに給与を支払う",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n13",
           "task_id": "task_0c823001",
           "matrix_axis": "給与振込",
           "heatmap_group": "システム入力",
@@ -9038,15 +9773,37 @@
           "burden": "中"
         },
         {
-          "id": "n09",
+          "id": "n13",
           "node_type": "process",
-          "label": "給与仕訳の会計システム入力",
+          "label": "給与仕訳の入力",
           "actor": "出納職員",
           "description": "出納職員が給与支払時の会計仕訳（支払給与・社会保険料・源泉徴収税等）を会計システムに入力する",
           "inputs": [
             "振込控え",
             "給与計算明細"
           ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "給与支払",
+            "タスク順": 5,
+            "タスク名": "給与仕訳入力"
+          },
+          "source_quote": "給与支払時の会計仕訳を会計システムに入力する",
+          "confidence": "explicit",
+          "next": "n14",
+          "task_id": "task_dadebf28",
+          "matrix_axis": "給与仕訳入力",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "20（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n14",
+          "node_type": "process",
+          "label": "給与伝票の確定",
+          "actor": "出納職員",
+          "description": "出納職員が給与支払時の会計仕訳（支払給与・社会保険料・源泉徴収税等）を会計システムに入力する",
           "outputs": [
             "給与仕訳"
           ],
@@ -9058,7 +9815,7 @@
           },
           "source_quote": "給与支払時の会計仕訳を会計システムに入力する",
           "confidence": "explicit",
-          "next": "n10",
+          "next": "n15",
           "task_id": "task_dadebf28",
           "matrix_axis": "給与仕訳入力",
           "heatmap_group": "システム入力",
@@ -9067,7 +9824,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n15",
           "node_type": "end",
           "label": "給与支払処理 完了",
           "actor": "出納職員",
@@ -9083,14 +9840,14 @@
           "question_type": "branch_confirmation"
         },
         {
-          "node_id": "n07",
+          "node_id": "n10",
           "question": "給与計算承認時のチェック項目と差戻し時の修正手順を教えてください",
           "answer_example": "前月比で増減5%以上の項目を重点確認し、差異がある場合は出納職員へ差戻して修正後に再承認する",
           "reason": "マニュアルに承認却下時の処理フローの記述がない",
           "question_type": "branch_confirmation"
         },
         {
-          "node_id": "n08",
+          "node_id": "n11",
           "question_type": "reality_check",
           "question": "給与振込の実行前に振込データを承認者が再確認するステップは実際にはありますか",
           "answer_example": "承認済みデータをそのまま出納職員が送信しており、送信前の再確認はない",
@@ -9117,7 +9874,8 @@
           "node_type": "start",
           "label": "賞与支給 開始",
           "actor": "理事長",
-          "description": "賞与支給時期の到来により賞与支給業務を開始する"
+          "description": "賞与支給時期の到来により賞与支給業務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -9170,15 +9928,12 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "賞与支給額の計算",
+          "label": "対象者別支給額の算定",
           "actor": "出納職員",
           "description": "支給基準に基づき職員ごとの賞与支給金額を計算する",
           "inputs": [
             "支給基準通知",
             "給与台帳"
-          ],
-          "outputs": [
-            "賞与計算表"
           ],
           "source_task": {
             "業務分類": "人件費支払",
@@ -9198,6 +9953,31 @@
         },
         {
           "id": "n05",
+          "node_type": "process",
+          "label": "賞与計算データの作成",
+          "actor": "出納職員",
+          "description": "支給基準に基づき職員ごとの賞与支給金額を計算する",
+          "outputs": [
+            "賞与計算表"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 1,
+            "タスク名": "賞与支給額計算"
+          },
+          "source_quote": "賞与支給金額を計算し",
+          "confidence": "explicit",
+          "next": "n06",
+          "task_id": "task_05e9dc8c",
+          "matrix_axis": "賞与支給額計算",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n06",
           "node_type": "decision",
           "label": "計算結果の承認判定",
           "actor": "会計責任者",
@@ -9213,19 +9993,19 @@
           },
           "confidence": "inferred",
           "condition": "賞与計算結果が支給基準・対象者と一致するか",
+          "hearing_item": "賞与計算結果の確認・承認は誰がどのように行っていますか。差戻し時の再計算手順も教えてください",
+          "hearing_answer_example": "会計責任者が計算表を確認し、誤りがあれば出納職員が再計算して再提出する",
           "branches": [
             {
               "label": "承認",
-              "target": "n07"
+              "target": "n08"
             },
             {
               "label": "差戻し",
-              "target": "n06",
+              "target": "n07",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "賞与計算結果の確認・承認は誰がどのように行っていますか。差戻し時の再計算手順も教えてください",
-          "hearing_answer_example": "会計責任者が計算表を確認し、誤りがあれば出納職員が再計算して再提出する",
           "task_id": "task_05e9dc8c",
           "matrix_axis": "賞与支給額計算",
           "heatmap_group": "計算・作成",
@@ -9234,7 +10014,7 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "exception",
           "label": "賞与の再計算",
           "actor": "出納職員",
@@ -9246,7 +10026,7 @@
             "タスク名": "賞与支給額計算"
           },
           "confidence": "inferred",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_05e9dc8c",
           "matrix_axis": "賞与支給額計算",
           "heatmap_group": "計算・作成",
@@ -9255,7 +10035,7 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "process",
           "label": "給与計算システムへの入力",
           "actor": "出納職員",
@@ -9271,31 +10051,6 @@
           },
           "source_quote": "給与計算システムへ入力する",
           "confidence": "explicit",
-          "next": "n08",
-          "task_id": "task_91c19e44",
-          "matrix_axis": "賞与データ入力",
-          "heatmap_group": "システム入力",
-          "heatmap_step": "システム入力",
-          "minutes": "30（仮）",
-          "burden": "中"
-        },
-        {
-          "id": "n08",
-          "node_type": "process",
-          "label": "賞与支給データの確定",
-          "actor": "出納職員",
-          "description": "システム上で社会保険料・源泉所得税の控除計算を行い、支給データを確定する",
-          "outputs": [
-            "賞与支給データ",
-            "賞与明細"
-          ],
-          "source_task": {
-            "業務分類": "人件費支払",
-            "業務種別": "賞与支給",
-            "タスク順": 2,
-            "タスク名": "賞与データシステム入力"
-          },
-          "confidence": "inferred",
           "next": "n09",
           "task_id": "task_91c19e44",
           "matrix_axis": "賞与データ入力",
@@ -9307,11 +10062,12 @@
         {
           "id": "n09",
           "node_type": "process",
-          "label": "賞与の支給実行",
+          "label": "賞与支給データの確定",
           "actor": "出納職員",
-          "description": "確定した賞与支給データをもとに振込等で賞与を支給する（振込手順はマニュアルに記載なし・要確認）",
-          "inputs": [
-            "賞与支給データ"
+          "description": "システム上で社会保険料・源泉所得税の控除計算を行い、支給データを確定する",
+          "outputs": [
+            "賞与支給データ",
+            "賞与明細"
           ],
           "source_task": {
             "業務分類": "人件費支払",
@@ -9330,6 +10086,51 @@
         },
         {
           "id": "n10",
+          "node_type": "process",
+          "label": "賞与振込データの作成",
+          "actor": "出納職員",
+          "description": "確定した賞与支給データをもとに振込等で賞与を支給する（振込手順はマニュアルに記載なし・要確認）",
+          "inputs": [
+            "賞与支給データ"
+          ],
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 2,
+            "タスク名": "賞与データシステム入力"
+          },
+          "confidence": "inferred",
+          "next": "n11",
+          "task_id": "task_91c19e44",
+          "matrix_axis": "賞与データ入力",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "賞与の支給実行",
+          "actor": "出納職員",
+          "description": "確定した賞与支給データをもとに振込等で賞与を支給する（振込手順はマニュアルに記載なし・要確認）",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "賞与支給",
+            "タスク順": 2,
+            "タスク名": "賞与データシステム入力"
+          },
+          "confidence": "inferred",
+          "next": "n12",
+          "task_id": "task_91c19e44",
+          "matrix_axis": "賞与データ入力",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n12",
           "node_type": "end",
           "label": "賞与支給 完了",
           "actor": "出納職員",
@@ -9345,14 +10146,14 @@
           "reason": "マニュアルに支給基準の決定方法の記載がない"
         },
         {
-          "node_id": "n05",
+          "node_id": "n06",
           "question_type": "branch_confirmation",
           "question": "賞与計算結果の確認・承認は誰がどのように行っていますか。差戻し時の再計算手順も教えてください",
           "answer_example": "会計責任者が計算表を確認し、誤りがあれば出納職員が再計算して再提出する",
           "reason": "マニュアルに賞与計算の承認手順の記載がない"
         },
         {
-          "node_id": "n09",
+          "node_id": "n10",
           "question_type": "reality_check",
           "question": "賞与の振込は実際には給与振込と同じ手順（インターネットバンキング等）ですか。支給前に理事長等の承認を別途取っていますか",
           "answer_example": "給与と同様にインターネットバンキングで振込し、支給前に理事長の承認を得ている",
@@ -9379,7 +10180,8 @@
           "node_type": "start",
           "label": "年末調整 開始",
           "actor": "出納職員",
-          "description": "年末調整時期の到来により年末調整業務を開始する"
+          "description": "年末調整時期の到来により年末調整業務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -9446,6 +10248,8 @@
           },
           "confidence": "inferred",
           "condition": "全職員分の申告書が期限内に揃ったか",
+          "hearing_item": "申告書が期限までに提出されない職員への督促手順と、最終的に未提出の場合の取り扱いを教えてください",
+          "hearing_answer_example": "出納職員が個別に督促し、未提出者は扶養控除のみで計算して確定申告を案内する",
           "branches": [
             {
               "label": "期限内",
@@ -9457,8 +10261,6 @@
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "申告書が期限までに提出されない職員への督促手順と、最終的に未提出の場合の取り扱いを教えてください",
-          "hearing_answer_example": "出納職員が個別に督促し、未提出者は扶養控除のみで計算して確定申告を案内する",
           "task_id": "task_2f0d7945",
           "matrix_axis": "申告書収集・確認",
           "heatmap_group": "情報収集・照合",
@@ -9490,7 +10292,7 @@
         {
           "id": "n06",
           "node_type": "process",
-          "label": "記載内容・添付資料の確認",
+          "label": "記載内容の確認",
           "actor": "出納職員",
           "description": "申告書の記載内容と控除証明書等の添付資料の整合を確認する",
           "inputs": [
@@ -9515,6 +10317,28 @@
         },
         {
           "id": "n07",
+          "node_type": "process",
+          "label": "添付資料の確認",
+          "actor": "出納職員",
+          "description": "申告書の記載内容と控除証明書等の添付資料の整合を確認する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 1,
+            "タスク名": "年末調整申告書収集・確認"
+          },
+          "source_quote": "申告書・控除資料を確認し計算する",
+          "confidence": "explicit",
+          "next": "n08",
+          "task_id": "task_2f0d7945",
+          "matrix_axis": "申告書収集・確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n08",
           "node_type": "decision",
           "label": "記載不備の有無判定",
           "actor": "出納職員",
@@ -9527,19 +10351,19 @@
           },
           "confidence": "inferred",
           "condition": "申告書の記載内容・添付資料に不備がないか",
+          "hearing_item": "申告書に不備があった場合の差戻し方法（本人へ直接・部門経由等）を教えてください",
+          "hearing_answer_example": "紙の申告書を職員が記入・提出し、不備は出納職員が本人へ直接差戻す",
           "branches": [
             {
               "label": "不備なし",
-              "target": "n09"
+              "target": "n10"
             },
             {
               "label": "不備あり",
-              "target": "n08",
+              "target": "n09",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "申告書に不備があった場合の差戻し方法（本人へ直接・部門経由等）を教えてください",
-          "hearing_answer_example": "紙の申告書を職員が記入・提出し、不備は出納職員が本人へ直接差戻す",
           "task_id": "task_2f0d7945",
           "matrix_axis": "申告書収集・確認",
           "heatmap_group": "情報収集・照合",
@@ -9548,7 +10372,7 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "exception",
           "label": "本人への差戻し・再提出依頼",
           "actor": "出納職員",
@@ -9569,9 +10393,9 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n10",
           "node_type": "process",
-          "label": "控除情報のシステム入力",
+          "label": "控除額の集計",
           "actor": "出納職員",
           "description": "確認済みの申告内容（扶養・保険料控除等）を給与計算システムへ入力する",
           "inputs": [
@@ -9585,7 +10409,7 @@
             "タスク名": "年末調整計算・精算"
           },
           "confidence": "inferred",
-          "next": "n10",
+          "next": "n11",
           "task_id": "task_10c8a736",
           "matrix_axis": "年末調整計算",
           "heatmap_group": "計算・作成",
@@ -9594,7 +10418,28 @@
           "burden": "高"
         },
         {
-          "id": "n10",
+          "id": "n11",
+          "node_type": "process",
+          "label": "控除情報のシステム入力",
+          "actor": "出納職員",
+          "description": "確認済みの申告内容（扶養・保険料控除等）を給与計算システムへ入力する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "年末調整",
+            "タスク順": 2,
+            "タスク名": "年末調整計算・精算"
+          },
+          "confidence": "inferred",
+          "next": "n12",
+          "task_id": "task_10c8a736",
+          "matrix_axis": "年末調整計算",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n12",
           "node_type": "process",
           "label": "年末調整計算の実行",
           "actor": "出納職員",
@@ -9611,7 +10456,7 @@
           },
           "source_quote": "申告書・控除資料を確認し計算する",
           "confidence": "explicit",
-          "next": "n11",
+          "next": "n13",
           "task_id": "task_10c8a736",
           "matrix_axis": "年末調整計算",
           "heatmap_group": "計算・作成",
@@ -9620,7 +10465,7 @@
           "burden": "高"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "decision",
           "label": "精算結果の確認判定",
           "actor": "会計責任者",
@@ -9636,19 +10481,19 @@
           },
           "confidence": "inferred",
           "condition": "過不足計算の結果に異常がないか",
+          "hearing_item": "年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください",
+          "hearing_answer_example": "12月給与で精算し、過不足一覧を会計責任者が確認する",
           "branches": [
             {
               "label": "問題なし",
-              "target": "n12"
+              "target": "n14"
             },
             {
               "label": "再計算",
-              "target": "n09",
+              "target": "n10",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください",
-          "hearing_answer_example": "12月給与で精算し、過不足一覧を会計責任者が確認する",
           "task_id": "task_10c8a736",
           "matrix_axis": "年末調整計算",
           "heatmap_group": "計算・作成",
@@ -9657,7 +10502,7 @@
           "burden": "高"
         },
         {
-          "id": "n12",
+          "id": "n14",
           "node_type": "process",
           "label": "過不足額の精算処理",
           "actor": "出納職員",
@@ -9672,7 +10517,7 @@
             "タスク名": "年末調整計算・精算"
           },
           "confidence": "inferred",
-          "next": "n13",
+          "next": "n15",
           "task_id": "task_10c8a736",
           "matrix_axis": "年末調整計算",
           "heatmap_group": "計算・作成",
@@ -9681,7 +10526,7 @@
           "burden": "高"
         },
         {
-          "id": "n13",
+          "id": "n15",
           "node_type": "end",
           "label": "年末調整 完了",
           "actor": "出納職員",
@@ -9697,14 +10542,14 @@
           "reason": "回収・入力方法によりフローと改善余地が変わるため"
         },
         {
-          "node_id": "n07",
+          "node_id": "n08",
           "question_type": "branch_confirmation",
           "question": "申告書に不備があった場合の差戻し方法（本人へ直接・部門経由等）を教えてください",
           "answer_example": "紙の申告書を職員が記入・提出し、不備は出納職員が本人へ直接差戻す",
           "reason": "マニュアルに不備時の差戻し手順の記載がない"
         },
         {
-          "node_id": "n11",
+          "node_id": "n13",
           "question_type": "branch_confirmation",
           "question": "年末調整の過不足額の精算方法（12月給与で精算・別途支給等）と確認者を教えてください",
           "answer_example": "12月給与で精算し、過不足一覧を会計責任者が確認する",
@@ -9731,12 +10576,13 @@
           "node_type": "start",
           "label": "社会保険・源泉 開始",
           "actor": "出納職員",
-          "description": "毎月の源泉納付・定例の社会保険届出として業務を開始する"
+          "description": "毎月の源泉納付・定例の社会保険届出として業務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
           "node_type": "process",
-          "label": "源泉徴収税額の確認",
+          "label": "給与データの集計",
           "actor": "出納職員",
           "description": "給与計算システムの源泉徴収データから当月の納付税額を確認する",
           "inputs": [
@@ -9761,6 +10607,28 @@
         {
           "id": "n03",
           "node_type": "process",
+          "label": "源泉徴収税額の確認",
+          "actor": "出納職員",
+          "description": "給与計算システムの源泉徴収データから当月の納付税額を確認する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 1,
+            "タスク名": "源泉徴収税額計算・納付"
+          },
+          "source_quote": "毎月の源泉徴収税額を確認し",
+          "confidence": "explicit",
+          "next": "n04",
+          "task_id": "task_d8160ce2",
+          "matrix_axis": "源泉徴収事務",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n04",
+          "node_type": "process",
           "label": "納付書の作成",
           "actor": "出納職員",
           "description": "所得税徴収高計算書（納付書）を作成する",
@@ -9774,7 +10642,7 @@
             "タスク名": "源泉徴収税額計算・納付"
           },
           "confidence": "inferred",
-          "next": "n04",
+          "next": "n05",
           "task_id": "task_d8160ce2",
           "matrix_axis": "源泉徴収事務",
           "heatmap_group": "計算・作成",
@@ -9783,7 +10651,7 @@
           "burden": "中"
         },
         {
-          "id": "n04",
+          "id": "n05",
           "node_type": "process",
           "label": "税務署への納付",
           "actor": "出納職員",
@@ -9799,7 +10667,7 @@
           },
           "source_quote": "所轄税務署へ電子申告または書面で納付する",
           "confidence": "explicit",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_d8160ce2",
           "matrix_axis": "源泉徴収事務",
           "heatmap_group": "計算・作成",
@@ -9808,7 +10676,7 @@
           "burden": "中"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "decision",
           "label": "納付期限内の判定",
           "actor": "出納職員",
@@ -9821,19 +10689,19 @@
           },
           "confidence": "inferred",
           "condition": "法定納期限内に納付が完了したか",
+          "hearing_item": "源泉所得税の納付期限の管理方法と、期限を過ぎそうな場合・過ぎた場合の対応を教えてください",
+          "hearing_answer_example": "出納職員がカレンダーで管理し、遅延時は会計責任者へ報告のうえ至急納付する",
           "branches": [
             {
               "label": "期限内",
-              "target": "n07"
+              "target": "n08"
             },
             {
               "label": "期限超過",
-              "target": "n06",
+              "target": "n07",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "源泉所得税の納付期限の管理方法と、期限を過ぎそうな場合・過ぎた場合の対応を教えてください",
-          "hearing_answer_example": "出納職員がカレンダーで管理し、遅延時は会計責任者へ報告のうえ至急納付する",
           "task_id": "task_d8160ce2",
           "matrix_axis": "源泉徴収事務",
           "heatmap_group": "計算・作成",
@@ -9842,7 +10710,7 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "exception",
           "label": "遅延対応・至急納付",
           "actor": "出納職員",
@@ -9854,7 +10722,7 @@
             "タスク名": "源泉徴収税額計算・納付"
           },
           "confidence": "inferred",
-          "next": "n07",
+          "next": "n08",
           "task_id": "task_d8160ce2",
           "matrix_axis": "源泉徴収事務",
           "heatmap_group": "計算・作成",
@@ -9863,7 +10731,7 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "process",
           "label": "給与データの抽出",
           "actor": "出納職員",
@@ -9878,7 +10746,7 @@
             "タスク名": "社会保険届出書作成"
           },
           "confidence": "inferred",
-          "next": "n08",
+          "next": "n09",
           "task_id": "task_be49a7c1",
           "matrix_axis": "社会保険届出作成",
           "heatmap_group": "計算・作成",
@@ -9887,7 +10755,29 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n09",
+          "node_type": "process",
+          "label": "算定基礎データの整理",
+          "actor": "出納職員",
+          "description": "算定基礎届・賞与支払届・入退職届等を作成する。システム出力できない項目は手入力する",
+          "source_task": {
+            "業務分類": "人件費支払",
+            "業務種別": "社会保険・源泉",
+            "タスク順": 2,
+            "タスク名": "社会保険届出書作成"
+          },
+          "source_quote": "算定基礎届、賞与支払届等を作成・提出する",
+          "confidence": "explicit",
+          "next": "n10",
+          "task_id": "task_be49a7c1",
+          "matrix_axis": "社会保険届出作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "文書・帳票作成",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n10",
           "node_type": "process",
           "label": "届出書類の作成",
           "actor": "出納職員",
@@ -9904,7 +10794,7 @@
           },
           "source_quote": "算定基礎届、賞与支払届等を作成・提出する",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_be49a7c1",
           "matrix_axis": "社会保険届出作成",
           "heatmap_group": "計算・作成",
@@ -9913,7 +10803,7 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "decision",
           "label": "記載内容の確認判定",
           "actor": "出納職員",
@@ -9929,19 +10819,19 @@
           },
           "confidence": "inferred",
           "condition": "届出書の記載内容が給与データと一致するか",
+          "hearing_item": "届出書の記載ミスや提出後の是正指示があった場合の訂正手順を教えてください",
+          "hearing_answer_example": "訂正届を作成し、出納職員が窓口または電子申請で再提出する",
           "branches": [
             {
               "label": "一致",
-              "target": "n11"
+              "target": "n13"
             },
             {
               "label": "不一致",
-              "target": "n10",
+              "target": "n12",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "届出書の記載ミスや提出後の是正指示があった場合の訂正手順を教えてください",
-          "hearing_answer_example": "訂正届を作成し、出納職員が窓口または電子申請で再提出する",
           "task_id": "task_be49a7c1",
           "matrix_axis": "社会保険届出作成",
           "heatmap_group": "計算・作成",
@@ -9950,7 +10840,7 @@
           "burden": "高"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "exception",
           "label": "記載内容の修正",
           "actor": "出納職員",
@@ -9962,7 +10852,7 @@
             "タスク名": "社会保険届出書作成"
           },
           "confidence": "inferred",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_be49a7c1",
           "matrix_axis": "社会保険届出作成",
           "heatmap_group": "計算・作成",
@@ -9971,7 +10861,7 @@
           "burden": "高"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "process",
           "label": "届出の提出",
           "actor": "出納職員",
@@ -9988,7 +10878,7 @@
           },
           "source_quote": "社会保険事務所・ハローワーク等へ電子申請または郵送で提出する",
           "confidence": "explicit",
-          "next": "n12",
+          "next": "n14",
           "task_id": "task_a7d7d214",
           "matrix_axis": "届出提出",
           "heatmap_group": "記録・報告",
@@ -9997,7 +10887,7 @@
           "burden": "中"
         },
         {
-          "id": "n12",
+          "id": "n14",
           "node_type": "process",
           "label": "提出控えの保管",
           "actor": "出納職員",
@@ -10013,7 +10903,7 @@
           },
           "source_quote": "提出控えを保管する",
           "confidence": "explicit",
-          "next": "n13",
+          "next": "n15",
           "task_id": "task_a7d7d214",
           "matrix_axis": "届出提出",
           "heatmap_group": "記録・報告",
@@ -10022,7 +10912,7 @@
           "burden": "中"
         },
         {
-          "id": "n13",
+          "id": "n15",
           "node_type": "end",
           "label": "社会保険・源泉 完了",
           "actor": "出納職員",
@@ -10031,21 +10921,21 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n04",
+          "node_id": "n05",
           "question_type": "reality_check",
           "question": "源泉所得税の納付は実際には毎月納付ですか、納期特例（年2回）ですか。期限管理は誰が行っていますか",
           "answer_example": "納期特例で年2回納付し、出納職員が期限を管理している",
           "reason": "納付サイクルによりフローの繰り返し構造が変わるため"
         },
         {
-          "node_id": "n09",
+          "node_id": "n11",
           "question_type": "branch_confirmation",
           "question": "届出書の記載ミスや提出後の是正指示があった場合の訂正手順を教えてください",
           "answer_example": "訂正届を作成し、出納職員が窓口または電子申請で再提出する",
           "reason": "マニュアルに是正指示時の対応の記載がない"
         },
         {
-          "node_id": "n08",
+          "node_id": "n09",
           "question_type": "reality_check",
           "question": "届出書の作成は実際には給与計算システムから自動出力できていますか。手入力している項目はどれですか",
           "answer_example": "算定基礎届は給与計算システムから出力。住所や氏名は手入力している",
@@ -10073,7 +10963,8 @@
           "node_type": "start",
           "label": "債権債務管理 開始",
           "actor": "出納職員",
-          "description": "毎月末日の定例確認として債権債務管理を開始する"
+          "description": "毎月末日の定例確認として債権債務管理を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -10106,15 +10997,12 @@
         {
           "id": "n03",
           "node_type": "process",
-          "label": "内訳の調査・整理",
+          "label": "勘定科目別残高の確認",
           "actor": "出納職員",
           "description": "残高内訳の発生日・相手先・回収予定を調査しExcelの残高内訳表に整理する",
           "inputs": [
             "請求リスト",
             "支払一覧表"
-          ],
-          "outputs": [
-            "残高内訳表"
           ],
           "source_task": {
             "業務分類": "資産・負債管理",
@@ -10133,6 +11021,30 @@
         },
         {
           "id": "n04",
+          "node_type": "process",
+          "label": "内訳の調査・整理",
+          "actor": "出納職員",
+          "description": "残高内訳の発生日・相手先・回収予定を調査しExcelの残高内訳表に整理する",
+          "outputs": [
+            "残高内訳表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 1,
+            "タスク名": "債権債務残高内訳調査"
+          },
+          "confidence": "inferred",
+          "next": "n05",
+          "task_id": "task_df3f5176",
+          "matrix_axis": "残高内訳調査",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n05",
           "node_type": "decision",
           "label": "不明残高・長期滞留の有無判定",
           "actor": "出納職員",
@@ -10145,18 +11057,18 @@
           },
           "confidence": "inferred",
           "condition": "全残高の内訳が判明し、長期滞留がないか",
+          "hearing_item": "長期滞留と判断する基準（経過月数等）と、滞留時に残高確認へ進む判断基準を教えてください",
+          "hearing_answer_example": "3か月以上未回収の未収金は取引先へ残高確認書を送付する",
           "branches": [
             {
               "label": "問題なし",
-              "target": "n10"
+              "target": "n12"
             },
             {
               "label": "不明・滞留あり",
-              "target": "n05"
+              "target": "n06"
             }
           ],
-          "hearing_item": "長期滞留と判断する基準（経過月数等）と、滞留時に残高確認へ進む判断基準を教えてください",
-          "hearing_answer_example": "3か月以上未回収の未収金は取引先へ残高確認書を送付する",
           "task_id": "task_df3f5176",
           "matrix_axis": "残高内訳調査",
           "heatmap_group": "情報収集・照合",
@@ -10165,7 +11077,7 @@
           "burden": "中"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "process",
           "label": "残高確認書の送付",
           "actor": "出納職員",
@@ -10181,7 +11093,7 @@
           },
           "source_quote": "必要に応じて取引先との残高確認を行い",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_8c72e171",
           "matrix_axis": "取引先残高確認",
           "heatmap_group": "情報収集・照合",
@@ -10190,9 +11102,9 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "process",
-          "label": "確認書の回収・照合",
+          "label": "確認書の回収",
           "actor": "出納職員",
           "description": "取引先から残高確認書を回収し、帳簿残高と照合する",
           "inputs": [
@@ -10206,7 +11118,7 @@
           },
           "source_quote": "残高確認を行い差異を調査する",
           "confidence": "explicit",
-          "next": "n07",
+          "next": "n08",
           "task_id": "task_8c72e171",
           "matrix_axis": "取引先残高確認",
           "heatmap_group": "情報収集・照合",
@@ -10215,7 +11127,29 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n08",
+          "node_type": "process",
+          "label": "回答残高との照合",
+          "actor": "出納職員",
+          "description": "取引先から残高確認書を回収し、帳簿残高と照合する",
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "債権債務管理",
+            "タスク順": 2,
+            "タスク名": "取引先残高照合"
+          },
+          "source_quote": "残高確認を行い差異を調査する",
+          "confidence": "explicit",
+          "next": "n09",
+          "task_id": "task_8c72e171",
+          "matrix_axis": "取引先残高確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n09",
           "node_type": "decision",
           "label": "取引先残高との一致判定",
           "actor": "出納職員",
@@ -10232,11 +11166,11 @@
           "branches": [
             {
               "label": "一致",
-              "target": "n10"
+              "target": "n12"
             },
             {
               "label": "不一致",
-              "target": "n08",
+              "target": "n10",
               "edge_type": "exception"
             }
           ],
@@ -10248,7 +11182,7 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n10",
           "node_type": "exception",
           "label": "差異原因の調査",
           "actor": "出納職員",
@@ -10260,7 +11194,7 @@
             "タスク名": "取引先残高照合"
           },
           "confidence": "inferred",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_8c72e171",
           "matrix_axis": "取引先残高確認",
           "heatmap_group": "情報収集・照合",
@@ -10269,7 +11203,7 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "process",
           "label": "差異・不明残高の報告",
           "actor": "会計責任者",
@@ -10289,7 +11223,7 @@
           },
           "source_quote": "残高差異や不明残高について会計責任者が報告し",
           "confidence": "explicit",
-          "next": "n11",
+          "next": "n13",
           "task_id": "task_11dd5dcc",
           "matrix_axis": "差異報告・措置",
           "heatmap_group": "記録・報告",
@@ -10298,7 +11232,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "process",
           "label": "残高内訳表の確定・保管",
           "actor": "出納職員",
@@ -10313,7 +11247,7 @@
             "タスク名": "債権債務残高内訳調査"
           },
           "confidence": "inferred",
-          "next": "n13",
+          "next": "n15",
           "task_id": "task_df3f5176",
           "matrix_axis": "残高内訳調査",
           "heatmap_group": "情報収集・照合",
@@ -10322,7 +11256,7 @@
           "burden": "中"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "decision",
           "label": "措置の承認判定",
           "actor": "理事長",
@@ -10335,19 +11269,19 @@
           },
           "confidence": "inferred",
           "condition": "提案された措置（督促・修正・貸倒処理）を承認するか",
+          "hearing_item": "不明残高・回収不能債権の措置（貸倒処理等）は誰の承認で実行しますか",
+          "hearing_answer_example": "会計責任者が原因を調査し、理事長承認のうえで貸倒引当金計上または督促を実施する",
           "branches": [
             {
               "label": "承認",
-              "target": "n12"
+              "target": "n14"
             },
             {
               "label": "再調査",
-              "target": "n08",
+              "target": "n10",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "不明残高・回収不能債権の措置（貸倒処理等）は誰の承認で実行しますか",
-          "hearing_answer_example": "会計責任者が原因を調査し、理事長承認のうえで貸倒引当金計上または督促を実施する",
           "task_id": "task_11dd5dcc",
           "matrix_axis": "差異報告・措置",
           "heatmap_group": "記録・報告",
@@ -10356,7 +11290,7 @@
           "burden": "中"
         },
         {
-          "id": "n12",
+          "id": "n14",
           "node_type": "process",
           "label": "措置の実行",
           "actor": "出納職員",
@@ -10372,7 +11306,7 @@
           },
           "source_quote": "必要な措置を行う",
           "confidence": "explicit",
-          "next": "n13",
+          "next": "n15",
           "task_id": "task_11dd5dcc",
           "matrix_axis": "差異報告・措置",
           "heatmap_group": "記録・報告",
@@ -10381,7 +11315,7 @@
           "burden": "中"
         },
         {
-          "id": "n13",
+          "id": "n15",
           "node_type": "end",
           "label": "債権債務管理 完了",
           "actor": "出納職員",
@@ -10390,14 +11324,14 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n04",
+          "node_id": "n05",
           "question_type": "branch_confirmation",
           "question": "長期滞留と判断する基準（経過月数等）と、滞留時に残高確認へ進む判断基準を教えてください",
           "answer_example": "3か月以上未回収の未収金は取引先へ残高確認書を送付する",
           "reason": "マニュアルの「必要に応じて」の判断基準の記載がない"
         },
         {
-          "node_id": "n11",
+          "node_id": "n13",
           "question_type": "branch_confirmation",
           "question": "不明残高・回収不能債権の措置（貸倒処理等）は誰の承認で実行しますか",
           "answer_example": "会計責任者が原因を調査し、理事長承認のうえで貸倒引当金計上または督促を実施する",
@@ -10429,7 +11363,8 @@
           "node_type": "start",
           "label": "実地棚卸 開始",
           "actor": "出納職員",
-          "description": "決算期等の棚卸時期到来により実地棚卸を開始する"
+          "description": "決算期等の棚卸時期到来により実地棚卸を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -10459,12 +11394,9 @@
         {
           "id": "n03",
           "node_type": "process",
-          "label": "棚卸表の作成・配布",
+          "label": "棚卸表の作成",
           "actor": "出納職員",
           "description": "棚卸表の様式を準備し、担当職員へ配布（回付）する",
-          "outputs": [
-            "棚卸表"
-          ],
           "source_task": {
             "業務分類": "資産・負債管理",
             "業務種別": "実地棚卸",
@@ -10484,6 +11416,31 @@
         {
           "id": "n04",
           "node_type": "process",
+          "label": "棚卸表の配布",
+          "actor": "出納職員",
+          "description": "棚卸表の様式を準備し、担当職員へ配布（回付）する",
+          "outputs": [
+            "棚卸表"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 1,
+            "タスク名": "棚卸表整備・配布"
+          },
+          "source_quote": "棚卸表を担当職員に回付する",
+          "confidence": "explicit",
+          "next": "n05",
+          "task_id": "task_bff24a57",
+          "matrix_axis": "棚卸表整備・配布",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "文書・帳票作成",
+          "minutes": "30（仮）",
+          "burden": "低"
+        },
+        {
+          "id": "n05",
+          "node_type": "process",
           "label": "実地棚卸の実施",
           "actor": "担当職員",
           "description": "担当職員が現物を確認し、品名・品番・数量を棚卸表に記入する",
@@ -10501,7 +11458,7 @@
           },
           "source_quote": "品名、品番、数量を棚卸表に記入し",
           "confidence": "explicit",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_ea37ef01",
           "matrix_axis": "実地棚卸実施",
           "heatmap_group": "情報収集・照合",
@@ -10510,7 +11467,7 @@
           "burden": "高"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "process",
           "label": "帳簿外資産の確認",
           "actor": "担当職員",
@@ -10523,7 +11480,7 @@
           },
           "source_quote": "帳簿にない棚卸資産も確認する",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_ea37ef01",
           "matrix_axis": "実地棚卸実施",
           "heatmap_group": "情報収集・照合",
@@ -10532,14 +11489,36 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "process",
-          "label": "棚卸表の回収・集計",
+          "label": "棚卸表の回収",
           "actor": "出納職員",
           "description": "各部門から棚卸表を回収し、集計表に取りまとめる",
           "inputs": [
             "記入済み棚卸表"
           ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "実地棚卸",
+            "タスク順": 3,
+            "タスク名": "棚卸表集計・承認"
+          },
+          "source_quote": "棚卸表を回収・集計し",
+          "confidence": "explicit",
+          "next": "n08",
+          "task_id": "task_799e82b0",
+          "matrix_axis": "棚卸表集計・承認",
+          "heatmap_group": "承認・確認",
+          "heatmap_step": "承認・確認",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "棚卸結果の集計",
+          "actor": "出納職員",
+          "description": "各部門から棚卸表を回収し、集計表に取りまとめる",
           "outputs": [
             "棚卸集計表"
           ],
@@ -10551,7 +11530,7 @@
           },
           "source_quote": "棚卸表を回収・集計し",
           "confidence": "explicit",
-          "next": "n07",
+          "next": "n09",
           "task_id": "task_799e82b0",
           "matrix_axis": "棚卸表集計・承認",
           "heatmap_group": "承認・確認",
@@ -10560,7 +11539,7 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n09",
           "node_type": "decision",
           "label": "帳簿と現物の差異判定",
           "actor": "出納職員",
@@ -10577,19 +11556,19 @@
           },
           "confidence": "inferred",
           "condition": "棚卸集計と帳簿残高が一致するか",
+          "hearing_item": "棚卸差異（帳簿と現物の不一致）が発生した場合の調査・処理の手順を教えてください",
+          "hearing_answer_example": "差異原因を調査し、会計責任者承認のうえ棚卸減耗損として計上する",
           "branches": [
             {
               "label": "一致",
-              "target": "n09"
+              "target": "n11"
             },
             {
               "label": "差異あり",
-              "target": "n08",
+              "target": "n10",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "棚卸差異（帳簿と現物の不一致）が発生した場合の調査・処理の手順を教えてください",
-          "hearing_answer_example": "差異原因を調査し、会計責任者承認のうえ棚卸減耗損として計上する",
           "task_id": "task_799e82b0",
           "matrix_axis": "棚卸表集計・承認",
           "heatmap_group": "承認・確認",
@@ -10598,7 +11577,7 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n10",
           "node_type": "exception",
           "label": "差異原因の調査・再確認",
           "actor": "出納職員",
@@ -10610,7 +11589,7 @@
             "タスク名": "棚卸表集計・承認"
           },
           "confidence": "inferred",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_799e82b0",
           "matrix_axis": "棚卸表集計・承認",
           "heatmap_group": "承認・確認",
@@ -10619,7 +11598,7 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "decision",
           "label": "会計責任者の承認判定",
           "actor": "会計責任者",
@@ -10639,11 +11618,11 @@
           "branches": [
             {
               "label": "承認",
-              "target": "n10"
+              "target": "n12"
             },
             {
               "label": "差戻し",
-              "target": "n06",
+              "target": "n07",
               "edge_type": "return"
             }
           ],
@@ -10655,7 +11634,7 @@
           "burden": "高"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "process",
           "label": "棚卸結果のシステム反映",
           "actor": "出納職員",
@@ -10670,7 +11649,7 @@
             "タスク名": "棚卸表集計・承認"
           },
           "confidence": "inferred",
-          "next": "n11",
+          "next": "n13",
           "task_id": "task_799e82b0",
           "matrix_axis": "棚卸表集計・承認",
           "heatmap_group": "承認・確認",
@@ -10679,7 +11658,7 @@
           "burden": "高"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "end",
           "label": "実地棚卸 完了",
           "actor": "出納職員",
@@ -10688,21 +11667,21 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n04",
+          "node_id": "n05",
           "question_type": "reality_check",
           "question": "実地棚卸は実際には誰が実施していますか。担当職員のみで役職者の立会いなしに行うことはありますか",
           "answer_example": "各部門の担当職員が実施し、出納職員が抜き取りで立会う",
           "reason": "マニュアルに立会要件の記載がなく、実態の確認が必要"
         },
         {
-          "node_id": "n07",
+          "node_id": "n09",
           "question_type": "branch_confirmation",
           "question": "棚卸差異（帳簿と現物の不一致）が発生した場合の調査・処理の手順を教えてください",
           "answer_example": "差異原因を調査し、会計責任者承認のうえ棚卸減耗損として計上する",
           "reason": "マニュアルに差異処理の手順の記載がない"
         },
         {
-          "node_id": "n05",
+          "node_id": "n06",
           "question_type": "branch_confirmation",
           "question": "帳簿にない棚卸資産が見つかった場合の登録・評価の手順を教えてください",
           "answer_example": "取得経緯を調査し、評価額を見積もって会計責任者承認のうえ帳簿へ計上する",
@@ -10726,7 +11705,8 @@
           "node_type": "start",
           "label": "固定資産管理 開始",
           "actor": "固定資産管理責任者",
-          "description": "固定資産の取得・年度末確認・除却の発生により管理業務を開始する"
+          "description": "固定資産の取得・年度末確認・除却の発生により管理業務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -10756,12 +11736,9 @@
         {
           "id": "n03",
           "node_type": "process",
-          "label": "固定資産台帳への登録",
+          "label": "取得証憑の確認",
           "actor": "固定資産管理責任者",
           "description": "取得価額・耐用年数・部門・使用場所等を固定資産管理台帳へ登録する",
-          "outputs": [
-            "固定資産管理台帳"
-          ],
           "source_task": {
             "業務分類": "資産・負債管理",
             "業務種別": "固定資産管理",
@@ -10780,6 +11757,31 @@
         },
         {
           "id": "n04",
+          "node_type": "process",
+          "label": "固定資産台帳への登録",
+          "actor": "固定資産管理責任者",
+          "description": "取得価額・耐用年数・部門・使用場所等を固定資産管理台帳へ登録する",
+          "outputs": [
+            "固定資産管理台帳"
+          ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 1,
+            "タスク名": "固定資産台帳登録"
+          },
+          "source_quote": "取得した固定資産を固定資産管理台帳へ登録する",
+          "confidence": "explicit",
+          "next": "n05",
+          "task_id": "task_586f3439",
+          "matrix_axis": "固定資産台帳登録",
+          "heatmap_group": "システム入力",
+          "heatmap_step": "システム入力",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n05",
           "node_type": "decision",
           "label": "登録内容の確認判定",
           "actor": "固定資産管理責任者",
@@ -10796,19 +11798,19 @@
           },
           "confidence": "inferred",
           "condition": "台帳の登録内容が取得証憑と一致するか",
+          "hearing_item": "台帳登録の内容は誰かが二次確認していますか。登録誤りが見つかった場合の修正手順を教えてください",
+          "hearing_answer_example": "登録は責任者のみで行い二次確認はない。誤りは発見時に修正し会計責任者へ報告する",
           "branches": [
             {
               "label": "一致",
-              "target": "n06"
+              "target": "n07"
             },
             {
               "label": "不一致",
-              "target": "n05",
+              "target": "n06",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "台帳登録の内容は誰かが二次確認していますか。登録誤りが見つかった場合の修正手順を教えてください",
-          "hearing_answer_example": "登録は責任者のみで行い二次確認はない。誤りは発見時に修正し会計責任者へ報告する",
           "task_id": "task_586f3439",
           "matrix_axis": "固定資産台帳登録",
           "heatmap_group": "システム入力",
@@ -10817,7 +11819,7 @@
           "burden": "中"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "exception",
           "label": "登録内容の修正",
           "actor": "固定資産管理責任者",
@@ -10829,7 +11831,7 @@
             "タスク名": "固定資産台帳登録"
           },
           "confidence": "inferred",
-          "next": "n04",
+          "next": "n05",
           "task_id": "task_586f3439",
           "matrix_axis": "固定資産台帳登録",
           "heatmap_group": "システム入力",
@@ -10838,14 +11840,36 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "process",
-          "label": "年度末現物確認の実施",
+          "label": "現物の所在確認",
           "actor": "固定資産管理責任者",
           "description": "年度末に固定資産管理台帳と現物の存在・使用状況を突合確認する",
           "inputs": [
             "固定資産管理台帳"
           ],
+          "source_task": {
+            "業務分類": "資産・負債管理",
+            "業務種別": "固定資産管理",
+            "タスク順": 2,
+            "タスク名": "固定資産現物確認"
+          },
+          "source_quote": "年度末に固定資産台帳と現物の存在・使用状況を確認する",
+          "confidence": "explicit",
+          "next": "n08",
+          "task_id": "task_5b96fe3c",
+          "matrix_axis": "固定資産現物確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "120（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n08",
+          "node_type": "process",
+          "label": "台帳との突合",
+          "actor": "固定資産管理責任者",
+          "description": "年度末に固定資産管理台帳と現物の存在・使用状況を突合確認する",
           "outputs": [
             "現物確認記録"
           ],
@@ -10857,7 +11881,7 @@
           },
           "source_quote": "年度末に固定資産台帳と現物の存在・使用状況を確認する",
           "confidence": "explicit",
-          "next": "n07",
+          "next": "n09",
           "task_id": "task_5b96fe3c",
           "matrix_axis": "固定資産現物確認",
           "heatmap_group": "情報収集・照合",
@@ -10866,7 +11890,7 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n09",
           "node_type": "decision",
           "label": "台帳と現物の一致判定",
           "actor": "固定資産管理責任者",
@@ -10879,19 +11903,19 @@
           },
           "confidence": "inferred",
           "condition": "台帳記載の資産がすべて現物確認できたか",
+          "hearing_item": "現物確認で台帳にない資産や所在不明の資産が見つかった場合の対応手順を教えてください",
+          "hearing_answer_example": "固定資産管理責任者が原因を調査し、会計責任者承認のうえ台帳修正または除却処理する",
           "branches": [
             {
               "label": "一致",
-              "target": "n09"
+              "target": "n11"
             },
             {
               "label": "不一致あり",
-              "target": "n08",
+              "target": "n10",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "現物確認で台帳にない資産や所在不明の資産が見つかった場合の対応手順を教えてください",
-          "hearing_answer_example": "固定資産管理責任者が原因を調査し、会計責任者承認のうえ台帳修正または除却処理する",
           "task_id": "task_5b96fe3c",
           "matrix_axis": "固定資産現物確認",
           "heatmap_group": "情報収集・照合",
@@ -10900,7 +11924,7 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n10",
           "node_type": "exception",
           "label": "所在不明・台帳外資産の調査",
           "actor": "固定資産管理責任者",
@@ -10915,7 +11939,7 @@
             "タスク名": "固定資産現物確認"
           },
           "confidence": "inferred",
-          "next": "n09",
+          "next": "n11",
           "task_id": "task_5b96fe3c",
           "matrix_axis": "固定資産現物確認",
           "heatmap_group": "情報収集・照合",
@@ -10924,7 +11948,7 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n11",
           "node_type": "process",
           "label": "除却・売却の起案",
           "actor": "固定資産管理責任者",
@@ -10939,7 +11963,7 @@
             "タスク名": "除却承認・台帳更新"
           },
           "confidence": "inferred",
-          "next": "n10",
+          "next": "n12",
           "task_id": "task_989bcddb",
           "matrix_axis": "除却承認・台帳更新",
           "heatmap_group": "承認・確認",
@@ -10948,7 +11972,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "decision",
           "label": "除却の承認判定",
           "actor": "理事長",
@@ -10968,11 +11992,11 @@
           "branches": [
             {
               "label": "承認",
-              "target": "n11"
+              "target": "n13"
             },
             {
               "label": "差戻し",
-              "target": "n09",
+              "target": "n11",
               "edge_type": "return"
             }
           ],
@@ -10984,7 +12008,7 @@
           "burden": "中"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "process",
           "label": "台帳の除却反映",
           "actor": "固定資産管理責任者",
@@ -11000,7 +12024,7 @@
           },
           "source_quote": "所定の承認を得て台帳へ反映する",
           "confidence": "explicit",
-          "next": "n12",
+          "next": "n14",
           "task_id": "task_989bcddb",
           "matrix_axis": "除却承認・台帳更新",
           "heatmap_group": "承認・確認",
@@ -11009,7 +12033,7 @@
           "burden": "中"
         },
         {
-          "id": "n12",
+          "id": "n14",
           "node_type": "end",
           "label": "固定資産管理 完了",
           "actor": "固定資産管理責任者",
@@ -11025,14 +12049,14 @@
           "reason": "台帳の管理方法によりフローと改善余地が変わるため"
         },
         {
-          "node_id": "n07",
+          "node_id": "n09",
           "question_type": "branch_confirmation",
           "question": "現物確認で台帳にない資産や所在不明の資産が見つかった場合の対応手順を教えてください",
           "answer_example": "固定資産管理責任者が原因を調査し、会計責任者承認のうえ台帳修正または除却処理する",
           "reason": "マニュアルに不一致時の対応の記載がない"
         },
         {
-          "node_id": "n10",
+          "node_id": "n12",
           "question_type": "branch_confirmation",
           "question": "除却・売却の承認は金額・資産種別により承認者（会計責任者・理事長・理事会）が変わりますか",
           "answer_example": "基本財産は理事会承認、その他は理事長承認としている",
@@ -11059,12 +12083,13 @@
           "node_type": "start",
           "label": "月次報告処理 開始",
           "actor": "出納職員",
-          "description": "月次報告処理を開始する（月次定例）"
+          "description": "月次報告処理を開始する（月次定例）",
+          "next": "n02"
         },
         {
           "id": "n02",
           "node_type": "process",
-          "label": "現預金残高の確認",
+          "label": "通帳・残高証明の確認",
           "actor": "出納職員",
           "description": "出納職員が現金・預金・仮払金・仮受金等の月次処理に必要な残高を確認し、通帳残高と会計システムの帳簿残高を照合する",
           "inputs": [
@@ -11089,6 +12114,28 @@
         },
         {
           "id": "n03",
+          "node_type": "process",
+          "label": "会計システム残高との照合",
+          "actor": "出納職員",
+          "description": "出納職員が現金・預金・仮払金・仮受金等の月次処理に必要な残高を確認し、通帳残高と会計システムの帳簿残高を照合する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 1,
+            "タスク名": "現預金残高確認"
+          },
+          "source_quote": "現金、預金、仮払金、仮受金など月次処理に必要な残高を確認する",
+          "confidence": "explicit",
+          "next": "n04",
+          "task_id": "task_688d61af",
+          "matrix_axis": "現預金残高確認",
+          "heatmap_group": "情報収集・照合",
+          "heatmap_step": "情報収集・照合",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n04",
           "node_type": "decision",
           "label": "現預金残高一致確認",
           "actor": "出納職員",
@@ -11101,19 +12148,19 @@
           },
           "confidence": "inferred",
           "condition": "通帳残高と会計システム残高が一致しているか",
+          "hearing_item": "現預金残高が不一致の場合の調査手順と会計責任者への報告ルールを教えてください",
+          "hearing_answer_example": "出納職員が入出金明細を再確認し、差異の原因を特定してから会計責任者へ報告する",
           "branches": [
             {
               "label": "一致",
-              "target": "n05"
+              "target": "n06"
             },
             {
               "label": "不一致",
-              "target": "n04",
+              "target": "n05",
               "edge_type": "exception"
             }
           ],
-          "hearing_item": "現預金残高が不一致の場合の調査手順と会計責任者への報告ルールを教えてください",
-          "hearing_answer_example": "出納職員が入出金明細を再確認し、差異の原因を特定してから会計責任者へ報告する",
           "task_id": "task_688d61af",
           "matrix_axis": "現預金残高確認",
           "heatmap_group": "情報収集・照合",
@@ -11122,7 +12169,7 @@
           "burden": "中"
         },
         {
-          "id": "n04",
+          "id": "n05",
           "node_type": "exception",
           "label": "残高差異の原因調査",
           "actor": "出納職員",
@@ -11134,7 +12181,7 @@
             "タスク名": "現預金残高確認"
           },
           "confidence": "inferred",
-          "next": "n05",
+          "next": "n06",
           "task_id": "task_688d61af",
           "matrix_axis": "現預金残高確認",
           "heatmap_group": "情報収集・照合",
@@ -11143,7 +12190,7 @@
           "burden": "中"
         },
         {
-          "id": "n05",
+          "id": "n06",
           "node_type": "process",
           "label": "月次試算表の出力",
           "actor": "会計システム",
@@ -11159,7 +12206,7 @@
           },
           "source_quote": "会計システムで月次試算表を作成し内容を確認する",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_4e34ed03",
           "matrix_axis": "月次試算表作成",
           "heatmap_group": "計算・作成",
@@ -11168,9 +12215,9 @@
           "burden": "中"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "process",
-          "label": "月次試算表の内容確認",
+          "label": "勘定科目残高の点検",
           "actor": "出納職員",
           "description": "出納職員が月次試算表の各勘定科目残高を確認し、誤りや計上漏れ・前月比の異常値がないかチェックする",
           "inputs": [
@@ -11185,7 +12232,7 @@
           },
           "source_quote": "内容を確認する",
           "confidence": "explicit",
-          "next": "n07",
+          "next": "n08",
           "task_id": "task_4e34ed03",
           "matrix_axis": "月次試算表作成",
           "heatmap_group": "計算・作成",
@@ -11194,14 +12241,58 @@
           "burden": "中"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "process",
-          "label": "月次報告書のコメント作成",
+          "label": "異常値の確認",
+          "actor": "出納職員",
+          "description": "出納職員が月次試算表の各勘定科目残高を確認し、誤りや計上漏れ・前月比の異常値がないかチェックする",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 2,
+            "タスク名": "月次試算表作成"
+          },
+          "source_quote": "内容を確認する",
+          "confidence": "explicit",
+          "next": "n09",
+          "task_id": "task_4e34ed03",
+          "matrix_axis": "月次試算表作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "30（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n09",
+          "node_type": "process",
+          "label": "試算表の分析",
           "actor": "会計責任者",
           "description": "会計責任者が月次試算表の重要事項・差異説明・注目科目についての報告コメントを作成する",
           "inputs": [
             "月次試算表"
           ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "月次報告",
+            "タスク順": 3,
+            "タスク名": "月次報告"
+          },
+          "source_quote": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する",
+          "confidence": "explicit",
+          "next": "n10",
+          "task_id": "task_81cb6599",
+          "matrix_axis": "月次報告",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・報告",
+          "minutes": "60（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n10",
+          "node_type": "process",
+          "label": "月次報告書の作成",
+          "actor": "会計責任者",
+          "description": "会計責任者が月次試算表の重要事項・差異説明・注目科目についての報告コメントを作成する",
           "outputs": [
             "月次報告書"
           ],
@@ -11213,7 +12304,7 @@
           },
           "source_quote": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する",
           "confidence": "explicit",
-          "next": "n08",
+          "next": "n11",
           "task_id": "task_81cb6599",
           "matrix_axis": "月次報告",
           "heatmap_group": "記録・報告",
@@ -11222,7 +12313,7 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n11",
           "node_type": "process",
           "label": "理事長への月次報告",
           "actor": "会計責任者",
@@ -11239,7 +12330,7 @@
           },
           "source_quote": "経理規程で定めた期日までに会計責任者が理事長へ月次報告する",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n12",
           "task_id": "task_81cb6599",
           "matrix_axis": "月次報告",
           "heatmap_group": "記録・報告",
@@ -11248,7 +12339,7 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n12",
           "node_type": "end",
           "label": "月次報告 完了",
           "actor": "会計責任者",
@@ -11257,14 +12348,14 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n07",
+          "node_id": "n09",
           "question": "月次報告書の報告コメントの作成基準（どの科目に何を書くか）はありますか",
           "answer_example": "前月比で5%以上変動した科目に理由コメントを付ける運用を行っている",
           "reason": "マニュアルにコメント作成基準の記述がなく、担当者依存になっている可能性がある",
           "question_type": "branch_confirmation"
         },
         {
-          "node_id": "n03",
+          "node_id": "n04",
           "question_type": "branch_confirmation",
           "question": "現預金残高が一致しない場合の調査・修正は誰がどの期限までに行いますか",
           "answer_example": "出納職員が当日中に調査し、判明しない場合は会計責任者へ報告する",
@@ -11298,7 +12389,8 @@
           "node_type": "start",
           "label": "年次決算処理 開始",
           "actor": "出納職員",
-          "description": "年度末の決算整理仕訳作成を開始する（年次）"
+          "description": "年度末の決算整理仕訳作成を開始する（年次）",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -11334,14 +12426,11 @@
         {
           "id": "n03",
           "node_type": "process",
-          "label": "決算整理仕訳の作成（Excelで下書き）",
+          "label": "決算整理項目の集計",
           "actor": "出納職員",
           "description": "出納職員が洗い出した項目をもとにExcelで決算整理仕訳の下書きを作成し、勘定科目・金額・計算根拠を記入する",
           "inputs": [
             "決算整理仕訳リスト（下書き）"
-          ],
-          "outputs": [
-            "決算整理仕訳表"
           ],
           "source_task": {
             "業務分類": "決算・報告",
@@ -11362,10 +12451,10 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "会計責任者による仕訳レビュー",
-          "actor": "会計責任者",
-          "description": "会計責任者が決算整理仕訳表の内容（科目・金額・計算根拠）をレビューし、誤りや漏れがないか確認する",
-          "inputs": [
+          "label": "決算整理仕訳の作成",
+          "actor": "出納職員",
+          "description": "出納職員が洗い出した項目をもとにExcelで決算整理仕訳の下書きを作成し、勘定科目・金額・計算根拠を記入する",
+          "outputs": [
             "決算整理仕訳表"
           ],
           "source_task": {
@@ -11386,6 +12475,31 @@
         },
         {
           "id": "n05",
+          "node_type": "process",
+          "label": "会計責任者による仕訳レビュー",
+          "actor": "会計責任者",
+          "description": "会計責任者が決算整理仕訳表の内容（科目・金額・計算根拠）をレビューし、誤りや漏れがないか確認する",
+          "inputs": [
+            "決算整理仕訳表"
+          ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 1,
+            "タスク名": "決算整理仕訳作成"
+          },
+          "source_quote": "決算整理仕訳を作成する",
+          "confidence": "explicit",
+          "next": "n06",
+          "task_id": "task_3510b4b9",
+          "matrix_axis": "決算整理仕訳作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "計算・作成",
+          "minutes": "180（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n06",
           "node_type": "decision",
           "label": "仕訳レビュー承認判定",
           "actor": "会計責任者",
@@ -11398,10 +12512,12 @@
           },
           "confidence": "inferred",
           "condition": "決算整理仕訳の科目・金額・計算根拠に誤りや漏れがないか",
+          "hearing_item": "決算整理仕訳のレビュー・差戻し手順と、修正後の再確認の流れを教えてください",
+          "hearing_answer_example": "会計責任者がコメントを記入して出納職員へ差戻し、修正後に再提出・再確認する",
           "branches": [
             {
               "label": "承認",
-              "target": "n07"
+              "target": "n08"
             },
             {
               "label": "修正差戻し",
@@ -11409,8 +12525,6 @@
               "edge_type": "return"
             }
           ],
-          "hearing_item": "決算整理仕訳のレビュー・差戻し手順と、修正後の再確認の流れを教えてください",
-          "hearing_answer_example": "会計責任者がコメントを記入して出納職員へ差戻し、修正後に再提出・再確認する",
           "task_id": "task_3510b4b9",
           "matrix_axis": "決算整理仕訳作成",
           "heatmap_group": "計算・作成",
@@ -11419,7 +12533,7 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "exception",
           "label": "仕訳修正対応",
           "actor": "出納職員",
@@ -11431,7 +12545,7 @@
             "タスク名": "決算整理仕訳作成"
           },
           "confidence": "inferred",
-          "next": "n04",
+          "next": "n05",
           "task_id": "task_3510b4b9",
           "matrix_axis": "決算整理仕訳作成",
           "heatmap_group": "計算・作成",
@@ -11440,7 +12554,7 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "process",
           "label": "決算整理仕訳の会計システム入力",
           "actor": "出納職員",
@@ -11459,7 +12573,7 @@
           },
           "source_quote": "作成した決算整理仕訳を会計システムへ入力する",
           "confidence": "explicit",
-          "next": "n08",
+          "next": "n09",
           "task_id": "task_295a557a",
           "matrix_axis": "決算整理仕訳入力",
           "heatmap_group": "システム入力",
@@ -11468,7 +12582,7 @@
           "burden": "中"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "process",
           "label": "計算書類の出力",
           "actor": "会計システム",
@@ -11486,7 +12600,7 @@
           },
           "source_quote": "貸借対照表、資金収支計算書、事業活動計算書、注記、附属明細書等を作成する",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n10",
           "task_id": "task_79b1cf3f",
           "matrix_axis": "計算書類作成",
           "heatmap_group": "計算・作成",
@@ -11495,9 +12609,9 @@
           "burden": "高"
         },
         {
-          "id": "n09",
+          "id": "n10",
           "node_type": "process",
-          "label": "計算書類の体裁整備",
+          "label": "計算書類の点検",
           "actor": "出納職員",
           "description": "出納職員が会計システムから出力した計算書類の体裁を整え（表紙・注記・附属明細書の追記）、提出可能な形式に仕上げる",
           "inputs": [
@@ -11505,6 +12619,28 @@
             "資金収支計算書",
             "事業活動計算書"
           ],
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "年次決算",
+            "タスク順": 3,
+            "タスク名": "計算書類作成"
+          },
+          "source_quote": "計算書類作成",
+          "confidence": "explicit",
+          "next": "n11",
+          "task_id": "task_79b1cf3f",
+          "matrix_axis": "計算書類作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "文書・帳票作成",
+          "minutes": "180（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n11",
+          "node_type": "process",
+          "label": "注記・附属明細の整備",
+          "actor": "出納職員",
+          "description": "出納職員が会計システムから出力した計算書類の体裁を整え（表紙・注記・附属明細書の追記）、提出可能な形式に仕上げる",
           "outputs": [
             "計算書類一式"
           ],
@@ -11516,7 +12652,7 @@
           },
           "source_quote": "計算書類作成",
           "confidence": "explicit",
-          "next": "n10",
+          "next": "n12",
           "task_id": "task_79b1cf3f",
           "matrix_axis": "計算書類作成",
           "heatmap_group": "計算・作成",
@@ -11525,7 +12661,7 @@
           "burden": "高"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "end",
           "label": "年次決算 完了",
           "actor": "出納職員",
@@ -11534,14 +12670,14 @@
       ],
       "hearing_items": [
         {
-          "node_id": "n05",
+          "node_id": "n06",
           "question": "決算整理仕訳のレビュー・差戻しの手順と修正後の再確認フローを教えてください",
           "answer_example": "会計責任者がコメントを記入して出納職員へ差戻し、修正後に再提出・再確認する",
           "reason": "マニュアルに決算整理仕訳の承認・差戻し手順の記述がない",
           "question_type": "branch_confirmation"
         },
         {
-          "node_id": "n08",
+          "node_id": "n09",
           "question_type": "branch_confirmation",
           "question": "計算書類の最終確認・承認は誰がどの順序で行いますか（会計責任者→監事→理事会等）",
           "answer_example": "会計責任者の確認後、監事監査を経て理事会・評議員会で承認する",
@@ -11575,7 +12711,8 @@
           "node_type": "start",
           "label": "税務申告 開始",
           "actor": "出納職員",
-          "description": "年次決算の確定を受けて税務申告業務を開始する"
+          "description": "年次決算の確定を受けて税務申告業務を開始する",
+          "next": "n02"
         },
         {
           "id": "n02",
@@ -11625,7 +12762,7 @@
             },
             {
               "label": "該当なし",
-              "target": "n10"
+              "target": "n12"
             }
           ],
           "task_id": "task_92039def",
@@ -11638,7 +12775,7 @@
         {
           "id": "n04",
           "node_type": "process",
-          "label": "申告資料の準備",
+          "label": "収益事業データの集計",
           "actor": "出納職員",
           "description": "計算書類・会計データ・収益事業区分の集計など申告書作成に必要な資料を準備する",
           "inputs": [
@@ -11663,6 +12800,27 @@
         {
           "id": "n05",
           "node_type": "process",
+          "label": "申告資料の準備",
+          "actor": "出納職員",
+          "description": "計算書類・会計データ・収益事業区分の集計など申告書作成に必要な資料を準備する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 2,
+            "タスク名": "法人税等申告書作成"
+          },
+          "confidence": "inferred",
+          "next": "n06",
+          "task_id": "task_3dabc176",
+          "matrix_axis": "申告書作成",
+          "heatmap_group": "計算・作成",
+          "heatmap_step": "文書・帳票作成",
+          "minutes": "120（仮）",
+          "burden": "高"
+        },
+        {
+          "id": "n06",
+          "node_type": "process",
           "label": "申告書の作成",
           "actor": "顧問税理士",
           "description": "法人税・消費税の申告書を作成する（内製または顧問税理士へ委託）",
@@ -11681,7 +12839,7 @@
           },
           "source_quote": "申告書作成・申告・納税を行う",
           "confidence": "explicit",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_3dabc176",
           "matrix_axis": "申告書作成",
           "heatmap_group": "計算・作成",
@@ -11690,7 +12848,7 @@
           "burden": "高"
         },
         {
-          "id": "n06",
+          "id": "n07",
           "node_type": "decision",
           "label": "申告内容の確認判定",
           "actor": "会計責任者",
@@ -11706,19 +12864,19 @@
           },
           "confidence": "inferred",
           "condition": "申告書案の税額・区分に誤りがないか",
+          "hearing_item": "申告書の内容は法人側で誰が最終確認していますか。修正が必要な場合の税理士とのやり取りの手順も教えてください",
+          "hearing_answer_example": "会計責任者が税額と事業区分を確認し、疑義は税理士へ照会して修正してもらう",
           "branches": [
             {
               "label": "承認",
-              "target": "n08"
+              "target": "n09"
             },
             {
               "label": "修正依頼",
-              "target": "n07",
+              "target": "n08",
               "edge_type": "return"
             }
           ],
-          "hearing_item": "申告書の内容は法人側で誰が最終確認していますか。修正が必要な場合の税理士とのやり取りの手順も教えてください",
-          "hearing_answer_example": "会計責任者が税額と事業区分を確認し、疑義は税理士へ照会して修正してもらう",
           "task_id": "task_3dabc176",
           "matrix_axis": "申告書作成",
           "heatmap_group": "計算・作成",
@@ -11727,7 +12885,7 @@
           "burden": "高"
         },
         {
-          "id": "n07",
+          "id": "n08",
           "node_type": "exception",
           "label": "申告書の修正",
           "actor": "顧問税理士",
@@ -11739,7 +12897,7 @@
             "タスク名": "法人税等申告書作成"
           },
           "confidence": "inferred",
-          "next": "n06",
+          "next": "n07",
           "task_id": "task_3dabc176",
           "matrix_axis": "申告書作成",
           "heatmap_group": "計算・作成",
@@ -11748,9 +12906,9 @@
           "burden": "高"
         },
         {
-          "id": "n08",
+          "id": "n09",
           "node_type": "process",
-          "label": "税務署への申告",
+          "label": "申告書の最終確認",
           "actor": "出納職員",
           "description": "完成した申告書を電子申告（e-Tax）または書面で税務署へ提出する",
           "inputs": [
@@ -11764,7 +12922,7 @@
           },
           "source_quote": "申告書作成・申告・納税を行う",
           "confidence": "explicit",
-          "next": "n09",
+          "next": "n10",
           "task_id": "task_0a1ccc16",
           "matrix_axis": "申告・納税",
           "heatmap_group": "記録・報告",
@@ -11773,7 +12931,29 @@
           "burden": "中"
         },
         {
-          "id": "n09",
+          "id": "n10",
+          "node_type": "process",
+          "label": "税務署への申告",
+          "actor": "出納職員",
+          "description": "完成した申告書を電子申告（e-Tax）または書面で税務署へ提出する",
+          "source_task": {
+            "業務分類": "決算・報告",
+            "業務種別": "税務申告",
+            "タスク順": 3,
+            "タスク名": "申告・納税手続"
+          },
+          "source_quote": "申告書作成・申告・納税を行う",
+          "confidence": "explicit",
+          "next": "n11",
+          "task_id": "task_0a1ccc16",
+          "matrix_axis": "申告・納税",
+          "heatmap_group": "記録・報告",
+          "heatmap_step": "記録・報告",
+          "minutes": "60（仮）",
+          "burden": "中"
+        },
+        {
+          "id": "n11",
           "node_type": "process",
           "label": "納税の実行",
           "actor": "出納職員",
@@ -11789,7 +12969,7 @@
           },
           "source_quote": "申告・納税を行う",
           "confidence": "explicit",
-          "next": "n10",
+          "next": "n12",
           "task_id": "task_0a1ccc16",
           "matrix_axis": "申告・納税",
           "heatmap_group": "記録・報告",
@@ -11798,7 +12978,7 @@
           "burden": "中"
         },
         {
-          "id": "n10",
+          "id": "n12",
           "node_type": "process",
           "label": "申告控え・判定記録の保管",
           "actor": "出納職員",
@@ -11813,7 +12993,7 @@
             "タスク名": "申告・納税手続"
           },
           "confidence": "inferred",
-          "next": "n11",
+          "next": "n13",
           "task_id": "task_0a1ccc16",
           "matrix_axis": "申告・納税",
           "heatmap_group": "記録・報告",
@@ -11822,7 +13002,7 @@
           "burden": "中"
         },
         {
-          "id": "n11",
+          "id": "n13",
           "node_type": "end",
           "label": "税務申告 完了",
           "actor": "出納職員",
@@ -11838,14 +13018,14 @@
           "reason": "マニュアルに判定の担当・タイミングの記載がなく、実態の確認が必要"
         },
         {
-          "node_id": "n05",
+          "node_id": "n06",
           "question_type": "branch_confirmation",
           "question": "法人税・消費税の申告書作成は内製ですか外部（税理士等）に委託していますか",
           "answer_example": "収益事業がある場合は顧問税理士に委託している",
           "reason": "マニュアルに作成主体の記載がなく、フローの主体が変わるため"
         },
         {
-          "node_id": "n09",
+          "node_id": "n11",
           "question_type": "branch_confirmation",
           "question": "納税の方法（電子納税・窓口）と納付期限の管理方法を教えてください",
           "answer_example": "ダイレクト納付を利用し、出納職員が申告期限と合わせて管理している",

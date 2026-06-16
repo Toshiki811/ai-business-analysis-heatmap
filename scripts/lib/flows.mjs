@@ -50,3 +50,78 @@ export function checkFlowStructure(flow, errors = [], warnings = []) {
   }
   return { errors, warnings };
 }
+
+// source_task(業務分類/業務種別/タスク順/タスク名)から一意キーを作る。matrix_tasksとノードで同じ形にする。
+export function sourceTaskKey(src) {
+  if (!src) return '';
+  return ['業務分類', '業務種別', 'タスク順', 'タスク名']
+    .map((k) => String(src[k] == null ? '' : src[k]).trim())
+    .join('|||');
+}
+
+// マトリクスの業務内容詳細の冒頭主語(=主作業主体)を取り出す。「会計責任者が…」→「会計責任者」。
+// 「残高差異がある場合に出納職員が…」のように先頭が条件節のときは、それを飛ばして実主語を取る。
+export function subjectFromDetail(detail) {
+  let text = String(detail || '');
+  // 先頭の条件・状況節(〜場合に/場合は/とき/ときは/際に/際は…)を1つ剥がす
+  const cond = text.match(/^.*?(?:場合|とき|際)[にはがをで]?[、，]?\s*/);
+  if (cond && cond[0].length < text.length) text = text.slice(cond[0].length);
+  const m = text.match(/^([^、。\s]+?)が/);
+  return m ? m[1].trim() : '';
+}
+
+// matrix_tasks[]から source_taskキー → 主作業主体 のインデックスを作る。
+export function buildTaskSubjectIndex(matrixTasks = []) {
+  const index = new Map();
+  for (const task of matrixTasks) {
+    const key = sourceTaskKey(task);
+    const subject = subjectFromDetail(task['業務内容詳細']);
+    if (key && subject) index.set(key, subject);
+  }
+  return index;
+}
+
+// 表記ゆれ吸収: 一方が他方を含めば同一主体とみなす(出納職員 ⊃ 出納)。
+function actorMatchesSubject(actor, subject) {
+  const a = String(actor || '').trim();
+  const s = String(subject || '').trim();
+  if (!a || !s) return false;
+  return a === s || a.includes(s) || s.includes(a);
+}
+
+// 細分化で主作業主体(actor=スイムレーン)がズレるのを機械検出する(いずれも warning)。
+//   (a) ノードの actor が flow.actors[] に無い → 存在しないレーン/表記ゆれ
+//   (b) あるタスクの全ノードから主作業主体が消えている → 分解で主担当が別主体に化けた疑い
+// subjectByTaskKey は buildTaskSubjectIndex() の戻り値(Map)。
+export function checkActorAlignment(flow, subjectByTaskKey = new Map(), errors = [], warnings = []) {
+  const label = `${flow.category || '?'} / ${flow.business_type || '?'}`;
+  const nodes = flow.nodes || [];
+  const actorSet = new Set((flow.actors || []).map((a) => String(a || '').trim()).filter(Boolean));
+
+  // (a) actor が actors[] に存在するか
+  for (const node of nodes) {
+    const actor = String(node.actor || '').trim();
+    if (!actor) continue;
+    if (!actorSet.has(actor)) {
+      warnings.push(`flow ${label} node ${node.id} actor "${actor}" is not declared in actors[] (orphan swimlane / naming drift)`);
+    }
+  }
+
+  // (b) タスク単位で主作業主体がノード群に残っているか
+  const actorsByTask = new Map();
+  for (const node of nodes) {
+    const key = sourceTaskKey(node.source_task);
+    if (!key) continue;
+    if (!actorsByTask.has(key)) actorsByTask.set(key, []);
+    actorsByTask.get(key).push(String(node.actor || '').trim());
+  }
+  for (const [key, actors] of actorsByTask) {
+    const subject = subjectByTaskKey.get(key);
+    if (!subject) continue; // マトリクスに主体が取れないタスクは対象外
+    if (!actors.some((a) => actorMatchesSubject(a, subject))) {
+      const taskName = key.split('|||')[3] || key;
+      warnings.push(`flow ${label} task "${taskName}" lost its main actor "${subject}" — none of its node actors match (decomposition drift)`);
+    }
+  }
+  return { errors, warnings };
+}

@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { checkFlowStructure } from '../lib/flows.mjs';
+import {
+  checkFlowStructure,
+  checkActorAlignment,
+  buildTaskSubjectIndex,
+  sourceTaskKey,
+  subjectFromDetail
+} from '../lib/flows.mjs';
 
 function decision(branches, extra = {}) {
   return { id: 'd1', node_type: 'decision', condition: '金額が基準額を超えるか', branches, ...extra };
@@ -70,4 +76,65 @@ test('checkFlowStructure: 差戻し過多 = soft warning', () => {
   };
   const { warnings } = checkFlowStructure(flow);
   assert.ok(warnings.some((w) => /scattered rework gates/.test(w)));
+});
+
+// --- checkActorAlignment(主作業主体ズレ検出) ---
+
+test('subjectFromDetail: 業務内容詳細の冒頭主語を抽出', () => {
+  assert.equal(subjectFromDetail('会計責任者が出納職員を監督し、確認する。'), '会計責任者');
+  assert.equal(subjectFromDetail('理事長が会計責任者を任命する。'), '理事長');
+  assert.equal(subjectFromDetail(''), '');
+  // 先頭が条件節のときは実主語を取る
+  assert.equal(subjectFromDetail('残高差異がある場合に出納職員が原因を調査する。'), '出納職員');
+});
+
+const SRC = { 業務分類: 'C', 業務種別: 'B', タスク順: 2, タスク名: '請求書確認' };
+const MATRIX = [{ ...SRC, 業務内容詳細: '出納職員が請求書と納品書を照合する。' }];
+
+test('checkActorAlignment: 主体が全ノードに残っていれば warning なし', () => {
+  const flow = {
+    category: 'C', business_type: 'B', actors: ['出納職員'],
+    nodes: [
+      { id: 'n1', node_type: 'process', actor: '出納職員', source_task: SRC },
+      { id: 'n2', node_type: 'process', actor: '出納職員', source_task: SRC }
+    ]
+  };
+  const { warnings } = checkActorAlignment(flow, buildTaskSubjectIndex(MATRIX));
+  assert.equal(warnings.length, 0);
+});
+
+test('checkActorAlignment: タスクから主作業主体が消えると warning(分解ズレ)', () => {
+  const flow = {
+    category: 'C', business_type: 'B', actors: ['会計責任者'],
+    nodes: [
+      { id: 'n1', node_type: 'process', actor: '会計責任者', source_task: SRC },
+      { id: 'n2', node_type: 'process', actor: '会計責任者', source_task: SRC }
+    ]
+  };
+  const { warnings } = checkActorAlignment(flow, buildTaskSubjectIndex(MATRIX));
+  assert.ok(warnings.some((w) => /lost its main actor "出納職員"/.test(w)));
+});
+
+test('checkActorAlignment: actor が actors[] に無いと warning(孤立レーン)', () => {
+  const flow = {
+    category: 'C', business_type: 'B', actors: ['出納職員'],
+    nodes: [{ id: 'n1', node_type: 'process', actor: '経理課長', source_task: SRC }]
+  };
+  const { warnings } = checkActorAlignment(flow, buildTaskSubjectIndex(MATRIX));
+  assert.ok(warnings.some((w) => /not declared in actors\[\]/.test(w)));
+});
+
+test('checkActorAlignment: 表記ゆれ(出納職員⊃出納)は同一主体として許容', () => {
+  const matrix = [{ ...SRC, 業務内容詳細: '出納が記帳する。' }];
+  const flow = {
+    category: 'C', business_type: 'B', actors: ['出納職員'],
+    nodes: [{ id: 'n1', node_type: 'process', actor: '出納職員', source_task: SRC }]
+  };
+  const { warnings } = checkActorAlignment(flow, buildTaskSubjectIndex(matrix));
+  assert.equal(warnings.length, 0);
+});
+
+test('sourceTaskKey: 4項目から一意キー', () => {
+  assert.equal(sourceTaskKey(SRC), 'C|||B|||2|||請求書確認');
+  assert.equal(sourceTaskKey(null), '');
 });

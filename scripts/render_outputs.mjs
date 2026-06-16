@@ -8,17 +8,16 @@ import {
   writeJson
 } from './lib/fs_utils.mjs';
 import {
-  buildDrawioMap,
   applyLatestClientInput,
+  buildAsIsFlowIndex,
   ensureHeatmapToBeTasks,
   fileDetailFlowQuestions,
   mergeAsIsFlowDetails,
   normalizeAnalysisSchema,
   renderHtml,
   resolveQuestions,
-  validateAnalysisContract,
-  writeAsIsDrawio,
-  writeTop3Drawio
+  stripTop3DrawioArtifacts,
+  validateAnalysisContract
 } from './lib/render.mjs';
 
 function usage() {
@@ -49,7 +48,6 @@ const { dateKey, createdAt } = resolveAnalysisDate(analysisPath, args, analysis)
 analysis.metadata = { ...(analysis.metadata || {}), created_at: createdAt };
 
 const templatePath = path.join(root, 'templates', 'heatmap_template.html');
-const flowsDir = path.join(root, 'output', 'flows');
 const htmlPath = path.join(root, 'output', `analysis_${dateKey}.html`);
 
 const schemaStats = normalizeAnalysisSchema(analysis);
@@ -57,13 +55,12 @@ const clientInputStats = applyLatestClientInput(analysis, root);
 const detailStats = mergeAsIsFlowDetails(analysis, root, dateKey);
 const filedQuestions = fileDetailFlowQuestions(analysis);
 const resolved = resolveQuestions(analysis);
-const writtenAsIsDrawio = writeAsIsDrawio(analysis, flowsDir, dateKey);
-const writtenDrawio = writeTop3Drawio(analysis, flowsDir);
+const flowIndexStats = buildAsIsFlowIndex(analysis, dateKey);
+stripTop3DrawioArtifacts(analysis);
 const generatedToBeTasks = ensureHeatmapToBeTasks(analysis);
 validateAnalysisContract(analysis);
 writeJson(analysisPath, analysis);
-const drawioMap = buildDrawioMap(analysis, flowsDir, dateKey);
-renderHtml({ templatePath, htmlPath, analysis, drawioMap });
+renderHtml({ templatePath, htmlPath, analysis });
 
 console.log(`Analysis: ${analysisPath}`);
 console.log(`Schema normalized: ${JSON.stringify(schemaStats)}`);
@@ -75,8 +72,6 @@ if (detailStats.flows > 0) {
   console.log(`Detail-flow hearing items filed: ${filedQuestions}`);
 }
 console.log(`Resolved questions: ${resolved.length}`);
-console.log(`As-Is draw.io files written: ${writtenAsIsDrawio.length}`);
-console.log(`Top3 draw.io files written: ${writtenDrawio.length}`);
+console.log(`As-Is flow index: ${flowIndexStats.categories} categor(ies) / ${flowIndexStats.business_types} business type(s)`);
 console.log(`To-Be task tables generated: ${generatedToBeTasks}`);
-console.log(`Draw.io entries embedded: ${Object.keys(drawioMap).length}`);
 console.log(`HTML: ${htmlPath}`);

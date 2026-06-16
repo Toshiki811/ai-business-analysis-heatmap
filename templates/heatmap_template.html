@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI業務分析ヒートマップ</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://viewer.diagrams.net/js/viewer.min.js"></script>
+  <script>/* FLOW_SVG_JS_PLACEHOLDER */</script>
   <style>
     :root {
       --bg-base: #0f172a;
@@ -20,6 +20,64 @@
       --accent-soft: rgba(59,130,246,0.14);
       --success: #22c55e;
     }
+
+    /* ---------- インラインSVGフロー図(As-Is / To-Be) ---------- */
+    /* CSS変数はSVGホストにスコープし、ダークテーマ本体には影響させない。
+       SVG面はライト基調(白ノード面)で描く＝刷新版と同じ可読性。 */
+    .flow-host {
+      --bg: #ffffff; --surface: #f6f8fb; --surface-2: #eef2f8;
+      --ink: #1a2b49; --ink-2: #51607a; --ink-3: #8a96ab;
+      --line: #dde4ee; --line-strong: #c7d2e2;
+      --navy: #16335f; --navy-2: #1f4a87; --blue: #2563eb;
+      --warn: #b45309; --warn-soft: #fef3e2; --danger: #b91c1c; --ok: #15803d;
+      --amber: #d97706; --amber-soft: #fef6e7;
+      --radius-sm: 7px; --shadow: 0 1px 3px rgba(22,51,95,.12);
+      --font: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      position: relative; background: var(--bg); border: 1px solid var(--line);
+      border-radius: var(--radius-sm); overflow: hidden;
+    }
+    .flow-svg { display: block; background: var(--bg); touch-action: none; width: 100%; }
+    .flow-svg.is-panning { cursor: grabbing; }
+    .flow-lane-bg { fill: var(--surface); opacity: .5; }
+    .flow-lane-odd .flow-lane-bg { fill: var(--surface-2); opacity: .55; }
+    .flow-lane-header { fill: var(--navy); }
+    .flow-lane-title { fill: #fff; font-size: 12px; font-weight: 700; font-family: var(--font); }
+    .flow-shape { fill: var(--bg); stroke: var(--line-strong); stroke-width: 1.5; }
+    .flow-node-process .flow-shape { fill: #f3f7fd; stroke: var(--navy-2); }
+    .flow-node-decision .flow-shape { fill: var(--amber-soft); stroke: var(--amber); }
+    .flow-node-start .flow-shape, .flow-node-end .flow-shape { fill: var(--navy); stroke: var(--navy); }
+    .flow-node-exception .flow-shape { fill: var(--warn-soft); stroke: var(--warn); stroke-width: 2; }
+    .flow-node.is-inferred .flow-shape { stroke-dasharray: 5 4; }
+    .flow-node.has-question .flow-shape { stroke: var(--amber); stroke-width: 2.5; }
+    .flow-label { fill: var(--ink); font-size: 12px; font-family: var(--font); }
+    .flow-node-start .flow-label, .flow-node-end .flow-label { fill: #fff; font-weight: 700; }
+    .flow-node { cursor: default; }
+    .flow-node.has-question, .flow-node[data-task-id] { cursor: pointer; }
+    .flow-node[data-task-id]:hover .flow-shape { filter: brightness(.97); stroke-width: 2.5; }
+    .flow-num circle { fill: var(--blue); }
+    .flow-num text { fill: #fff; font-size: 11px; font-weight: 700; font-family: var(--font); }
+    .flow-badge-inferred rect { fill: var(--ink-3); }
+    .flow-badge-inferred text { fill: #fff; font-size: 9px; font-weight: 700; font-family: var(--font); }
+    .flow-badge-question circle { fill: var(--amber); }
+    .flow-badge-answered circle { fill: var(--ok); }
+    .flow-badge-question text, .flow-badge-answered text { fill: #fff; font-size: 11px; font-weight: 700; font-family: var(--font); }
+    .flow-chip rect { fill: var(--surface-2); stroke: var(--line); }
+    .flow-chip text { fill: var(--ink-2); font-size: 10px; font-family: var(--font); }
+    .flow-chip-doc { fill: none; stroke: var(--ink-3); stroke-width: 1; }
+    .flow-edge path { stroke: var(--ink-3); stroke-width: 1.6; }
+    .flow-edge-return path { stroke: var(--danger); stroke-dasharray: 6 4; }
+    .flow-edge-exception path { stroke: var(--warn); stroke-dasharray: 6 4; }
+    .flow-edge-label { fill: var(--ink-2); font-size: 10px; font-family: var(--font); }
+    .flow-edge-label-bg { fill: var(--bg); }
+    .flow-arrow-normal { fill: var(--ink-3); }
+    .flow-arrow-return { fill: var(--danger); }
+    .flow-arrow-exception { fill: var(--warn); }
+    .flow-toolbar { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+    .flow-toolbar button {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg);
+      color: var(--ink-2); font-size: 14px; cursor: pointer; box-shadow: var(--shadow);
+    }
+    .flow-toolbar button:hover { background: var(--surface); color: var(--navy); }
 
     * { box-sizing: border-box; }
 
@@ -1144,9 +1202,10 @@
     }
     .business-type-expand-pane {
       display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto minmax(360px, min(520px, 58vh)) auto auto;
+      grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+      align-items: start;
     }
+    .business-type-expand-note { grid-column: 1 / -1; }
     .business-type-expand-toolbar {
       background: #0a1120;
       border-bottom: 1px solid #1e293b;
@@ -1172,16 +1231,16 @@
       border-color: #3b82f6;
       color: #93c5fd;
     }
-    .business-type-expand-diagram { background: #fff; overflow: hidden; min-height: 360px; }
+    .business-type-expand-diagram { background: #fff; overflow: hidden; min-width: 0; }
     .business-type-expand-qa {
       background: #0f172a;
       overflow-y: auto;
-      max-height: min(420px, 46vh);
+      max-height: min(560px, 70vh);
       padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      border-top: 1px solid #1e293b;
+      border-left: 1px solid #1e293b;
     }
     .business-type-expand-actions {
       padding: 8px 14px;
@@ -1257,8 +1316,8 @@
       font-weight: 700;
     }
     @media (max-width: 900px) {
-      .business-type-expand-pane { grid-template-rows: auto auto minmax(320px, 46vh) auto auto; }
-      .business-type-expand-qa { max-height: none; }
+      .business-type-expand-pane { grid-template-columns: 1fr; }
+      .business-type-expand-qa { max-height: none; border-left: none; border-top: 1px solid #1e293b; }
     }
 
     /* 全体進捗サマリー */
@@ -2870,9 +2929,6 @@
   <script>
 const ANALYSIS_DATA = /* ANALYSIS_DATA_PLACEHOLDER */;
   </script>
-  <script>
-const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
-  </script>
 
   <!-- アプリロジック -->
   <script>
@@ -4340,21 +4396,10 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         blueprintEl.innerHTML = '';
       }
 
-      const rank = item.rank;
       // 非表示パネル内で描画するとサイズ0になるため、To-Beタブ初回表示時に描画する
-      pendingToBeDrawio = { xml: (DRAWIO_XML_MAP || {})[`top${rank}_to_be`] };
-
-      // draw.io ファイルリンク
-      const ff = item.flow_files || {};
-      const drawioLinkHtml = (path, label) => path ? `
-        <a href="${path}" download
-           class="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 border border-blue-700 hover:border-blue-500 rounded-lg px-3 py-2 transition-colors">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          ${label}（.drawio）
-        </a>` : '';
-      document.getElementById('tobe-drawio-link-area').innerHTML = drawioLinkHtml(ff.to_be_drawio, 'To-Be業務フローを開く');
+      pendingToBeFlow = getToBeFlow(item);
+      const linkArea = document.getElementById('tobe-drawio-link-area');
+      if (linkArea) linkArea.innerHTML = '';
 
       switchTab(initialTab === 'tobe' ? 'tobe' : 'detail');
       document.getElementById('modal').classList.add('active');
@@ -4370,32 +4415,125 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         '</div>';
     }
 
-    function renderDrawio(containerId, xml, options) {
-      const el = document.getElementById(containerId);
-      el.innerHTML = '';
-      if (!xml) {
-        el.innerHTML = '<p style="padding:16px;color:#94a3b8;font-size:13px;">フロー図データなし</p>';
-        return;
-      }
-      const graphDiv = document.createElement('div');
-      graphDiv.className = 'mxgraph';
-      graphDiv.style.cssText = 'width:100%;height:100%;';
-      graphDiv.dataset.mxgraph = JSON.stringify({
-        highlight: '#0000ff',
-        nav: true,
-        resize: true,
-        toolbar: 'zoom layers',
-        xml: xml
+    // ========== インラインSVGフロー(As-Is / To-Be) ==========
+    const _asIsFlowCache = new Map();
+    const _flowNumsCache = new Map();
+
+    function flowActorOf(step) {
+      return (step && (step.actor || step.lane)) || '担当者・業務部門';
+    }
+
+    // ステップ列(buildAsIsStep形式)を直列ノードグラフへ合成(詳細フロー未整備の業務種別/全体像用)
+    function serialFlowFromSteps(steps, title) {
+      const list = Array.isArray(steps) ? steps : [];
+      const nodes = [{ id: 's0', node_type: 'start', label: (title ? title + ' ' : '') + '開始', actor: flowActorOf(list[0]) }];
+      list.forEach((s, i) => {
+        nodes.push({
+          id: 'n' + (i + 1),
+          node_type: 'process',
+          label: s.task_name || s.label || s.step || ('作業 ' + (i + 1)),
+          actor: flowActorOf(s),
+          description: s.description || '',
+          task_id: s.task_id || '',
+          next: (i + 1 < list.length) ? ('n' + (i + 2)) : 'sE'
+        });
       });
-      el.appendChild(graphDiv);
-      if (options && options.legend) {
-        const legendDiv = document.createElement('div');
-        legendDiv.innerHTML = flowLegendHtml();
-        el.appendChild(legendDiv.firstChild);
+      nodes.push({ id: 'sE', node_type: 'end', label: '完了', actor: flowActorOf(list[list.length - 1]) });
+      nodes[0].next = list.length ? 'n1' : 'sE';
+      return { nodes };
+    }
+
+    // As-Isフロー(ノードグラフ)取得: 詳細フローがあればそれ、無ければステップから直列合成
+    function getAsIsFlow(category, businessType) {
+      const cacheKey = category + '|||' + (businessType || '*');
+      if (_asIsFlowCache.has(cacheKey)) return _asIsFlowCache.get(cacheKey);
+      let flow = null;
+      if (businessType) {
+        const detail = (ANALYSIS_DATA.asis_flow_details || []).find(f =>
+          f.category === category && f.business_type === businessType);
+        if (detail && Array.isArray(detail.nodes) && detail.nodes.length) {
+          flow = detail;
+        } else {
+          const bt = (ANALYSIS_DATA.business_type_flows || []).find(f =>
+            f.category === category && f.business_type === businessType);
+          if (bt) flow = serialFlowFromSteps(bt.steps, businessType);
+        }
+      } else {
+        const cat = (ANALYSIS_DATA.category_flows || []).find(f => f.category === category);
+        if (cat) flow = serialFlowFromSteps(cat.steps, category);
       }
-      if (window.GraphViewer) {
-        GraphViewer.processElements();
+      _asIsFlowCache.set(cacheKey, flow);
+      return flow;
+    }
+
+    // To-Beフロー(top3.to_be_flow)を flow_svg 入力へ正規化(step -> label)
+    function getToBeFlow(item) {
+      const steps = Array.isArray(item && item.to_be_flow) ? item.to_be_flow : [];
+      if (!steps.length) return null;
+      return { nodes: steps.map(s => Object.assign({}, s, { label: s.label || s.step || '' })) };
+    }
+
+    // task_id -> [丸数字...] (SVGの採番と完全一致。マトリクスセル/確認事項と共有)
+    function flowNumsByTaskId(category, businessType) {
+      const cacheKey = category + '|||' + (businessType || '*');
+      if (_flowNumsCache.has(cacheKey)) return _flowNumsCache.get(cacheKey);
+      const map = {};
+      const flow = getAsIsFlow(category, businessType);
+      if (flow && window.FlowSvg) {
+        try {
+          const layout = window.FlowSvg.layoutFlow(flow, {});
+          (layout.nodes || []).forEach(laid => {
+            const tid = laid.node && laid.node.task_id;
+            if (tid && laid.num != null) (map[tid] = map[tid] || []).push(laid.num);
+          });
+        } catch (e) { /* レイアウト失敗時は番号なし */ }
       }
+      _flowNumsCache.set(cacheKey, map);
+      return map;
+    }
+
+    // 確認事項の有無を task_id の Set で返す(SVGノード強調用)
+    function qaTaskSets(category, businessType) {
+      const questionTaskIds = new Set();
+      const answeredTaskIds = new Set();
+      (ANALYSIS_DATA.matrix_tasks || []).forEach(t => {
+        if (t['業務分類'] !== category) return;
+        if (businessType && t['業務種別'] !== businessType) return;
+        if (!t.task_id || !String(t['確認事項'] || '').trim()) return;
+        const saved = (typeof FeedbackManager !== 'undefined' && FeedbackManager.getAnswerForTask)
+          ? FeedbackManager.getAnswerForTask(t) : null;
+        const answered = (saved && ((saved.answer && saved.answer.length >= 5) || saved.skipped)) ||
+          Boolean(String(t['クライアント回答'] || t.as_is_resolved_answer || '').trim());
+        if (answered) answeredTaskIds.add(t.task_id); else questionTaskIds.add(t.task_id);
+      });
+      return { questionTaskIds, answeredTaskIds };
+    }
+
+    // フローをホストへインライン描画(SVG)。opts.questionTaskIds/answeredTaskIds(Set)でノード強調
+    function renderInlineFlow(hostId, flow, opts) {
+      const el = document.getElementById(hostId);
+      if (!el) return null;
+      el.classList.add('flow-host');
+      el.innerHTML = '';
+      if (!flow || !Array.isArray(flow.nodes) || !flow.nodes.length || !window.FlowSvg) {
+        el.innerHTML = '<p style="padding:16px;color:#64748b;font-size:13px;">フロー図データなし</p>';
+        return null;
+      }
+      const o = opts || {};
+      const qNodeIds = [];
+      const aNodeIds = [];
+      flow.nodes.forEach(n => {
+        if (!n.task_id) return;
+        if (o.questionTaskIds && o.questionTaskIds.has(n.task_id)) qNodeIds.push(String(n.id));
+        else if (o.answeredTaskIds && o.answeredTaskIds.has(n.task_id)) aNodeIds.push(String(n.id));
+      });
+      const layout = window.FlowSvg.layoutFlow(flow, { questionNodeIds: qNodeIds, answeredNodeIds: aNodeIds });
+      el.innerHTML = window.FlowSvg.renderFlowSvg(layout);
+      const legend = document.createElement('div');
+      legend.innerHTML = flowLegendHtml();
+      if (legend.firstChild) el.appendChild(legend.firstChild);
+      window.FlowSvg.enablePanZoom(el);
+      return layout;
     }
 
     function renderFlow(containerId, steps) {
@@ -4416,16 +4554,16 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       `).join('');
     }
 
-    let pendingToBeDrawio = null;
+    let pendingToBeFlow = null;
 
     function switchTab(tab) {
       ['detail', 'tobe'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
         document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
       });
-      if (tab === 'tobe' && pendingToBeDrawio) {
-        renderDrawio('tobe-diagram-container', pendingToBeDrawio.xml);
-        pendingToBeDrawio = null;
+      if (tab === 'tobe' && pendingToBeFlow) {
+        renderInlineFlow('tobe-diagram-container', pendingToBeFlow, {});
+        pendingToBeFlow = null;
       }
     }
 
@@ -4461,20 +4599,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       } : null;
     }
 
-    function resolveMatrixFlowKey(category, businessType) {
-      if (!DRAWIO_XML_MAP) return null;
-      if (businessType) {
-        const flow = (ANALYSIS_DATA.business_type_flows || []).find(f =>
-          f.category === category && f.business_type === businessType
-        );
-        if (flow && DRAWIO_XML_MAP[flow.flow_key]) return flow.flow_key;
-      }
-      const idx = getCategoryFlowIndex(category);
-      if (idx && DRAWIO_XML_MAP[idx.category_flow_key]) return idx.category_flow_key;
-      const keys = Object.keys(DRAWIO_XML_MAP);
-      return keys.find(k => k.startsWith('asis_') && k.endsWith('_' + ((ANALYSIS_DATA.metadata || {}).created_at || '').replace(/-/g, ''))) || null;
-    }
-
     function businessTypesForCategory(category) {
       return (ANALYSIS_DATA.business_type_flows || [])
         .filter(f => f.category === category)
@@ -4482,17 +4606,13 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
     }
 
     function switchCategoryFlow(category, catId, businessType) {
-      const key = resolveMatrixFlowKey(category, businessType || null);
-      const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
-      const processNodes = parseProcessNodes(xml);
-      const numMap = buildNumMap(processNodes);
-      renderDrawio('expand-diagram-' + catId, addNumbersToDrawioXml(xml, numMap), { legend: true });
+      const bt = businessType || null;
+      renderInlineFlow('expand-diagram-' + catId, getAsIsFlow(category, bt), qaTaskSets(category, bt));
       FeedbackManager.renderQAPanelInto(
         document.getElementById('expand-qa-' + catId),
         category,
-        processNodes,
-        numMap,
-        businessType || null
+        flowNumsByTaskId(category, bt),
+        bt
       );
       document.querySelectorAll('#expand-toolbar-' + catId + ' .cat-flow-tab').forEach(btn => {
         btn.classList.toggle('active', (btn.dataset.businessType || '') === (businessType || ''));
@@ -4534,28 +4654,13 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       ).length;
     }
 
-    function resolveBusinessTypeFlowKey(category, businessType) {
-      const taskFlowKey = businessTypeTasks(category, businessType)
-        .map(task => task.as_is_business_type_flow_key)
-        .find(key => key && DRAWIO_XML_MAP && DRAWIO_XML_MAP[key]);
-      if (taskFlowKey) return taskFlowKey;
-      return resolveMatrixFlowKey(category, businessType);
-    }
-
     function switchBusinessTypeFlow(category, businessType, rowId, mode) {
       const flowBusinessType = mode === 'category' ? null : businessType;
-      const key = flowBusinessType
-        ? resolveBusinessTypeFlowKey(category, flowBusinessType)
-        : resolveMatrixFlowKey(category, null);
-      const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
-      const processNodes = parseProcessNodes(xml);
-      const numMap = buildNumMap(processNodes);
-      renderDrawio('bt-expand-diagram-' + rowId, addNumbersToDrawioXml(xml, numMap), { legend: true });
+      renderInlineFlow('bt-expand-diagram-' + rowId, getAsIsFlow(category, flowBusinessType), qaTaskSets(category, flowBusinessType));
       FeedbackManager.renderQAPanelInto(
         document.getElementById('bt-expand-qa-' + rowId),
         category,
-        processNodes,
-        numMap,
+        flowNumsByTaskId(category, flowBusinessType),
         businessType
       );
       const countEl = document.getElementById('bt-expand-qa-count-' + rowId);
@@ -4604,52 +4709,6 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       }
     }
 
-    function parseProcessNodes(xml) {
-      if (!xml) return {};
-      const doc = new DOMParser().parseFromString(xml, 'text/xml');
-      const result = {};
-      doc.querySelectorAll('mxCell[id^="process-"]').forEach(cell => {
-        const id = cell.getAttribute('id');
-        const raw = cell.getAttribute('value') || '';
-        const val = raw.split('&#xa;')[0].split('\n')[0].trim();
-        if (id && val) result[id] = val;
-      });
-      return result;
-    }
-
-    function matchProcessId(taskName, processNodes) {
-      for (const [id, nodeName] of Object.entries(processNodes)) {
-        if (taskName === nodeName || taskName.includes(nodeName) || nodeName.includes(taskName)) {
-          return id;
-        }
-      }
-      return null;
-    }
-
-    function buildNumMap(processNodes) {
-      const sorted = Object.keys(processNodes)
-        .map(id => parseInt(id.replace('process-', ''), 10))
-        .sort((a, b) => a - b);
-      const map = {};
-      sorted.forEach((n, i) => { map[n] = i + 1; });
-      return map;
-    }
-
-    function addNumbersToDrawioXml(xml, numMap) {
-      if (!xml) return xml;
-      return xml.replace(
-        /(<mxCell\s[^>]*id="process-(\d+)"[^>]*value=")([^"]*?)(")/g,
-        (_, prefix, numStr, val, suffix) => {
-          const displayNum = numMap[parseInt(numStr, 10)];
-          if (!displayNum) return _;
-          const circle = displayNum <= 20
-            ? String.fromCodePoint(0x245F + displayNum)
-            : `[${displayNum}]`;
-          return `${prefix}${circle} ${val}${suffix}`;
-        }
-      );
-    }
-
     function flowNumLabel(displayNum) {
       if (displayNum <= 20) return String.fromCodePoint(0x245F + displayNum);
       if (displayNum <= 35) return String.fromCodePoint(0x3251 + displayNum - 21);
@@ -4657,52 +4716,11 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
       return `[${displayNum}]`;
     }
 
-    const businessTypeFlowNumCache = new Map();
-    function businessTypeFlowNumInfo(category, businessType) {
-      const key = `${category}|||${businessType}`;
-      if (!businessTypeFlowNumCache.has(key)) {
-        businessTypeFlowNumCache.set(key, buildBusinessTypeFlowNumInfo(category, businessType));
-      }
-      return businessTypeFlowNumCache.get(key);
-    }
-
-    function buildBusinessTypeFlowNumInfo(category, businessType) {
-      // 詳細As-Isフローがある業務種別: ノードのtask_id紐付けから番号を引く
-      // (図中の「N.」はnodes配列のindex+1。start/end/decisionノードは無番号)
-      const detail = (ANALYSIS_DATA.asis_flow_details || []).find(f =>
-        f.category === category && f.business_type === businessType);
-      if (detail && Array.isArray(detail.nodes) && detail.nodes.length) {
-        const byTaskId = {};
-        detail.nodes.forEach((node, index) => {
-          const rawKind = String(node.node_type || 'process');
-          const kind = ['start', 'end', 'process', 'decision', 'exception'].includes(rawKind) ? rawKind : 'process';
-          if (kind === 'start' || kind === 'end' || kind === 'decision') return;
-          if (!node.task_id) return;
-          (byTaskId[node.task_id] = byTaskId[node.task_id] || []).push(index + 1);
-        });
-        if (Object.keys(byTaskId).length) return { byTaskId };
-      }
-      // 従来フロー: process-ノード名との照合
-      const flowKey = resolveBusinessTypeFlowKey(category, businessType);
-      const xml = flowKey ? (DRAWIO_XML_MAP[flowKey] || null) : null;
-      const processNodes = parseProcessNodes(xml);
-      if (Object.keys(processNodes).length) {
-        return { processNodes, numMap: buildNumMap(processNodes) };
-      }
-      return null;
-    }
-
+    // マトリクスセルの丸数字。SVGと同一の numByTaskId(layout由来)を使うため必ず一致する。
     function taskFlowNum(category, businessType, task) {
-      if (!category || !businessType) return '';
-      const info = businessTypeFlowNumInfo(category, businessType);
-      if (!info) return '';
-      if (info.byTaskId) {
-        return (info.byTaskId[task.task_id] || []).map(flowNumLabel).join('');
-      }
-      const pid = matchProcessId(task['タスク名'] || '', info.processNodes);
-      if (!pid) return '';
-      const displayNum = info.numMap[parseInt(pid.replace('process-', ''), 10)];
-      return displayNum ? flowNumLabel(displayNum) : '';
+      if (!category || !businessType || !task || !task.task_id) return '';
+      const nums = flowNumsByTaskId(category, businessType)[task.task_id];
+      return nums && nums.length ? nums.map(flowNumLabel).join('') : '';
     }
 
     function buildMatrix(data) {
@@ -4963,7 +4981,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
             `<td colspan="${totalCols}">` +
             `<div class="business-type-expand-pane">` +
             `<div class="business-type-expand-toolbar" id="bt-expand-toolbar-${rowId}"></div>` +
-            `<div style="font-size:11px;color:#64748b;margin:4px 12px 6px;">フロー図の工程番号は、マトリクスセル内タスクの<span style="color:#60a5fa;font-weight:800;">①②…</span>と対応しています</div>` +
+            `<div class="business-type-expand-note" style="font-size:11px;color:#64748b;margin:4px 12px 6px;">フロー図の工程番号は、マトリクスセル内タスクの<span style="color:#60a5fa;font-weight:800;">①②…</span>と対応しています</div>` +
             `<div class="business-type-expand-diagram" id="bt-expand-diagram-${rowId}"></div>` +
             `<div class="business-type-expand-qa" id="bt-expand-qa-${rowId}"></div>` +
             `<div class="business-type-expand-actions">` +
@@ -5151,7 +5169,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         switchCategoryFlow(category, catId, null);
       }
 
-      function renderQAPanelInto(listEl, category, processNodes, numMap, businessType) {
+      function renderQAPanelInto(listEl, category, numsByTaskId, businessType) {
         if (!listEl) return;
         const allFlowTasks = (ANALYSIS_DATA.matrix_tasks || []).filter(t =>
           t['業務分類'] === category && (!businessType || t['業務種別'] === businessType)
@@ -5189,9 +5207,9 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         }
 
         const qaHtml = tasks.map((t, taskIdx) => {
-          const pid = t.as_is_node_id && processNodes[t.as_is_node_id] ? t.as_is_node_id : matchProcessId(t['タスク名'], processNodes);
-          const n = pid ? (numMap[parseInt(pid.replace('process-', ''), 10)] || (taskIdx + 1)) : (taskIdx + 1);
-          const circle = n <= 20 ? String.fromCodePoint(0x245F + n) : '[' + n + ']';
+          const nums = (numsByTaskId && t.task_id && numsByTaskId[t.task_id]) || [];
+          const n = nums.length ? nums[0] : (taskIdx + 1);
+          const circle = flowNumLabel(n);
           const key = taskKey(t);
           const saved = state.answers[key] || {};
           const answerVal = saved.answer || '';
@@ -5313,11 +5331,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
           const expandRow = document.getElementById('expand-' + catId);
           if (expandRow && expandRow.dataset.rendered) {
             const qaEl = document.getElementById('expand-qa-' + catId);
-            const key = resolveMatrixFlowKey(category);
-            const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
-            const processNodes = parseProcessNodes(xml);
-            const numMap = buildNumMap(processNodes);
-            if (qaEl) renderQAPanelInto(qaEl, category, processNodes, numMap);
+            if (qaEl) renderQAPanelInto(qaEl, category, flowNumsByTaskId(category, null), null);
           }
         }
       }
@@ -5338,11 +5352,7 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         updateMatrixFbProgress();
         if (rowId) {
           const qaEl = document.getElementById('bt-expand-qa-' + rowId);
-          const key = resolveBusinessTypeFlowKey(category, businessType);
-          const xml = key ? (DRAWIO_XML_MAP[key] || null) : null;
-          const processNodes = parseProcessNodes(xml);
-          const numMap = buildNumMap(processNodes);
-          if (qaEl) renderQAPanelInto(qaEl, category, processNodes, numMap, businessType);
+          if (qaEl) renderQAPanelInto(qaEl, category, flowNumsByTaskId(category, businessType), businessType);
           const countEl = document.getElementById('bt-expand-qa-count-' + rowId);
           if (countEl) countEl.textContent = '未確認事項: ' + businessTypeOpenQuestionCount(category, businessType) + '件';
         }
@@ -5405,9 +5415,13 @@ const DRAWIO_XML_MAP = /* DRAWIO_XML_MAP_PLACEHOLDER */;
         }
       }
 
+      function getAnswerForTask(task) {
+        return state.answers[taskKey(task)] || null;
+      }
+
       return {
         load, updateFooterProgress, updateAllGroupDots, updateMatrixFbProgress,
-        renderExpandPane, renderQAPanelInto, getProgress,
+        renderExpandPane, renderQAPanelInto, getProgress, getAnswerForTask,
         handleAnswer, handleAnswerInput, handleCategoryUpdate, handleCategoryUpdateInput, handleSkip, handleDetail,
         markCategoryComplete, markBusinessTypeComplete, exportCsv,
         get currentCategory() { return _currentCategory; }

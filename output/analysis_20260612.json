@@ -6,7 +6,7 @@
     ],
     "title": "社会福祉法人 経理事務 AI業務分析",
     "description": "経理事務マニュアルをもとに業務種別ごとのAs-Is業務を整理し、自動化手段の判定とAI導入効果のスコアリングを行った分析結果",
-    "schema_version": "2026-06-12",
+    "schema_version": "2026-06-16",
     "schema_normalized_at": "2026-06-12",
     "asis_flow_details_source": "asis_flows_20260612.json",
     "suppressed_question_count": 0,
@@ -4942,10 +4942,7 @@
           "actor": "Human",
           "description": "出納職員が振込を実行し、突合結果とともに証憑を保管する"
         }
-      ],
-      "flow_files": {
-        "to_be_drawio": "output/flows/top1_to_be.drawio"
-      }
+      ]
     },
     {
       "rank": 2,
@@ -5120,10 +5117,7 @@
           "actor": "System",
           "description": "承認済みデータから振込データと給与仕訳を自動連携する"
         }
-      ],
-      "flow_files": {
-        "to_be_drawio": "output/flows/top2_to_be.drawio"
-      }
+      ]
     },
     {
       "rank": 3,
@@ -5282,10 +5276,7 @@
           "actor": "Human Review",
           "description": "出納職員が取込後の試算表で残高を検証し、決算整理を確定する"
         }
-      ],
-      "flow_files": {
-        "to_be_drawio": "output/flows/top3_to_be.drawio"
-      }
+      ]
     }
   ],
   "resolved_questions": [],
@@ -5555,8 +5546,7 @@
       "unmodeled_notes": [
         "監事監査・行政監査への対応はマニュアルに記載がないためフロー化していない"
       ],
-      "flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612",
-      "flow_file": "output/flows/asis_経理体制_帳簿管理__経理体制整備_20260612.drawio"
+      "flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612"
     },
     {
       "category": "経理体制・帳簿管理",
@@ -5879,8 +5869,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612",
-      "flow_file": "output/flows/asis_経理体制_帳簿管理__帳簿_帳票管理_20260612.drawio"
+      "flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612"
     },
     {
       "category": "予算管理",
@@ -6268,8 +6257,7 @@
       "unmodeled_notes": [
         "評議員会の同意手続はマニュアルに記載がないためフロー化していない"
       ],
-      "flow_key": "asis_予算管理__当初予算編成_20260612",
-      "flow_file": "output/flows/asis_予算管理__当初予算編成_20260612.drawio"
+      "flow_key": "asis_予算管理__当初予算編成_20260612"
     },
     {
       "category": "予算管理",
@@ -6543,8 +6531,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_予算管理__補正予算管理_20260612",
-      "flow_file": "output/flows/asis_予算管理__補正予算管理_20260612.drawio"
+      "flow_key": "asis_予算管理__補正予算管理_20260612"
     },
     {
       "category": "収納事務",
@@ -6913,8 +6900,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_収納事務__請求_収納_20260612",
-      "flow_file": "output/flows/asis_収納事務__請求_収納_20260612.drawio"
+      "flow_key": "asis_収納事務__請求_収納_20260612"
     },
     {
       "category": "収納事務",
@@ -7188,8 +7174,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_収納事務__現金収納_20260612",
-      "flow_file": "output/flows/asis_収納事務__現金収納_20260612.drawio"
+      "flow_key": "asis_収納事務__現金収納_20260612"
     },
     {
       "category": "収納事務",
@@ -7444,8 +7429,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_収納事務__会計伝票作成_20260612",
-      "flow_file": "output/flows/asis_収納事務__会計伝票作成_20260612.drawio"
+      "flow_key": "asis_収納事務__会計伝票作成_20260612"
     },
     {
       "category": "支払・契約事務",
@@ -7873,8 +7857,7 @@
       "unmodeled_notes": [
         "振込実行後に振込エラーが発生した場合の再実行手順はマニュアルに記載がないためフロー化せず"
       ],
-      "flow_key": "asis_支払_契約事務__支払処理_20260612",
-      "flow_file": "output/flows/asis_支払_契約事務__支払処理_20260612.drawio"
+      "flow_key": "asis_支払_契約事務__支払処理_20260612"
     },
     {
       "category": "支払・契約事務",
@@ -8315,8 +8298,7 @@
       "unmodeled_notes": [
         "入札契約の公告・開札手続の詳細はマニュアルに記載がないため1ノードに集約した"
       ],
-      "flow_key": "asis_支払_契約事務__契約事務_20260612",
-      "flow_file": "output/flows/asis_支払_契約事務__契約事務_20260612.drawio"
+      "flow_key": "asis_支払_契約事務__契約事務_20260612"
     },
     {
       "category": "現金管理",
@@ -8550,8 +8532,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_現金管理__小口現金支払_20260612",
-      "flow_file": "output/flows/asis_現金管理__小口現金支払_20260612.drawio"
+      "flow_key": "asis_現金管理__小口現金支払_20260612"
     },
     {
       "category": "現金管理",
@@ -8842,8 +8823,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_現金管理__現金残高確認_20260612",
-      "flow_file": "output/flows/asis_現金管理__現金残高確認_20260612.drawio"
+      "flow_key": "asis_現金管理__現金残高確認_20260612"
     },
     {
       "category": "人件費支払",
@@ -9120,8 +9100,7 @@
       "unmodeled_notes": [
         "給与明細の従業員への配布手順（紙・Web等）はマニュアルに記載がないためフロー化せず"
       ],
-      "flow_key": "asis_人件費支払__給与支払_20260612",
-      "flow_file": "output/flows/asis_人件費支払__給与支払_20260612.drawio"
+      "flow_key": "asis_人件費支払__給与支払_20260612"
     },
     {
       "category": "人件費支払",
@@ -9383,8 +9362,7 @@
       "unmodeled_notes": [
         "賞与支払届の提出は社会保険・源泉のフローで扱うためここではモデル化しない"
       ],
-      "flow_key": "asis_人件費支払__賞与支給_20260612",
-      "flow_file": "output/flows/asis_人件費支払__賞与支給_20260612.drawio"
+      "flow_key": "asis_人件費支払__賞与支給_20260612"
     },
     {
       "category": "人件費支払",
@@ -9736,8 +9714,7 @@
       "unmodeled_notes": [
         "法定調書（源泉徴収票の税務署提出・給与支払報告書）の提出はマニュアルに記載がないためフロー化していない"
       ],
-      "flow_key": "asis_人件費支払__年末調整_20260612",
-      "flow_file": "output/flows/asis_人件費支払__年末調整_20260612.drawio"
+      "flow_key": "asis_人件費支払__年末調整_20260612"
     },
     {
       "category": "人件費支払",
@@ -10078,8 +10055,7 @@
       "unmodeled_notes": [
         "住民税の特別徴収事務はマニュアルに明示的な手順記載がないためフロー化していない"
       ],
-      "flow_key": "asis_人件費支払__社会保険_源泉_20260612",
-      "flow_file": "output/flows/asis_人件費支払__社会保険_源泉_20260612.drawio"
+      "flow_key": "asis_人件費支払__社会保険_源泉_20260612"
     },
     {
       "category": "資産・負債管理",
@@ -10436,8 +10412,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_資産_負債管理__債権債務管理_20260612",
-      "flow_file": "output/flows/asis_資産_負債管理__債権債務管理_20260612.drawio"
+      "flow_key": "asis_資産_負債管理__債権債務管理_20260612"
     },
     {
       "category": "資産・負債管理",
@@ -10735,8 +10710,7 @@
         }
       ],
       "unmodeled_notes": [],
-      "flow_key": "asis_資産_負債管理__実地棚卸_20260612",
-      "flow_file": "output/flows/asis_資産_負債管理__実地棚卸_20260612.drawio"
+      "flow_key": "asis_資産_負債管理__実地棚卸_20260612"
     },
     {
       "category": "資産・負債管理",
@@ -11068,8 +11042,7 @@
       "unmodeled_notes": [
         "減価償却計算は年次決算の決算整理仕訳で扱うためここではフロー化しない"
       ],
-      "flow_key": "asis_資産_負債管理__固定資産管理_20260612",
-      "flow_file": "output/flows/asis_資産_負債管理__固定資産管理_20260612.drawio"
+      "flow_key": "asis_資産_負債管理__固定資産管理_20260612"
     },
     {
       "category": "決算・報告",
@@ -11308,8 +11281,7 @@
       "unmodeled_notes": [
         "理事長から月次報告に対して修正や差戻しが発生する場合の手順はマニュアルに記載がないためフロー化せず"
       ],
-      "flow_key": "asis_決算_報告__月次報告_20260612",
-      "flow_file": "output/flows/asis_決算_報告__月次報告_20260612.drawio"
+      "flow_key": "asis_決算_報告__月次報告_20260612"
     },
     {
       "category": "決算・報告",
@@ -11586,8 +11558,7 @@
       "unmodeled_notes": [
         "申告・納税手続きの詳細フロー（顧問税理士関与の範囲等）はマニュアルに記載がないためフロー化せず"
       ],
-      "flow_key": "asis_決算_報告__年次決算_20260612",
-      "flow_file": "output/flows/asis_決算_報告__年次決算_20260612.drawio"
+      "flow_key": "asis_決算_報告__年次決算_20260612"
     },
     {
       "category": "決算・報告",
@@ -11884,8 +11855,7 @@
       "unmodeled_notes": [
         "地方税（法人住民税等）の申告はマニュアルに記載がないためフロー化していない"
       ],
-      "flow_key": "asis_決算_報告__税務申告_20260612",
-      "flow_file": "output/flows/asis_決算_報告__税務申告_20260612.drawio"
+      "flow_key": "asis_決算_報告__税務申告_20260612"
     }
   ],
   "as_is_category_updates": {},
@@ -11893,7 +11863,6 @@
     {
       "category": "経理体制・帳簿管理",
       "flow_key": "asis_経理体制_帳簿管理_20260612",
-      "flow_file": "output/flows/asis_経理体制_帳簿管理_20260612.drawio",
       "business_type_flow_keys": [
         "asis_経理体制_帳簿管理__経理体制整備_20260612",
         "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612"
@@ -12027,7 +11996,6 @@
     {
       "category": "予算管理",
       "flow_key": "asis_予算管理_20260612",
-      "flow_file": "output/flows/asis_予算管理_20260612.drawio",
       "business_type_flow_keys": [
         "asis_予算管理__当初予算編成_20260612",
         "asis_予算管理__補正予算管理_20260612"
@@ -12181,7 +12149,6 @@
     {
       "category": "収納事務",
       "flow_key": "asis_収納事務_20260612",
-      "flow_file": "output/flows/asis_収納事務_20260612.drawio",
       "business_type_flow_keys": [
         "asis_収納事務__請求_収納_20260612",
         "asis_収納事務__現金収納_20260612",
@@ -12376,7 +12343,6 @@
     {
       "category": "支払・契約事務",
       "flow_key": "asis_支払_契約事務_20260612",
-      "flow_file": "output/flows/asis_支払_契約事務_20260612.drawio",
       "business_type_flow_keys": [
         "asis_支払_契約事務__支払処理_20260612",
         "asis_支払_契約事務__契約事務_20260612"
@@ -12570,7 +12536,6 @@
     {
       "category": "現金管理",
       "flow_key": "asis_現金管理_20260612",
-      "flow_file": "output/flows/asis_現金管理_20260612.drawio",
       "business_type_flow_keys": [
         "asis_現金管理__小口現金支払_20260612",
         "asis_現金管理__現金残高確認_20260612"
@@ -12684,7 +12649,6 @@
     {
       "category": "人件費支払",
       "flow_key": "asis_人件費支払_20260612",
-      "flow_file": "output/flows/asis_人件費支払_20260612.drawio",
       "business_type_flow_keys": [
         "asis_人件費支払__給与支払_20260612",
         "asis_人件費支払__賞与支給_20260612",
@@ -12940,7 +12904,6 @@
     {
       "category": "資産・負債管理",
       "flow_key": "asis_資産_負債管理_20260612",
-      "flow_file": "output/flows/asis_資産_負債管理_20260612.drawio",
       "business_type_flow_keys": [
         "asis_資産_負債管理__債権債務管理_20260612",
         "asis_資産_負債管理__実地棚卸_20260612",
@@ -13135,7 +13098,6 @@
     {
       "category": "決算・報告",
       "flow_key": "asis_決算_報告_20260612",
-      "flow_file": "output/flows/asis_決算_報告_20260612.drawio",
       "business_type_flow_keys": [
         "asis_決算_報告__月次報告_20260612",
         "asis_決算_報告__年次決算_20260612",
@@ -13333,7 +13295,6 @@
       "category": "経理体制・帳簿管理",
       "business_type": "経理体制整備",
       "flow_key": "asis_経理体制_帳簿管理__経理体制整備_20260612",
-      "flow_file": "output/flows/asis_経理体制_帳簿管理__経理体制整備_20260612.drawio",
       "category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13406,7 +13367,6 @@
       "category": "経理体制・帳簿管理",
       "business_type": "帳簿・帳票管理",
       "flow_key": "asis_経理体制_帳簿管理__帳簿_帳票管理_20260612",
-      "flow_file": "output/flows/asis_経理体制_帳簿管理__帳簿_帳票管理_20260612.drawio",
       "category_flow_key": "asis_経理体制_帳簿管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13479,7 +13439,6 @@
       "category": "予算管理",
       "business_type": "当初予算編成",
       "flow_key": "asis_予算管理__当初予算編成_20260612",
-      "flow_file": "output/flows/asis_予算管理__当初予算編成_20260612.drawio",
       "category_flow_key": "asis_予算管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13572,7 +13531,6 @@
       "category": "予算管理",
       "business_type": "補正予算管理",
       "flow_key": "asis_予算管理__補正予算管理_20260612",
-      "flow_file": "output/flows/asis_予算管理__補正予算管理_20260612.drawio",
       "category_flow_key": "asis_予算管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13645,7 +13603,6 @@
       "category": "収納事務",
       "business_type": "請求・収納",
       "flow_key": "asis_収納事務__請求_収納_20260612",
-      "flow_file": "output/flows/asis_収納事務__請求_収納_20260612.drawio",
       "category_flow_key": "asis_収納事務_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13738,7 +13695,6 @@
       "category": "収納事務",
       "business_type": "現金収納",
       "flow_key": "asis_収納事務__現金収納_20260612",
-      "flow_file": "output/flows/asis_収納事務__現金収納_20260612.drawio",
       "category_flow_key": "asis_収納事務_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13811,7 +13767,6 @@
       "category": "収納事務",
       "business_type": "会計伝票作成",
       "flow_key": "asis_収納事務__会計伝票作成_20260612",
-      "flow_file": "output/flows/asis_収納事務__会計伝票作成_20260612.drawio",
       "category_flow_key": "asis_収納事務_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13864,7 +13819,6 @@
       "category": "支払・契約事務",
       "business_type": "支払処理",
       "flow_key": "asis_支払_契約事務__支払処理_20260612",
-      "flow_file": "output/flows/asis_支払_契約事務__支払処理_20260612.drawio",
       "category_flow_key": "asis_支払_契約事務_20260612",
       "category_update_note": "",
       "detail": true,
@@ -13977,7 +13931,6 @@
       "category": "支払・契約事務",
       "business_type": "契約事務",
       "flow_key": "asis_支払_契約事務__契約事務_20260612",
-      "flow_file": "output/flows/asis_支払_契約事務__契約事務_20260612.drawio",
       "category_flow_key": "asis_支払_契約事務_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14070,7 +14023,6 @@
       "category": "現金管理",
       "business_type": "小口現金支払",
       "flow_key": "asis_現金管理__小口現金支払_20260612",
-      "flow_file": "output/flows/asis_現金管理__小口現金支払_20260612.drawio",
       "category_flow_key": "asis_現金管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14143,7 +14095,6 @@
       "category": "現金管理",
       "business_type": "現金残高確認",
       "flow_key": "asis_現金管理__現金残高確認_20260612",
-      "flow_file": "output/flows/asis_現金管理__現金残高確認_20260612.drawio",
       "category_flow_key": "asis_現金管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14196,7 +14147,6 @@
       "category": "人件費支払",
       "business_type": "給与支払",
       "flow_key": "asis_人件費支払__給与支払_20260612",
-      "flow_file": "output/flows/asis_人件費支払__給与支払_20260612.drawio",
       "category_flow_key": "asis_人件費支払_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14309,7 +14259,6 @@
       "category": "人件費支払",
       "business_type": "賞与支給",
       "flow_key": "asis_人件費支払__賞与支給_20260612",
-      "flow_file": "output/flows/asis_人件費支払__賞与支給_20260612.drawio",
       "category_flow_key": "asis_人件費支払_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14362,7 +14311,6 @@
       "category": "人件費支払",
       "business_type": "年末調整",
       "flow_key": "asis_人件費支払__年末調整_20260612",
-      "flow_file": "output/flows/asis_人件費支払__年末調整_20260612.drawio",
       "category_flow_key": "asis_人件費支払_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14415,7 +14363,6 @@
       "category": "人件費支払",
       "business_type": "社会保険・源泉",
       "flow_key": "asis_人件費支払__社会保険_源泉_20260612",
-      "flow_file": "output/flows/asis_人件費支払__社会保険_源泉_20260612.drawio",
       "category_flow_key": "asis_人件費支払_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14488,7 +14435,6 @@
       "category": "資産・負債管理",
       "business_type": "債権債務管理",
       "flow_key": "asis_資産_負債管理__債権債務管理_20260612",
-      "flow_file": "output/flows/asis_資産_負債管理__債権債務管理_20260612.drawio",
       "category_flow_key": "asis_資産_負債管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14561,7 +14507,6 @@
       "category": "資産・負債管理",
       "business_type": "実地棚卸",
       "flow_key": "asis_資産_負債管理__実地棚卸_20260612",
-      "flow_file": "output/flows/asis_資産_負債管理__実地棚卸_20260612.drawio",
       "category_flow_key": "asis_資産_負債管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14634,7 +14579,6 @@
       "category": "資産・負債管理",
       "business_type": "固定資産管理",
       "flow_key": "asis_資産_負債管理__固定資産管理_20260612",
-      "flow_file": "output/flows/asis_資産_負債管理__固定資産管理_20260612.drawio",
       "category_flow_key": "asis_資産_負債管理_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14707,7 +14651,6 @@
       "category": "決算・報告",
       "business_type": "月次報告",
       "flow_key": "asis_決算_報告__月次報告_20260612",
-      "flow_file": "output/flows/asis_決算_報告__月次報告_20260612.drawio",
       "category_flow_key": "asis_決算_報告_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14780,7 +14723,6 @@
       "category": "決算・報告",
       "business_type": "年次決算",
       "flow_key": "asis_決算_報告__年次決算_20260612",
-      "flow_file": "output/flows/asis_決算_報告__年次決算_20260612.drawio",
       "category_flow_key": "asis_決算_報告_20260612",
       "category_update_note": "",
       "detail": true,
@@ -14853,7 +14795,6 @@
       "category": "決算・報告",
       "business_type": "税務申告",
       "flow_key": "asis_決算_報告__税務申告_20260612",
-      "flow_file": "output/flows/asis_決算_報告__税務申告_20260612.drawio",
       "category_flow_key": "asis_決算_報告_20260612",
       "category_update_note": "",
       "detail": true,

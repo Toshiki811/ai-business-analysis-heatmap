@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { ensureDir, readJson } from './fs_utils.mjs';
-import { asIsFlowToDrawio, detailAsIsFlowToDrawio } from './drawio.mjs';
+import { readJson } from './fs_utils.mjs';
 import { categoryUpdateNote, fallbackMatrixTaskKey, matrixTaskKey } from './client_input.mjs';
 import { getTaskHeatmapStep, getTaskMatrixAxis, getTaskMinutes } from './schema.mjs';
 import { suppressNonFlowQuestions } from './questions.mjs';
@@ -195,8 +194,10 @@ function detailFlowMap(analysis) {
   return map;
 }
 
-export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
-  ensureDir(flowsDir);
+// As-Isフローのインデックス(業務分類/業務種別の階層・task_id・ステップ列)を構築する。
+// 旧版はここで draw.io XML も書き出していたが、描画はブラウザ内インラインSVG(flow_svg.js)へ
+// 一本化したため、ファイルI/Oは廃止し、ページ埋め込み用のデータ構築と task_id 付与のみ行う。
+export function buildAsIsFlowIndex(analysis, dateKey) {
   suppressNonFlowQuestions(analysis);
   const tasks = Array.isArray(analysis.matrix_tasks) ? analysis.matrix_tasks : [];
   const categoryMap = groupMatrixTasks(tasks);
@@ -204,12 +205,10 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
   const categoryFlows = [];
   const businessTypeFlows = [];
   const categoryFlowIndex = {};
-  const written = [];
 
   categoryMap.forEach((typeMap, category) => {
     const categorySlug = slugify(category);
     const categoryFlowKey = `asis_${categorySlug}_${dateKey}`;
-    const categoryFlowFile = `output/flows/${categoryFlowKey}.drawio`;
     const updateNote = categoryUpdateNote(analysis, category);
     const categorySteps = [];
     const categoryTaskIds = [];
@@ -237,41 +236,29 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
       });
     });
 
-    const categoryPath = path.join(flowsDir, `${categoryFlowKey}.drawio`);
-    fs.writeFileSync(categoryPath, asIsFlowToDrawio(categorySteps, `As-Is 全体: ${category}`, updateNote));
-    written.push(categoryPath);
-
     const childFlowKeys = [];
     typeMap.forEach((rows, businessType) => {
       const businessSlug = slugify(businessType);
       const businessFlowKey = `asis_${categorySlug}__${businessSlug}_${dateKey}`;
-      const businessFlowFile = `output/flows/${businessFlowKey}.drawio`;
       const businessSteps = rows.map((task, index) => {
         task.as_is_business_type_flow_key = businessFlowKey;
         return buildAsIsStep(task, index === 0 ? businessType : '', task.as_is_node_id);
       });
       const detailFlow = detailFlows.get(detailFlowKey(category, businessType));
-      const businessPath = path.join(flowsDir, `${businessFlowKey}.drawio`);
-      const title = `As-Is 部分: ${category} / ${businessType}`;
-      if (detailFlow && Array.isArray(detailFlow.nodes) && detailFlow.nodes.length > 0) {
-        // task_id 付与後に再リンクしてから詳細フローを描画する
+      const hasDetail = Boolean(detailFlow && Array.isArray(detailFlow.nodes) && detailFlow.nodes.length > 0);
+      if (hasDetail) {
+        // task_id 付与後に再リンクしてからフロー(ノードグラフ)を確定する
         resolveDetailTaskLinks(detailFlow, rows);
         detailFlow.flow_key = businessFlowKey;
-        detailFlow.flow_file = businessFlowFile;
-        fs.writeFileSync(businessPath, detailAsIsFlowToDrawio(detailFlow, title, updateNote));
-      } else {
-        fs.writeFileSync(businessPath, asIsFlowToDrawio(businessSteps, title, updateNote));
       }
-      written.push(businessPath);
       childFlowKeys.push(businessFlowKey);
       businessTypeFlows.push({
         category,
         business_type: businessType,
         flow_key: businessFlowKey,
-        flow_file: businessFlowFile,
         category_flow_key: categoryFlowKey,
         category_update_note: updateNote,
-        detail: Boolean(detailFlow && Array.isArray(detailFlow.nodes) && detailFlow.nodes.length > 0),
+        detail: hasDetail,
         source_task_ids: rows.map((task) => task.task_id),
         steps: businessSteps
       });
@@ -280,7 +267,6 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
     categoryFlows.push({
       category,
       flow_key: categoryFlowKey,
-      flow_file: categoryFlowFile,
       business_type_flow_keys: childFlowKeys,
       update_note: updateNote,
       source_task_ids: categoryTaskIds,
@@ -295,5 +281,5 @@ export function writeAsIsDrawio(analysis, flowsDir, dateKey) {
   analysis.category_flows = categoryFlows;
   analysis.business_type_flows = businessTypeFlows;
   analysis.category_flow_index = categoryFlowIndex;
-  return written;
+  return { categories: categoryFlows.length, business_types: businessTypeFlows.length };
 }

@@ -1,35 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-export function buildDrawioMap(analysis, flowsDir, dateKey) {
-  const drawioMap = {};
+const here = path.dirname(fileURLToPath(import.meta.url));
+const flowSvgPath = path.join(here, '..', '..', 'templates', 'app', 'js', 'flow_svg.js');
 
-  for (const item of analysis.top3 || []) {
-    const key = `top${item.rank}_to_be`;
-    const filePath = path.join(flowsDir, `${key}.drawio`);
-    if (fs.existsSync(filePath)) {
-      drawioMap[key] = fs.readFileSync(filePath, 'utf8');
-    }
-  }
-
-  if (!fs.existsSync(flowsDir)) return drawioMap;
-  for (const name of fs.readdirSync(flowsDir)) {
-    if (!name.endsWith('.drawio')) continue;
-    if (!name.startsWith('asis_')) continue;
-    if (!name.endsWith(`_${dateKey}.drawio`)) continue;
-    drawioMap[name.replace(/\.drawio$/, '')] = fs.readFileSync(path.join(flowsDir, name), 'utf8');
-  }
-
-  return drawioMap;
-}
-
-export function renderHtml({ templatePath, htmlPath, analysis, drawioMap }) {
+export function renderHtml({ templatePath, htmlPath, analysis }) {
   const template = fs.readFileSync(templatePath, 'utf8');
-  const html = template
-    .replace('/* ANALYSIS_DATA_PLACEHOLDER */', JSON.stringify(analysis))
-    .replace('/* DRAWIO_XML_MAP_PLACEHOLDER */', JSON.stringify(drawioMap));
+  const flowSvgJs = fs.readFileSync(flowSvgPath, 'utf8');
 
-  if (html.includes('ANALYSIS_DATA_PLACEHOLDER') || html.includes('DRAWIO_XML_MAP_PLACEHOLDER')) {
+  // 置換値に $ が含まれても壊れないよう関数リプレーサを使う($&/$1等の特殊解釈を回避)
+  const html = template
+    .replace('/* ANALYSIS_DATA_PLACEHOLDER */', () => JSON.stringify(analysis))
+    .replace('/* FLOW_SVG_JS_PLACEHOLDER */', () => flowSvgJs);
+
+  if (html.includes('ANALYSIS_DATA_PLACEHOLDER') || html.includes('FLOW_SVG_JS_PLACEHOLDER')) {
     throw new Error('Template placeholders were not fully replaced.');
   }
 

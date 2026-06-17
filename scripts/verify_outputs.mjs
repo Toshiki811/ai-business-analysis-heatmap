@@ -11,6 +11,7 @@ import {
   normalizeAnalysisSchema,
   validateAnalysisContract
 } from './lib/render.mjs';
+import { checkFlowStructure, checkActorAlignment, buildTaskSubjectIndex } from './lib/flows.mjs';
 
 function usage() {
   return [
@@ -188,11 +189,17 @@ function verifyAnalysis(analysis, analysisPath) {
   if (missingDetailFlows.length > 0) {
     warnings.push(`asis_flow_details missing for ${missingDetailFlows.length} business type(s) (rendered as coarse serial flow): ${missingDetailFlows.map((key) => key.replace('|||', ' / ')).join(', ')}`);
   }
+  // マトリクスの業務内容詳細の主語(=主作業主体)を source_task キー単位でインデックス化(actorズレ検出に使う)
+  const taskSubjectIndex = buildTaskSubjectIndex(normalized.matrix_tasks);
   detailFlows.forEach((flow) => {
     const nodeCount = Array.isArray(flow.nodes) ? flow.nodes.length : 0;
     if (nodeCount > 0 && nodeCount < 8) {
       warnings.push(`asis_flow_details too coarse: ${flow.category} / ${flow.business_type} has only ${nodeCount} nodes (target 10-25)`);
     }
+    // 分岐健全性(decision出口2本以上・2経路以上・condition・差戻し過多)。正本は docs/asis_flow_guideline.md。
+    checkFlowStructure(flow, errors, warnings);
+    // 主作業主体(actor=スイムレーン)のズレ検出。細分化でノードの担当が本来の主体からズレるのを防ぐ。
+    checkActorAlignment(flow, taskSubjectIndex, errors, warnings);
   });
 
   // 業務種別が1つしかない業務分類(1:1構成)を警告する
@@ -243,22 +250,19 @@ function verifyHtml(htmlPath, dateKey, analysis) {
 
   const html = fs.readFileSync(htmlPath, 'utf8');
   if (html.includes('ANALYSIS_DATA_PLACEHOLDER')) addError(errors, 'HTML still contains ANALYSIS_DATA_PLACEHOLDER');
-  if (html.includes('DRAWIO_XML_MAP_PLACEHOLDER')) addError(errors, 'HTML still contains DRAWIO_XML_MAP_PLACEHOLDER');
+  if (html.includes('FLOW_SVG_JS_PLACEHOLDER')) addError(errors, 'HTML still contains FLOW_SVG_JS_PLACEHOLDER');
 
-  const drawioEmbedded = (html.match(/<mxfile/g) || []).length;
-  const topToBeEmbedded = (html.match(/top[123]_to_be/g) || []).length;
-  const asIsEmbedded = (html.match(new RegExp(`asis_[^"']+_${dateKey}`, 'g')) || []).length;
-
-  if (drawioEmbedded === 0) addError(errors, 'No draw.io XML appears to be embedded in HTML');
-  if (topToBeEmbedded < 3) addError(errors, 'TOP3 To-Be draw.io entries are not all embedded');
-  if (asIsEmbedded === 0) addError(errors, 'No date-matched As-Is draw.io entries appear to be embedded');
-  if (!html.includes('viewer.diagrams.net')) warnings.push('viewer.diagrams.net reference was not found; draw.io preview may not work');
+  // フローは自前インラインSVG(flow_svg.js)で描画する。draw.io依存は全廃済みで、残存していたら退行。
+  const flowSvgEmbedded = html.includes('global.FlowSvg') || html.includes('FlowSvg=');
+  if (!flowSvgEmbedded) addError(errors, 'flow_svg.js (global.FlowSvg) does not appear to be embedded in HTML');
+  const drawioRefs = (html.match(/viewer\.diagrams\.net|GraphViewer|DRAWIO_XML_MAP|<mxfile/g) || []).length;
+  if (drawioRefs > 0) addError(errors, `HTML still references draw.io (${drawioRefs} occurrence(s)); rendering is now inline SVG`);
 
   const detailFlows = Array.isArray(analysis?.asis_flow_details) ? analysis.asis_flow_details : [];
   const detailDecisionCount = detailFlows.reduce((count, flow) =>
     count + (Array.isArray(flow.nodes) ? flow.nodes.filter((node) => node.node_type === 'decision').length : 0), 0);
-  if (detailDecisionCount > 0 && !html.includes('rhombus')) {
-    warnings.push('asis_flow_details contains decision nodes but no rhombus shapes are embedded in HTML');
+  if (detailDecisionCount > 0 && !html.includes('flow-node-decision')) {
+    warnings.push('asis_flow_details contains decision nodes but the flow-node-decision style is not present in HTML');
   }
 
   return {
@@ -267,9 +271,9 @@ function verifyHtml(htmlPath, dateKey, analysis) {
     warnings,
     stats: {
       bytes: html.length,
-      drawio_embedded: drawioEmbedded,
-      top_to_be_key_mentions: topToBeEmbedded,
-      as_is_key_mentions: asIsEmbedded
+      flow_svg_embedded: flowSvgEmbedded,
+      drawio_refs: drawioRefs,
+      detail_decision_nodes: detailDecisionCount
     }
   };
 }

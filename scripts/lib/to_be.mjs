@@ -1,28 +1,17 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { ensureDir } from './fs_utils.mjs';
-import { flowToDrawio } from './drawio.mjs';
 import { normalizeAutomationType, top3BusinessType } from './schema.mjs';
 
-export function writeTop3Drawio(analysis, flowsDir) {
-  ensureDir(flowsDir);
-  const written = [];
+// To-Be フローはブラウザ内インラインSVG(flow_svg.js)で描画する。
+// item.to_be_flow(ノード配列)はそのまま analysis に埋め込まれるため、ここでの整形は不要。
+// 不要になった as_is_flow / flow_files(draw.ioパス)だけ取り除く。
+export function stripTop3DrawioArtifacts(analysis) {
   for (const item of analysis.top3 || []) {
-    const rank = item.rank;
-    if (!rank) continue;
-    const asIsPath = path.join(flowsDir, `top${rank}_as_is.drawio`);
-    const toBePath = path.join(flowsDir, `top${rank}_to_be.drawio`);
-    if (fs.existsSync(asIsPath)) fs.rmSync(asIsPath);
-    fs.writeFileSync(toBePath, flowToDrawio(item.to_be_flow, `Top${rank} To-Be: ${item.title || ''}`));
     delete item.as_is_flow;
-    item.flow_files = {
-      ...(item.flow_files || {}),
-      to_be_drawio: `output/flows/top${rank}_to_be.drawio`
-    };
-    delete item.flow_files.as_is_drawio;
-    written.push(toBePath);
+    if (item.flow_files) {
+      delete item.flow_files.as_is_drawio;
+      delete item.flow_files.to_be_drawio;
+      if (Object.keys(item.flow_files).length === 0) delete item.flow_files;
+    }
   }
-  return written;
 }
 
 function cellHeatmapGroup(cell) {

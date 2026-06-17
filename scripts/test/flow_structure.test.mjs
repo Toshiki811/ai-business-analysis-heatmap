@@ -115,6 +115,30 @@ test('checkActorAlignment: タスクから主作業主体が消えると warning
   assert.ok(warnings.some((w) => /lost its main actor "出納職員"/.test(w)));
 });
 
+test('checkActorAlignment: 宣言したactorに1ノードも無いと error(空スイムレーン)', () => {
+  const flow = {
+    category: 'C', business_type: 'B', actors: ['出納職員', '会計システム'],
+    nodes: [
+      { id: 'n1', node_type: 'process', actor: '出納職員', source_task: SRC },
+      { id: 'n2', node_type: 'process', actor: '出納職員', source_task: SRC }
+    ]
+  };
+  const { errors } = checkActorAlignment(flow, buildTaskSubjectIndex(MATRIX));
+  assert.ok(errors.some((e) => /declared actor "会計システム" but no node/.test(e)));
+});
+
+test('checkActorAlignment: 全宣言actorにノードがあれば空レーンerrorなし', () => {
+  const flow = {
+    category: 'C', business_type: 'B', actors: ['出納職員', '会計システム'],
+    nodes: [
+      { id: 'n1', node_type: 'process', actor: '出納職員', source_task: SRC },
+      { id: 'n2', node_type: 'process', actor: '会計システム', source_task: SRC }
+    ]
+  };
+  const { errors } = checkActorAlignment(flow, buildTaskSubjectIndex(MATRIX));
+  assert.equal(errors.length, 0);
+});
+
 test('checkActorAlignment: actor が actors[] に無いと warning(孤立レーン)', () => {
   const flow = {
     category: 'C', business_type: 'B', actors: ['出納職員'],

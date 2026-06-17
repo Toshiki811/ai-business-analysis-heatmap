@@ -89,14 +89,26 @@ function actorMatchesSubject(actor, subject) {
   return a === s || a.includes(s) || s.includes(a);
 }
 
-// 細分化で主作業主体(actor=スイムレーン)がズレるのを機械検出する(いずれも warning)。
-//   (a) ノードの actor が flow.actors[] に無い → 存在しないレーン/表記ゆれ
-//   (b) あるタスクの全ノードから主作業主体が消えている → 分解で主担当が別主体に化けた疑い
+// 細分化で主作業主体(actor=スイムレーン)がズレるのを機械検出する。
+//   (a) ノードの actor が flow.actors[] に無い → 存在しないレーン/表記ゆれ (warning)
+//   (b) あるタスクの全ノードから主作業主体が消えている → 分解で主担当が別主体に化けた疑い (warning)
+//   (c) actors[] に宣言したのにノードが1つも無い → 空スイムレーン(描画上の空帯) (error)
 // subjectByTaskKey は buildTaskSubjectIndex() の戻り値(Map)。
 export function checkActorAlignment(flow, subjectByTaskKey = new Map(), errors = [], warnings = []) {
   const label = `${flow.category || '?'} / ${flow.business_type || '?'}`;
   const nodes = flow.nodes || [];
-  const actorSet = new Set((flow.actors || []).map((a) => String(a || '').trim()).filter(Boolean));
+  const declaredActors = (flow.actors || []).map((a) => String(a || '').trim()).filter(Boolean);
+  const actorSet = new Set(declaredActors);
+
+  // (c) 宣言した actor(レーン)に1ノードも無い=空スイムレーン。
+  // システムをactorに宣言したのに実行アクションをノード化し忘れた典型症状を捕捉。
+  // 空レーンは描画上つねに不具合(空の帯+ヘッダだけ)なので error。
+  const usedActors = new Set(nodes.map((n) => String(n.actor || '').trim()).filter(Boolean));
+  for (const actor of new Set(declaredActors)) {
+    if (!usedActors.has(actor)) {
+      errors.push(`flow ${label} declared actor "${actor}" but no node is assigned to it (empty swimlane)`);
+    }
+  }
 
   // (a) actor が actors[] に存在するか
   for (const node of nodes) {
